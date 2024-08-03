@@ -10,11 +10,11 @@ namespace Keywords
 	class InputComponent
 	{
 	public:
-		// Sets up 'ftxui::Component::Input()' via 'ftxui::InputOptions'
 		InputComponent();
 
 		ftxui::Element draw() { return m_input->Render(); }
-		void reset() { m_content = ""; }
+		
+		void reset() { m_content.clear(); }
 		bool hasPressedEnter() { return m_hasPressedEnter; };
 		
 		const std::string& getContent() { return m_content; }
