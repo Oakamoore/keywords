@@ -19,7 +19,7 @@ namespace
 				return;
 			}
 		
-			auto pos {str.find_last_of(' ')};
+			auto pos {str.find_last_of(' ') + 1};
 
 			// Erase backwards up until a space character
 			if (pos != std::string::npos)
@@ -62,7 +62,7 @@ namespace Keywords
 		// Bind 'CTRL + W' to the deletion of the last typed word in 'm_content'
 		m_input |= ftxui::CatchEvent([&] (ftxui::Event event)
 		{
-			static auto ctrlW {ftxui::Event::Special("\x17")};
+			const static auto ctrlW {ftxui::Event::Special("\x17")};
 			
 			if (event == ctrlW)
 			{
