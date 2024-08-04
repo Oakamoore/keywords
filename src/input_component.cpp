@@ -1,10 +1,11 @@
 #include "input_component.h"
 #include <ftxui/component/component_options.hpp>
+#include <ftxui/component/event.hpp>
 #include <cctype>
 
 namespace
 {
-	void deletePreviousWord(std::string& str)
+	void deleteMostRecentWord(std::string& str)
 	{
 		if (!str.empty())
 		{
@@ -32,17 +33,12 @@ namespace Keywords
 	InputComponent::InputComponent()
 		: m_placeholder {"type here"}
 	{
-		auto onEnter {[&] { m_hasPressedEnter = true; }};
-		auto onChange {[&] { m_hasPressedEnter = false; }};
-
-		ftxui::InputOption settings {ftxui::InputOption::Spacious()};
+		auto settings {ftxui::InputOption::Spacious()};
 
 		// Create the default settings for 'm_input'
 		settings.content = &m_content;
 		settings.placeholder = &m_placeholder;
 		settings.multiline = false;
-		settings.on_change = onChange;
-		settings.on_enter = onEnter;
 
 		// Apply the above settings to 'm_input'
 		m_input = ftxui::Input(settings);
@@ -55,13 +51,22 @@ namespace Keywords
 				&& event.character()[0] != ' ';
 		});
 
-		// Bind 'CTRL + W' to the deletion of the previous word in 'm_content'
+		// Register when the 'ENTER' key is pressed
 		m_input |= ftxui::CatchEvent([&] (ftxui::Event event)
 		{
-			auto ctrlW {ftxui::Event::Special("\x17")};
+			m_hasPressedEnter = (event == ftxui::Event::Return ? true : false);
+
+			return m_hasPressedEnter;
+		});
+
+		// Bind 'CTRL + W' to the deletion of the last typed word in 'm_content'
+		m_input |= ftxui::CatchEvent([&] (ftxui::Event event)
+		{
+			static auto ctrlW {ftxui::Event::Special("\x17")};
+			
 			if (event == ctrlW)
 			{
-				deletePreviousWord(m_content);
+				deleteMostRecentWord(m_content);
 				return true;
 			}
 
