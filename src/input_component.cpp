@@ -33,12 +33,28 @@ namespace Keywords
 	InputComponent::InputComponent()
 		: m_placeholder {"type here"}
 	{
-		auto settings {ftxui::InputOption::Spacious()};
+		ftxui::InputOption settings {};
 
-		// Create the default settings for 'm_input'
+		// Set the default settings for 'm_input'
 		settings.content = &m_content;
 		settings.placeholder = &m_placeholder;
 		settings.multiline = false;
+
+		// Format the underlying element 
+		settings.transform = [&] (ftxui::InputState state)
+		{
+			// Change the attributes of the placeholder text
+			if (state.is_placeholder)
+				(state.element |= ftxui::color(ftxui::Color::Grey30)) |= ftxui::dim;
+			else
+				state.element |= ftxui::bold;
+
+			// Offset and center the element
+			state.element |= ftxui::borderEmpty;
+			state.element |= ftxui::vcenter;
+
+			return state.element;
+		};
 
 		// Apply the above settings to 'm_input'
 		m_input = ftxui::Input(settings);
