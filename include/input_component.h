@@ -4,6 +4,7 @@
 #include <ftxui/dom/node.hpp>
 #include <ftxui/component/component.hpp>
 #include <string>
+#include <string_view>
 
 namespace Keywords
 {
@@ -17,7 +18,9 @@ namespace Keywords
 		void reset() { m_content.clear(); }
 		bool hasPressedEnter() { return m_hasPressedEnter; };
 		
+		void setContent(std::string_view content) { m_content = content; }
 		const std::string& getContent() { return m_content; }
+		
 		const ftxui::Component& getComponent() { return m_input; }
 
 	private:
