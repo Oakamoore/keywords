@@ -4,8 +4,10 @@
 
 namespace
 {
-	constexpr int g_canvasWidth {120};
+	constexpr int g_canvasWidth {240};
 	constexpr int g_canvasHeight {100};
+
+	/*constexpr int g_maxMisses {10};*/
 
 	/*int calcuateWordsPerMinute()*/
 	/*int calcuateCharsPerSecond()*/
@@ -18,15 +20,17 @@ namespace Keywords
 		// Create a temporary blank 'ftxui::Canvas' 
 		ftxui::Canvas c {g_canvasWidth, g_canvasHeight};
 
-		c.DrawText(0, 0, std::to_string(m_input.hasPressedEnter()), ftxui::Color::White);
+		// TODO: Loop through 'm_words' and draw each to the 'ftxui::Canvas'
+
+		// TODO: Call 'Session::update()' post draw phase
 
 		return ftxui::vbox({
+			ftxui::text("KEYWORDS") | ftxui::center, 
+			ftxui::separatorEmpty(),
 			ftxui::canvas(std::move(c)) | ftxui::border,
-			m_input.draw() | ftxui::border | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, g_canvasWidth)
+			m_input.draw() | ftxui::border | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, g_canvasWidth / 5),
+			ftxui::separatorEmpty()
 						   });
-
-		// Call 'Session::update()' post draw phase
-
 	}
 
 	void Session::update()
@@ -41,6 +45,7 @@ namespace Keywords
 	{
 		// Reads in from 'WordBank', then creates new 'Word' object
 		// Adds a given amount of 'Word' objects to 'm_words'
+		// Ensure all the height values are different
 
 
 	}
