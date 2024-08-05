@@ -1,7 +1,9 @@
 #ifndef KEYWORDS_SESSION_H
 #define KEYWORDS_SESSION_H
 
+#include "input_component.h"
 #include <ftxui/dom/node.hpp>
+#include <ftxui/component/component.hpp>
 
 namespace Keywords
 {
@@ -13,6 +15,8 @@ namespace Keywords
 		// Draw 'm_words' to 'ftxui::Canvas'
 		// Draw the stats of the 'Session' to 'ftxui::Canvas'
 		ftxui::Element draw();
+
+		ftxui::Component getInputComponent() { return m_input.getComponent(); }
 		
 	private:
 		// Called in 'Session::draw()'
@@ -31,8 +35,8 @@ namespace Keywords
 		/*const SessionConfig m_config*/ 
 		/*std::vector<Word> m_words*/
 		/*Timer m_uptime*/
-		/*InputComponent m_input*/
-
+		
+		InputComponent m_input;
 		int m_misses {};
 		int m_charsTyped {};
 		int m_wordsPerMinute {};
