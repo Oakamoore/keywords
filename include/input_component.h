@@ -16,12 +16,12 @@ namespace Keywords
 		ftxui::Element draw() { return m_input->Render(); }
 		
 		void reset() { m_content.clear(); }
-		bool hasPressedEnter() { return m_hasPressedEnter; };
+		bool hasPressedEnter() const { return m_hasPressedEnter; };
 		
 		void setContent(std::string_view content) { m_content = content; }
-		const std::string& getContent() { return m_content; }
+		const std::string& getContent() const { return m_content; }
 		
-		const ftxui::Component& getComponent() { return m_input; }
+		const ftxui::Component& getComponent() const { return m_input; }
 
 	private:
 		std::string m_content {};
