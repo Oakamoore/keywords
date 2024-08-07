@@ -11,11 +11,10 @@ namespace Keywords
 		static constexpr int minOffset {1};
 		static constexpr int maxOffset {50};
 
-		// The minimum horizontal starting value 
-		// required for a word to spawn off screen
-		int clearance {-static_cast<int>(m_text.length() * 2)};
+		// The starting position required for a word to spawn off screen
+		int minHorizontalStartPos {-static_cast<int>(m_text.length() * 2)};
 
-		m_x = clearance - Random::get(minOffset, maxOffset);
+		m_x = minHorizontalStartPos - Random::get(minOffset, maxOffset);
 	}
 
 	void Word::move(int canvasWidth)
