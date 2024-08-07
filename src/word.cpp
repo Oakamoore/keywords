@@ -1,30 +1,37 @@
 #include "word.h"
+#include "random.h"
+
+constexpr int g_minOffset {20};
+constexpr int g_maxOffset {50};
 
 namespace Keywords
 {
-	Word::Word(std::string_view text, int canvasHeight)
-		: m_text {text} // Ensure that this is lowercase
-		, m_y {canvasHeight}
-		, m_x {-static_cast<int>(text.length())}
+	Word::Word(std::string_view text, int verticalPos)
+		: m_text {text}
+		, m_y {verticalPos}
+		, m_x {-Random::get(g_minOffset, g_maxOffset)} // TODO: prevent overlapping?
 		, m_color {ftxui::Color::Green}
 	{
-
 	}
 
-	void Word::move([[maybe_unused]] int canvasWidth)
+	void Word::move(int canvasWidth)
 	{
-		// Increments 'm_x' by 's_speed'
+		if (m_x < canvasWidth)
+		{
+			m_x += s_speed;
 
-		// Calls 'updateColor(int)'
+			updateColor(canvasWidth);
+		}
 	}
 
-	void Word::updateColor([[maybe_unused]] int canvasWidth)
+	void Word::updateColor(int canvasWidth)
 	{
-		// Get 1/3 of 'canvasWidth', when 'm_x' reaches that
-		// change 'm_color' to 'ftxui::Color::Yellow'
+		static const int halfOfCanvas {static_cast<int>(canvasWidth * 0.50)};
+		static const int threeQuartersOfCanvas {static_cast<int>(canvasWidth * 0.75)};
 
-		// Get 2/3 of 'canvasWidth', when 'm_x' reaches that 
-		// change 'm_color' to 'ftxui::Color::Red'
-	
+		if (m_x >= threeQuartersOfCanvas)
+			m_color = ftxui::Color::Red;
+		else if (m_x >= halfOfCanvas)
+			m_color = ftxui::Color::Yellow;
 	}
 }
