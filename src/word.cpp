@@ -1,17 +1,21 @@
 #include "word.h"
 #include "random.h"
 
-constexpr int g_minOffset {20};
-constexpr int g_maxOffset {50};
-
 namespace Keywords
 {
 	Word::Word(std::string_view text, int verticalPos)
 		: m_text {text}
 		, m_y {verticalPos}
-		, m_x {-Random::get(g_minOffset, g_maxOffset)} // TODO: prevent overlapping?
 		, m_color {ftxui::Color::Green}
 	{
+		static constexpr int minOffset {1};
+		static constexpr int maxOffset {50};
+
+		// The minimum horizontal starting value 
+		// required for a word to spawn off screen
+		int clearance {-static_cast<int>(m_text.length() * 2)};
+
+		m_x = clearance - Random::get(minOffset, maxOffset);
 	}
 
 	void Word::move(int canvasWidth)
