@@ -4,6 +4,8 @@
 #include <ftxui/screen/color.hpp>
 #include <string>
 #include <string_view>
+#include <vector>
+#include <memory>
 
 namespace Keywords
 {
@@ -32,6 +34,8 @@ namespace Keywords
 		ftxui::Color m_color {};
 
 	};
+
+	using Words = std::vector<std::unique_ptr<Word>>;
 }
 
 #endif
