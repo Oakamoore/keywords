@@ -6,24 +6,35 @@
 #include <ftxui/screen/color.hpp>
 #include <string>
 #include <sstream>
+#include <type_traits>
 
 namespace
 {
 	constexpr int g_canvasWidth {240};
 	constexpr int g_canvasHeight {100};
 
-	std::string toStringWithPrecision(double value, int precision)
+	template <typename T>
+	std::string toStringWithPrecision(T value, int precision)
 	{
 		std::ostringstream out {};
-
-		// Set the max precision of the stream
 		out.precision(precision);
 		
-		// Read the value into the stream
-		// and prevent digit truncation 
+		// Prevent digit truncation
 		out << std::fixed << value;
 		
 		return std::move(out).str();
+	}
+
+	template <typename T>
+	ftxui::Element getStatElement(const std::string& statName, const T& value)
+	{
+		std::string str {std::is_floating_point_v<T> ? toStringWithPrecision(value, 2) : std::to_string(value)};
+
+		return ftxui::hbox
+		({
+			ftxui::text(statName) | ftxui::bold,
+			ftxui::text(str) | ftxui::color(ftxui::Color::Cyan)
+		 }) | ftxui::center;
 	}
 }
 
@@ -35,17 +46,16 @@ namespace Keywords
 
 	ftxui::Element Session::draw()
 	{
-		// Create a temporary blank 'ftxui::Canvas' 
+		// Create a blank 'ftxui::Canvas' 
 		ftxui::Canvas c {g_canvasWidth, g_canvasHeight};
 
 		for (const auto& word : m_words)
 			c.DrawText(word->getX(), word->getY(), word->getText(), word->getColor());
 
-		// TODO: Call 'Session::update()' post draw phase
 		update();
 
 		static constexpr auto inputBoxSize {g_canvasWidth / 6};
-		static constexpr auto statusBoxSize {(g_canvasWidth / 2) - inputBoxSize};
+		static constexpr auto statBoxSize {(g_canvasWidth / 2) - inputBoxSize};
 
 		auto frame
 		{
@@ -64,31 +74,13 @@ namespace Keywords
 						ftxui::hbox
 						({
 							ftxui::filler(),
-							ftxui::hbox
-							({
-								ftxui::text("Time: ") | ftxui::bold,
-								ftxui::text(toStringWithPrecision(m_uptime.elapsed(), 2))
-							}) | ftxui::center, ftxui::filler(),
-							ftxui::hbox
-							({
-								ftxui::text("Number of Words: ") | ftxui::bold,
-								ftxui::text(std::to_string(m_words.size()))
-							}) | ftxui::center, ftxui::filler(),
-							ftxui::hbox
-							({
-								ftxui::text("Misses: ") | ftxui::bold,
-								ftxui::text(std::to_string(m_misses))
-							}) | ftxui::center, ftxui::filler(),
-							ftxui::hbox
-							({
-								ftxui::text("Test: ") | ftxui::bold,
-								ftxui::text(std::to_string(m_misses))
-							}) | ftxui::center,
-							ftxui::filler()
+							getStatElement("Time: ", m_uptime.elapsed()), ftxui::filler(),
+							getStatElement("Number of Words: ", m_words.size()), ftxui::filler(),
+							getStatElement("Misses: ", m_misses), ftxui::filler(),
 						})
-					) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, statusBoxSize),
+					) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, statBoxSize),
 				}),
-			 ftxui::separatorEmpty()
+				 ftxui::separatorEmpty()
 			}) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, g_canvasWidth / 2)
 		};
 
@@ -136,6 +128,6 @@ namespace Keywords
 		// and checks against 'Word::m_content' if they match 
 		// 'm_input::getContent()', they are erased
 
-		
+	
 	}
 }
