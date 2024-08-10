@@ -30,8 +30,8 @@ namespace
 
 namespace Keywords
 {
-	InputComponent::InputComponent()
-		: m_placeholder {"type here"}
+	InputComponent::InputComponent(std::string_view placeholder)
+		: m_placeholder {placeholder}
 	{
 		ftxui::InputOption settings {};
 

@@ -11,7 +11,7 @@ namespace Keywords
 	class InputComponent
 	{
 	public:
-		InputComponent();
+		InputComponent(std::string_view placeholder = "type here");
 
 		ftxui::Element draw() { return m_input->Render(); }
 		
@@ -25,7 +25,7 @@ namespace Keywords
 
 	private:
 		std::string m_content {};
-		std::string m_placeholder {};
+		std::string m_placeholder {"type here"};
 		ftxui::Component m_input {};
 		bool m_hasPressedEnter {};
 
