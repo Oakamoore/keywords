@@ -8,8 +8,8 @@ namespace Keywords
 		, m_y {verticalPos}
 		, m_color {ftxui::Color::Green}
 	{
-		static constexpr int minOffset {1};
-		static constexpr int maxOffset {50};
+		constexpr int minOffset {1};
+		constexpr int maxOffset {50};
 
 		// The starting position required for a word to spawn off screen
 		int minHorizontalStartPos {-static_cast<int>(m_text.length() * 2)};
@@ -29,8 +29,8 @@ namespace Keywords
 
 	void Word::updateColor(int canvasWidth)
 	{
-		static const int halfOfCanvas {static_cast<int>(canvasWidth * 0.50)};
-		static const int threeQuartersOfCanvas {static_cast<int>(canvasWidth * 0.75)};
+		const int halfOfCanvas {static_cast<int>(canvasWidth * 0.50)};
+		const int threeQuartersOfCanvas {static_cast<int>(canvasWidth * 0.75)};
 
 		if (m_x >= threeQuartersOfCanvas)
 			m_color = ftxui::Color::Red;

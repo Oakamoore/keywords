@@ -78,7 +78,7 @@ namespace Keywords
 		// Bind 'CTRL + W' to the deletion of the last typed word in 'm_content'
 		m_input |= ftxui::CatchEvent([&] (ftxui::Event event)
 		{
-			const static auto ctrlW {ftxui::Event::Special("\x17")};
+			const auto ctrlW {ftxui::Event::Special("\x17")};
 			
 			if (event == ctrlW)
 			{
