@@ -18,7 +18,7 @@ namespace
 
 	std::string convertToLowercase(std::string_view str)
 	{
-		if (str.empty())
+		if (!str.empty())
 		{
 			// Construct a string of a given length
 			std::string lowercase(str.length(), ' ');
@@ -47,7 +47,7 @@ namespace Keywords
 				throw std::runtime_error("Failed to locate file");
 
 			if (std::filesystem::is_empty(filePath))
-				throw std::runtime_error("Cannot read from an emtpy file");
+				throw std::runtime_error("Cannot read from an empty file");
 
 			std::ifstream file {filePath.string()};
 
