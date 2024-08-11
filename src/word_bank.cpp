@@ -35,6 +35,13 @@ namespace
 
 		return std::string {};
 	}
+
+	void clearWordBanks()
+	{
+		Keywords::WordBank::easyWords.clear();
+		Keywords::WordBank::mediumWords.clear();
+		Keywords::WordBank::hardWords.clear();
+	}
 }
 
 namespace Keywords
@@ -56,6 +63,10 @@ namespace Keywords
 
 			auto isEasyWord {[](std::string_view str) { return str.length() <= 5; }};
 			auto isMediumWord {[](std::string_view str) { return str.length() >= 6 && str.length() <= 8; }};
+
+			// Ensures the word banks are empty
+			// before populating them with words
+			clearWordBanks();
 
 			std::string word {};
 
