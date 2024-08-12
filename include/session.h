@@ -6,26 +6,38 @@
 #include "timer.h"
 #include <ftxui/dom/node.hpp>
 #include <ftxui/component/component.hpp>
-#include <vector>
 
 namespace Keywords
 {
+	struct SessionConfig
+	{
+		enum class Difficulty
+		{
+			easy,
+			medium,
+			hard,
+			max_difficulty
+		};
+		
+		Difficulty difficulty {};
+	};
+
 	class Session
 	{
 	public:
-		Session(/*SessionConfig config*/);
+		Session(const SessionConfig& config);
 
 		ftxui::Element draw();
+		void update();
 
 		ftxui::Component getInputComponent() { return m_input.getComponent(); }
 		
 	private:
-		void update();
 		void addWords();
 		void eraseWords();
 
 	private:
-		/*const SessionConfig m_config*/ 
+		const SessionConfig m_config {};
 		Words m_words {}; 
 		Timer m_uptime {};
 		InputComponent m_input {};
