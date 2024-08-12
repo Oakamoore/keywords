@@ -1,9 +1,9 @@
 #include "session.h"
 #include "random.h"
+#include "word_bank.h"
 #include <ftxui/dom/canvas.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/color.hpp>
-#include <string>
 #include <sstream>
 #include <type_traits>
 
@@ -39,8 +39,24 @@ namespace
 
 namespace Keywords
 {
-	Session::Session(/*SessionConfig config*/)
+	Session::Session(const SessionConfig& config)
+		: m_config {config}
 	{
+		using enum SessionConfig::Difficulty;
+
+		// Determine what word bank to pull words from
+		switch (m_config.difficulty)
+		{
+			case medium:
+				m_wordBank = &WordBank::mediumWords;
+				break;
+			case hard:
+				m_wordBank = &WordBank::hardWords;
+				break;
+			default:
+				m_wordBank = &WordBank::easyWords; 
+				break;
+		}
 	}
 
 	ftxui::Element Session::draw()

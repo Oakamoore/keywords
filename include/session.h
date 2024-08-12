@@ -6,6 +6,8 @@
 #include "timer.h"
 #include <ftxui/dom/node.hpp>
 #include <ftxui/component/component.hpp>
+#include <vector>
+#include <string>
 
 namespace Keywords
 {
@@ -38,6 +40,7 @@ namespace Keywords
 
 	private:
 		const SessionConfig m_config {};
+		const std::vector<std::string>* m_wordBank {};
 		Words m_words {}; 
 		Timer m_uptime {};
 		InputComponent m_input {};
