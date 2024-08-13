@@ -12,7 +12,7 @@ namespace Keywords
 	class Word
 	{
 	public:
-		Word(std::string_view text, int verticalPos);
+		Word(std::string_view text, int x, int y);
 		
 		void move(int canvasWidth);
 

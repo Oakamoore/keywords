@@ -3,18 +3,12 @@
 
 namespace Keywords
 {
-	Word::Word(std::string_view text, int verticalPos)
+	Word::Word(std::string_view text, int x, int y)
 		: m_text {text}
-		, m_y {verticalPos}
+		, m_x {x}
+		, m_y {y}
 		, m_color {ftxui::Color::Green}
 	{
-		constexpr int minOffset {1};
-		constexpr int maxOffset {50};
-
-		// The starting position required for a word to spawn off screen
-		int minHorizontalStartPos {-static_cast<int>(m_text.length() * 2)};
-
-		m_x = minHorizontalStartPos - Random::get(minOffset, maxOffset);
 	}
 
 	void Word::move(int canvasWidth)
