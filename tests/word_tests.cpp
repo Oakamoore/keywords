@@ -5,20 +5,9 @@
 // An arbitrary canvas width
 constexpr int g_canvasWidth {100};
 
-TEST_CASE("Restrict horizontal starting position")
-{
-	Keywords::Word word {"word", 0};
-
-	// The minimum horizontal position required for a word to appear off screen
-	const int startingPos {-static_cast<int>(word.getText().length() * 2)};
-
-	// The word should be off screen
-	REQUIRE(word.getX() < startingPos);
-}
-
 TEST_CASE("Stop moving once the horizontal boundary has been reached")
 {
-	Keywords::Word word {"word", 0};
+	Keywords::Word word {"word", 0, 0};
 
 	// Move the word up until the horizontal boundary
 	while (word.getX() < g_canvasWidth)
@@ -38,7 +27,7 @@ TEST_CASE("Change color depending on relative horizontal position")
 	constexpr int halfOfCanvas {static_cast<int>(g_canvasWidth * 0.50)};
 	constexpr int threeQuartersOfCanvas {static_cast<int>(g_canvasWidth * 0.75)};
 
-	Keywords::Word word {"word", 0};
+	Keywords::Word word {"word", 0, 0};
 
 	while (word.getX() < g_canvasWidth)
 	{
