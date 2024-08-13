@@ -13,7 +13,7 @@ namespace Keywords
 		inline std::vector<std::string> mediumWords {};
 		inline std::vector<std::string> hardWords {};
 
-		void readFromFile(std::filesystem::path filePath);
+		void readFromFile(const std::filesystem::path& filePath);
 	}
 }
 

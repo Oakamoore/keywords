@@ -48,7 +48,7 @@ namespace Keywords
 {
 	namespace WordBank
 	{
-		void readFromFile(std::filesystem::path filePath)
+		void readFromFile(const std::filesystem::path& filePath)
 		{
 			if (!std::filesystem::exists(filePath))
 				throw std::runtime_error("Failed to locate file");
