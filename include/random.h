@@ -2,6 +2,7 @@
 #define KEYWORDS_RANDOM_H
 
 #include <random>
+#include <vector>
 
 namespace Keywords
 {
@@ -21,6 +22,17 @@ namespace Keywords
 		inline int get(int min, int max)
 		{
 			return std::uniform_int_distribution {min, max} (mt);
+		}
+
+		template <typename T>
+		T getElement(const std::vector<T>& container)
+		{
+			auto iter {container.begin()};
+
+			std::uniform_int_distribution<> dis {0, static_cast<int>(container.size()) - 1};
+			std::advance(iter, dis(mt));
+
+			return *iter;
 		}
 	}
 }
