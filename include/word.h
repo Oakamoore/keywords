@@ -16,7 +16,10 @@ namespace Keywords
 		
 		void move(int canvasWidth);
 
+		void setX(int x) { m_x = x; }
 		int getX() const { return m_x; }
+		
+		void setY(int y) { m_y = y; }
 		int getY() const { return m_y; }
 
 		const std::string& getText() const { return m_text; }
