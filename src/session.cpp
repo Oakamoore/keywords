@@ -11,6 +11,8 @@ namespace
 {
 	constexpr int g_canvasWidth {240};
 	constexpr int g_canvasHeight {100};
+	constexpr int g_canvasCellWidth {2};
+	constexpr int g_canvasCellHeight {4};
 
 	template <typename T>
 	std::string toStringWithPrecision(T value, int precision)
@@ -34,6 +36,22 @@ namespace
 			ftxui::text(statName) | ftxui::bold,
 			ftxui::text(str + unit) | ftxui::color(ftxui::Color::Cyan)
 		 }) | ftxui::center;
+	}
+
+	std::vector<int> getCanvasRows()
+	{
+		std::vector<int> canvasRows {};
+
+		for (int i {0}; i < g_canvasHeight; i += g_canvasCellHeight)
+			canvasRows.push_back(i);
+
+		return canvasRows;
+	}
+
+	int getMinStartPos(std::string_view str)
+	{
+		// Minimum horizontal starting position for a word to appear off screen
+		return -static_cast<int>(str.length() * g_canvasCellWidth);
 	}
 }
 
@@ -61,14 +79,15 @@ namespace Keywords
 
 	ftxui::Element Session::draw()
 	{
+		// Create a blank canvas
 		ftxui::Canvas c {g_canvasWidth, g_canvasHeight};
 
-		// Draw the words to the screen
+		// Draw the words to the canvas
 		for (const auto& word : m_words)
 			c.DrawText(word->getX(), word->getY(), word->getText(), word->getColor());
 
 		constexpr auto inputBoxSize {g_canvasWidth / 6};
-		constexpr auto statBoxSize {(g_canvasWidth / 2) - inputBoxSize};
+		constexpr auto statBoxSize {(g_canvasWidth / g_canvasCellWidth) - inputBoxSize};
 
 		auto frame
 		{
@@ -95,7 +114,7 @@ namespace Keywords
 					) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, statBoxSize),
 				}),
 				 ftxui::separatorEmpty()
-			}) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, g_canvasWidth / 2)
+			}) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, g_canvasWidth / g_canvasCellWidth)
 		};
 
 		return frame;
@@ -122,18 +141,44 @@ namespace Keywords
 		eraseWords();
 	}
 
+	bool Session::isWordPresent(std::string_view str) const
+	{
+		for (const auto& word : m_words)
+		{
+			if (word->getText() == str)
+				return true;
+		}
+		
+		return false;
+	}
+
+	Word Session::getRandomWord() const
+	{
+		std::string str {};
+
+		// Ensure that on screen words are different
+		while (str.empty() || isWordPresent(str))
+			str = Random::getElement(*m_wordBank);
+
+		constexpr int minOffset {10};
+		constexpr int maxOffset {50};
+
+		static const std::vector<int> s_canvasRows {getCanvasRows()};
+
+		int xPos {getMinStartPos(str) - Random::get(minOffset, maxOffset)};
+		int yPos {Random::getElement(s_canvasRows)};
+	
+		return Word {str, xPos, yPos};
+	}
+
 	void Session::addWords()
 	{
-		constexpr int spawnCount {3};
+		constexpr int spawnCount {5};
 
 		for (int i {0}; i < spawnCount; ++i)
-			m_words.emplace_back(std::make_unique<Word>("test", Random::get(0, g_canvasHeight - 1)));
-
-		// Randomly reads in from 'WordBank', then creates new 'Word' object
-		// Adds a given amount of 'Word' objects to 'm_words'
-		// Randomly assigns height values, ensuring they are all different
-			// Check that the position being drawn to is empty
-		// Take into account the word offset starting positions
+		{
+			m_words.push_back(std::make_unique<Word>(std::move(getRandomWord())));
+		}
 	}
 
 	void Session::eraseWords()

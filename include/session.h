@@ -35,15 +35,18 @@ namespace Keywords
 		ftxui::Component getInputComponent() { return m_input.getComponent(); }
 		
 	private:
+		bool isWordPresent(std::string_view str) const;
+		Word getRandomWord() const;
+
 		void addWords();
 		void eraseWords();
 
 	private:
 		const SessionConfig m_config {};
 		const std::vector<std::string>* m_wordBank {};
+		InputComponent m_input {};
 		Words m_words {}; 
 		Timer m_uptime {};
-		InputComponent m_input {};
 		int m_misses {};
 		int m_charsTyped {};
 		int m_wordsTyped {};
