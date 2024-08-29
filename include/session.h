@@ -32,10 +32,13 @@ namespace Keywords
 		ftxui::Element draw();
 		void update();
 
-		ftxui::Component getInputComponent() { return m_input.getComponent(); }
+		ftxui::Component getInputComponent() const { return m_input.getComponent(); }
 		
 	private:
 		bool isWordPresent(std::string_view str) const;
+		bool isWordOverlapping(const Word& newWord) const;
+		bool isEveryWordVisible() const;
+		
 		Word getRandomWord() const;
 
 		void addWords();
