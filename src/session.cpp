@@ -58,7 +58,7 @@ namespace
 	int getWordEndPosition(const Keywords::Word& word)
 	{
 		// The canvas cell occupied by the last letter of a given word
-		return static_cast<int>(word.getX() + word.getText().length() * g_canvasCellWidth);
+		return static_cast<int>(word.x + word.text.length() * g_canvasCellWidth);
 	}
 
 	bool isWithinRange(int valueOne, int valueTwo, int deviation)
@@ -96,7 +96,7 @@ namespace Keywords
 
 		// Draw the words to the canvas
 		for (const auto& word : m_words)
-			c.DrawText(word->getX(), word->getY(), word->getText(), word->getColor());
+			c.DrawText(word->x, word->y, word->text, word->color);
 
 		constexpr int inputBoxSize {g_canvasWidth / 6};
 		constexpr int statBoxSize {(g_canvasWidth / g_canvasCellWidth) - inputBoxSize};
@@ -160,7 +160,7 @@ namespace Keywords
 	{
 		for (const auto& word : m_words)
 		{
-			if (word->getText() == str)
+			if (word->text == str)
 				return true;
 		}
 		
@@ -173,18 +173,18 @@ namespace Keywords
 
 		for (const auto& currentWord : m_words)
 		{
-			bool isInSameRow {currentWord->getY() == word.getY()};
+			bool isInSameRow {currentWord->y == word.y};
 
 			bool isOverlappingInX
 			{
-				word.getX() < getWordEndPosition(*currentWord) &&
-				getWordEndPosition(word) > currentWord->getX()
+				word.x < getWordEndPosition(*currentWord) &&
+				getWordEndPosition(word) > currentWord->x
 			};
 
 			bool isWithinMinDistance
 			{
-				isWithinRange(word.getX(), getWordEndPosition(*currentWord), minDistance) ||
-				isWithinRange(getWordEndPosition(word), currentWord->getX(), minDistance)
+				isWithinRange(word.x, getWordEndPosition(*currentWord), minDistance) ||
+				isWithinRange(getWordEndPosition(word), currentWord->x, minDistance)
 			};
 
 			if ((isInSameRow && isOverlappingInX) || (isInSameRow && isWithinMinDistance))
@@ -218,8 +218,8 @@ namespace Keywords
 			int yPos {Random::getElement(s_canvasRows)};
 
 			// Reposition the word
-			word.setX(xPos);
-			word.setY(yPos);
+			word.x = xPos;
+			word.y = yPos;
 
 			repositionCount--;
 
@@ -250,7 +250,7 @@ namespace Keywords
 		// Erase off screen words
 		std::erase_if(m_words, [&] (const auto& word)
 		{
-			if (word->getX() >= g_canvasWidth)
+			if (word->x >= g_canvasWidth)
 			{
 				++m_misses;
 				return true;
