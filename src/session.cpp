@@ -6,6 +6,7 @@
 #include <ftxui/screen/color.hpp>
 #include <sstream>
 #include <type_traits>
+#include <cmath>
 
 namespace
 {
@@ -14,8 +15,7 @@ namespace
 	constexpr int g_canvasCellWidth {2};
 	constexpr int g_canvasCellHeight {4};
 
-	template <typename T>
-	std::string toStringWithPrecision(T value, int precision)
+	std::string toStringWithPrecision(const auto& value, int precision)
 	{
 		std::ostringstream out {};
 
@@ -49,10 +49,21 @@ namespace
 		return canvasRows;
 	}
 
-	int getMinStartPos(std::string_view str)
+	int getWordStartPosition(std::string_view str)
 	{
 		// Minimum horizontal starting position for a word to appear off screen
 		return -static_cast<int>(str.length() * g_canvasCellWidth);
+	}
+
+	int getWordEndPosition(const Keywords::Word& word)
+	{
+		// The canvas cell occupied by the last letter of a given word
+		return static_cast<int>(word.getX() + word.getText().length() * g_canvasCellWidth);
+	}
+
+	bool isWithinRange(int valueOne, int valueTwo, int deviation)
+	{
+		return std::abs(valueOne - valueTwo) <= deviation;
 	}
 }
 
@@ -87,8 +98,8 @@ namespace Keywords
 		for (const auto& word : m_words)
 			c.DrawText(word->getX(), word->getY(), word->getText(), word->getColor());
 
-		constexpr auto inputBoxSize {g_canvasWidth / 6};
-		constexpr auto statBoxSize {(g_canvasWidth / g_canvasCellWidth) - inputBoxSize};
+		constexpr int inputBoxSize {g_canvasWidth / 6};
+		constexpr int statBoxSize {(g_canvasWidth / g_canvasCellWidth) - inputBoxSize};
 
 		auto frame
 		{
@@ -153,53 +164,34 @@ namespace Keywords
 		return false;
 	}
 
-	bool Session::isWordOverlapping(const Word& newWord) const
+	bool Session::isWordOverlapping(const Word& word) const
 	{
-		if (m_words.empty())
-			return false;
-
-		// The final cell a given word occupies
-		const auto newWordEndPos {newWord.getX() + newWord.getText().length() * g_canvasCellWidth};
+		constexpr int minDistance {15};
 
 		for (const auto& currentWord : m_words)
 		{
-			// Check against words that have 
-			// yet to appear on screen
-			if (currentWord->getX() < 0)
+			bool isInSameRow {currentWord->getY() == word.getY()};
+
+			bool isOverlappingInX
 			{
-				// The final cell the current word occupies
-				const auto currentWordEndPos {currentWord->getX() + currentWord->getText().length() * g_canvasCellWidth};
+				word.getX() < getWordEndPosition(*currentWord) &&
+				getWordEndPosition(word) > currentWord->getX()
+			};
 
-				bool isInSameRow {currentWord->getY() == newWord.getY()};
+			bool isWithinMinDistance
+			{
+				isWithinRange(word.getX(), getWordEndPosition(*currentWord), minDistance) ||
+				isWithinRange(getWordEndPosition(word), currentWord->getX(), minDistance)
+			};
 
-				bool isOverlappingInX
-				{
-					newWord.getX() <= currentWord->getX() && newWordEndPos >= currentWord->getX() || 
-					newWord.getX() >= currentWord->getX() && (newWordEndPos <= currentWordEndPos || newWordEndPos >= currentWordEndPos)
-				};
-
-				if (isInSameRow && isOverlappingInX)
-					return true;
-			}
-		}
-
-		return false;
-	}
-
-	bool Session::isEveryWordVisible() const
-	{
-		// A word in the previous batch of spawned 
-		// words has yet to appear on screen
-		for (const auto& word : m_words)
-		{
-			if (word->getX() < 0)
+			if ((isInSameRow && isOverlappingInX) || (isInSameRow && isWithinMinDistance))
 				return true;
 		}
 
 		return false;
 	}
 
-	Word Session::getRandomWord() const
+	std::optional<Word> Session::getRandomWord() const
 	{
 		std::string str {};
 
@@ -207,41 +199,42 @@ namespace Keywords
 		while (str.empty() || isWordPresent(str))
 			str = Random::getElement(*m_wordBank);
 
-		Word word {str, 0, 0};
+		Word word {str};
 
 		constexpr int minOffset {10};
 		constexpr int maxOffset {100};
 
 		static const std::vector<int> s_canvasRows {std::move(getCanvasRows())};
 
-		// Prevent infinite overlap check
-		int numAttempts {100};
+		// Prevents infinite overlap check
+		int repositionCount {10};
 
 		do
 		{
-			int xPos {getMinStartPos(str) - Random::get(minOffset, maxOffset)};
+			int xPos {getWordStartPosition(str) - Random::get(minOffset, maxOffset)};
 			int yPos {Random::getElement(s_canvasRows)};
 
 			// Reposition the word
 			word.setX(xPos);
 			word.setY(yPos);
 
-		} while (isWordOverlapping(word) && numAttempts--);
+			repositionCount--;
 
-		return word;
+		} while (isWordOverlapping(word) && repositionCount > 0);
+
+		return (repositionCount <= 0 ? std::optional<Word> {} : word);
 	}
-
 
 	void Session::addWords()
 	{
-		constexpr int spawnCount {100};
+		constexpr int spawnCount {5};
 
-		if (!isEveryWordVisible())
+		for (int i {0}; i < spawnCount; ++i)
 		{
-			for (int i {0}; i < spawnCount; ++i)
-			{
-				m_words.push_back(std::make_unique<Word>(std::move(getRandomWord())));
-			}
+			auto word {getRandomWord()};
+
+			if(word)
+				m_words.push_back(std::make_unique<Word>(std::move(*word)));
 		}
 	}
 

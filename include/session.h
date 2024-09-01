@@ -8,6 +8,7 @@
 #include <ftxui/component/component.hpp>
 #include <vector>
 #include <string>
+#include <optional>
 
 namespace Keywords
 {
@@ -36,10 +37,9 @@ namespace Keywords
 		
 	private:
 		bool isWordPresent(std::string_view str) const;
-		bool isWordOverlapping(const Word& newWord) const;
-		bool isEveryWordVisible() const;
+		bool isWordOverlapping(const Word& word) const;
 		
-		Word getRandomWord() const;
+		std::optional<Word> getRandomWord() const;
 
 		void addWords();
 		void eraseWords();
