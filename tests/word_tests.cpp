@@ -12,18 +12,18 @@ TEST_CASE("Change color depending on relative horizontal position")
 
 	Keywords::Word word {"word"};
 
-	while (word.getX() < canvasWidth)
+	while (word.x < canvasWidth)
 	{
 		word.move();
 		word.updateColor(canvasWidth);
 
 		// A word's color should change to reflect 
 		// its horizontal position in a given canvas 
-		if (word.getX() >= threeQuartersOfCanvas)
-			REQUIRE(word.getColor() == ftxui::Color::Red);
-		else if (word.getX() >= halfOfCanvas)
-			REQUIRE(word.getColor() == ftxui::Color::Yellow);
+		if (word.x >= threeQuartersOfCanvas)
+			REQUIRE(word.color == ftxui::Color::Red);
+		else if (word.x >= halfOfCanvas)
+			REQUIRE(word.color == ftxui::Color::Yellow);
 		else
-			REQUIRE(word.getColor() == ftxui::Color::Green);
+			REQUIRE(word.color == ftxui::Color::Green);
 	}
 }
