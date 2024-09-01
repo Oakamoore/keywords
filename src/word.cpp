@@ -1,12 +1,9 @@
 #include "word.h"
-#include "random.h"
 
 namespace Keywords
 {
-	Word::Word(std::string_view text, int x, int y)
+	Word::Word(std::string_view text)
 		: m_text {text}
-		, m_x {x}
-		, m_y {y}
 		, m_color {ftxui::Color::Green}
 	{
 	}
