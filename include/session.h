@@ -47,8 +47,8 @@ namespace Keywords
 	private:
 		const SessionConfig m_config {};
 		const std::vector<std::string>* m_wordBank {};
+		std::vector<std::unique_ptr<Word>> m_words {};
 		InputComponent m_input {};
-		Words m_words {}; 
 		Timer m_uptime {};
 		int m_misses {};
 		int m_charsTyped {};

@@ -20,10 +20,7 @@ namespace Keywords
 		int x {};
 		int y {};
 		ftxui::Color color {ftxui::Color::Green};
-
 	};
-
-	using Words = std::vector<std::unique_ptr<Word>>;
 }
 
 #endif
