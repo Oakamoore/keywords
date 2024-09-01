@@ -8,14 +8,9 @@ namespace Keywords
 	{
 	}
 
-	void Word::move(int canvasWidth)
+	void Word::move()
 	{
-		if (m_x < canvasWidth)
-		{
-			m_x += s_speed;
-
-			updateColor(canvasWidth);
-		}
+		m_x += s_speed;
 	}
 
 	void Word::updateColor(int canvasWidth)

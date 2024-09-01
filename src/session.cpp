@@ -139,9 +139,12 @@ namespace Keywords
 
 		// Continue while 'm_misses' < 'g_maxMisses' or a 'SessionConfig' defined max
 		
-		// Move the words across the screen
+		// Update word position and color
 		for (auto& word : m_words)
-			word->move(g_canvasWidth);
+		{
+			word->move();
+			word->updateColor(g_canvasWidth);
+		}
 
 		// The session has just begun, or the delay between spawns has passed 
 		if (s_timeStamp == 0.0 || (m_uptime.elapsed() - s_timeStamp) >= spawnDelay.count())

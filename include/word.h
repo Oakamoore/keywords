@@ -14,7 +14,8 @@ namespace Keywords
 	public:
 		Word(std::string_view text);
 		
-		void move(int canvasWidth);
+		void move();
+		void updateColor(int cavasWidth);
 
 		void setX(int x) { m_x = x; }
 		int getX() const { return m_x; }
@@ -27,8 +28,6 @@ namespace Keywords
 
 	private:
 		static constexpr int s_speed {1};
-
-		void updateColor(int cavasWidth);
 
 	private:
 		std::string m_text {};
