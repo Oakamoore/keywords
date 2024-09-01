@@ -2,36 +2,20 @@
 #include <ftxui/screen/color.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-// An arbitrary canvas width
-constexpr int g_canvasWidth {100};
-
-TEST_CASE("Stop moving once the horizontal boundary has been reached")
-{
-	Keywords::Word word {"word", 0, 0};
-
-	// Move the word up until the horizontal boundary
-	while (word.getX() < g_canvasWidth)
-		word.move(g_canvasWidth);
-
-	auto previousHorizontalPos {word.getX()};
-
-	// Attempt to move past the horizontal boundary
-	word.move(g_canvasWidth);
-
-	// The word shouldn't have moved
-	REQUIRE(word.getX() == previousHorizontalPos);
-}
-
 TEST_CASE("Change color depending on relative horizontal position")
 {
-	constexpr int halfOfCanvas {static_cast<int>(g_canvasWidth * 0.50)};
-	constexpr int threeQuartersOfCanvas {static_cast<int>(g_canvasWidth * 0.75)};
+	// An arbitrary canvas width
+	constexpr int canvasWidth {100};
 
-	Keywords::Word word {"word", 0, 0};
+	constexpr int halfOfCanvas {static_cast<int>(canvasWidth * 0.50)};
+	constexpr int threeQuartersOfCanvas {static_cast<int>(canvasWidth * 0.75)};
 
-	while (word.getX() < g_canvasWidth)
+	Keywords::Word word {"word"};
+
+	while (word.getX() < canvasWidth)
 	{
-		word.move(g_canvasWidth);
+		word.move();
+		word.updateColor(canvasWidth);
 
 		// A word's color should change to reflect 
 		// its horizontal position in a given canvas 
