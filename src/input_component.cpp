@@ -31,13 +31,13 @@ namespace
 namespace Keywords
 {
 	InputComponent::InputComponent(std::string_view placeholder)
-		: m_placeholder {placeholder}
+		: placeholder {placeholder}
 	{
 		ftxui::InputOption settings {};
 
-		// Set the default settings for 'm_input'
-		settings.content = &m_content;
-		settings.placeholder = &m_placeholder;
+		// Set the default settings 
+		settings.content = &content;
+		settings.placeholder = this->placeholder;
 		settings.multiline = false;
 
 		// Format the underlying element 
@@ -56,11 +56,11 @@ namespace Keywords
 			return state.element;
 		};
 
-		// Apply the above settings to 'm_input'
-		m_input = ftxui::Input(settings);
+		// Apply the above settings
+		component = ftxui::Input(settings);
 
 		// Filter out digit, uppercase, and non-letter characters
-		m_input |= ftxui::CatchEvent([&] (ftxui::Event event)
+		component |= ftxui::CatchEvent([&] (ftxui::Event event)
 		{
 			return event.is_character() && std::isupper(event.character()[0])
 				|| event.is_character() && !std::isalpha(event.character()[0]) 
@@ -68,21 +68,21 @@ namespace Keywords
 		});
 
 		// Register when the 'ENTER' key is pressed
-		m_input |= ftxui::CatchEvent([&] (ftxui::Event event)
+		component |= ftxui::CatchEvent([&] (ftxui::Event event)
 		{
-			m_hasPressedEnter = (event == ftxui::Event::Return ? true : false);
+			hasPressedEnter = (event == ftxui::Event::Return ? true : false);
 
-			return m_hasPressedEnter;
+			return hasPressedEnter;
 		});
 
-		// Bind 'CTRL + W' to the deletion of the last typed word in 'm_content'
-		m_input |= ftxui::CatchEvent([&] (ftxui::Event event)
+		// Bind 'CTRL + W' to the deletion of the last typed word
+		component |= ftxui::CatchEvent([&] (ftxui::Event event)
 		{
 			const auto ctrlW {ftxui::Event::Special("\x17")};
 			
 			if (event == ctrlW)
 			{
-				deleteMostRecentWord(m_content);
+				deleteMostRecentWord(content);
 				return true;
 			}
 

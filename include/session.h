@@ -33,7 +33,7 @@ namespace Keywords
 		ftxui::Element draw();
 		void update();
 
-		ftxui::Component getInputComponent() const { return m_input.getComponent(); }
+		ftxui::Component getInputComponent() const { return m_input.component; }
 		
 	private:
 		bool isWordPresent(std::string_view str) const;
