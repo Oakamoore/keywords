@@ -43,6 +43,7 @@ namespace Keywords
 
 		void addWords();
 		void eraseWords();
+		void handleInput();
 
 	private:
 		const SessionConfig m_config {};

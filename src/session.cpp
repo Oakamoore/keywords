@@ -7,6 +7,7 @@
 #include <sstream>
 #include <type_traits>
 #include <cmath>
+#include <algorithm>
 
 namespace
 {
@@ -84,7 +85,7 @@ namespace Keywords
 				m_wordBank = &WordBank::hardWords;
 				break;
 			default:
-				m_wordBank = &WordBank::easyWords; 
+				m_wordBank = &WordBank::easyWords;
 				break;
 		}
 	}
@@ -135,10 +136,10 @@ namespace Keywords
 	void Session::update()
 	{
 		static double s_timeStamp {0.0};
-		constexpr Timer::Second spawnDelay {3};
+		constexpr Timer::Second spawnDelay {3.5};
 
 		// Continue while 'm_misses' < 'g_maxMisses' or a 'SessionConfig' defined max
-		
+
 		// Update word position and color
 		for (auto& word : m_words)
 		{
@@ -153,17 +154,21 @@ namespace Keywords
 			s_timeStamp = m_uptime.elapsed();
 		}
 
+		handleInput();
 		eraseWords();
 	}
 
 	bool Session::isWordPresent(std::string_view str) const
 	{
+		if (str.empty())
+			return false;
+
 		for (const auto& word : m_words)
 		{
 			if (word->text == str)
 				return true;
 		}
-		
+
 		return false;
 	}
 
@@ -187,7 +192,7 @@ namespace Keywords
 				isWithinRange(getWordEndPosition(word), currentWord->x, minDistance)
 			};
 
-			if ((isInSameRow && isOverlappingInX) || (isInSameRow && isWithinMinDistance))
+			if (isInSameRow && (isOverlappingInX || isWithinMinDistance))
 				return true;
 		}
 
@@ -230,26 +235,22 @@ namespace Keywords
 
 	void Session::addWords()
 	{
-		constexpr int spawnCount {5};
+		constexpr int spawnCount {3};
 
 		for (int i {0}; i < spawnCount; ++i)
 		{
 			auto word {getRandomWord()};
 
-			if(word)
+			if (word)
 				m_words.push_back(std::make_unique<Word>(std::move(*word)));
 		}
 	}
 
 	void Session::eraseWords()
 	{
-		// When 'ENTER' is pressed, loops through 'm_words' 
-		// and checks against 'Word::m_content' if they match 
-		// 'm_input::getContent()', they are erased
-
-		// Erase off screen words
 		std::erase_if(m_words, [&] (const auto& word)
 		{
+			// Erase off screen words
 			if (word->x >= g_canvasWidth)
 			{
 				++m_misses;
@@ -258,5 +259,28 @@ namespace Keywords
 
 			return false;
 		});
+	}
+
+	void Session::handleInput()
+	{
+		if (m_input.hasPressedEnter)
+		{
+			if (isWordPresent(m_input.content))
+			{
+				auto it {std::ranges::find_if(m_words,[&] (const auto& word)
+				{
+					if (word->text == m_input.content)
+						return true;
+
+					return false;
+				})};
+
+				if (it != m_words.end())
+					m_words.erase(it);
+			}
+
+			// Clear the input component
+			m_input.reset();
+		}
 	}
 }
