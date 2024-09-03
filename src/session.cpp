@@ -115,14 +115,14 @@ namespace Keywords
 					ftxui::separatorEmpty(),
 					ftxui::window
 					(
-						ftxui::text("Session Stats") | ftxui::color(ftxui::Color::GrayDark) | ftxui::center,
+						ftxui::text("Session Stats") | ftxui::color(ftxui::Color::White) | ftxui::center,
 						ftxui::hbox
 						({
 							ftxui::filler(),
 							createStatElement("Time: ", m_uptime.elapsed(), 's'), ftxui::filler(),
-							createStatElement("Number of Words: ", m_words.size()), ftxui::filler(),
+							createStatElement("WPM: ", m_wordsPerMinute), ftxui::filler(),
+							createStatElement("CPS: ", m_charsPerSecond), ftxui::filler(),
 							createStatElement("Misses: ", m_misses), ftxui::filler(),
-							createStatElement("Capacity: ", m_words.capacity()), ftxui::filler(),
 						})
 					) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, statBoxSize),
 				}),
@@ -155,6 +155,7 @@ namespace Keywords
 		}
 
 		handleInput();
+		updateStats();
 		eraseWords();
 	}
 
@@ -267,7 +268,7 @@ namespace Keywords
 		{
 			if (isWordPresent(m_input.content))
 			{
-				auto it {std::ranges::find_if(m_words,[&] (const auto& word)
+				auto word {std::ranges::find_if(m_words,[&] (const auto& word)
 				{
 					if (word->text == m_input.content)
 						return true;
@@ -275,12 +276,21 @@ namespace Keywords
 					return false;
 				})};
 
-				if (it != m_words.end())
-					m_words.erase(it);
+				if (word != m_words.end())
+					m_words.erase(word);
+
+				++m_wordsTyped;
+				m_charsTyped += static_cast<int>(m_input.content.length());
 			}
 
 			// Clear the input component
 			m_input.reset();
 		}
+	}
+
+	void Session::updateStats()
+	{
+		m_wordsPerMinute = static_cast<int>(m_wordsTyped / (m_uptime.elapsed() / 60));
+		m_charsPerSecond = m_charsTyped / m_uptime.elapsed();
 	}
 }
