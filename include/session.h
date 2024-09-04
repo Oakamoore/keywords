@@ -30,7 +30,7 @@ namespace Keywords
 	public:
 		Session(const SessionConfig& config);
 
-		ftxui::Element draw();
+		ftxui::Element draw() const;
 		void update();
 
 		ftxui::Component getInputComponent() const { return m_input.component; }

@@ -12,7 +12,7 @@ namespace Keywords
 	{
 		InputComponent(std::string_view placeholder = "type here");
 
-		ftxui::Element draw() { return component->Render(); }
+		ftxui::Element draw() const { return component->Render(); }
 		void reset() { content.clear(); }
 		
 		std::string content {};

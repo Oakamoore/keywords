@@ -90,7 +90,7 @@ namespace Keywords
 		}
 	}
 
-	ftxui::Element Session::draw()
+	ftxui::Element Session::draw() const
 	{
 		// Create a blank canvas
 		ftxui::Canvas c {g_canvasWidth, g_canvasHeight};
