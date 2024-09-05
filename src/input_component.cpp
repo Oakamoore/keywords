@@ -26,7 +26,7 @@ namespace Keywords
 
 			// Offset and center the element
 			state.element |= ftxui::borderEmpty;
-			state.element |= ftxui::vcenter;
+			state.element |= ftxui::center;
 
 			return state.element;
 		};
