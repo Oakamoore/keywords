@@ -99,8 +99,8 @@ namespace Keywords
 		for (const auto& word : m_words)
 			c.DrawText(word->x, word->y, word->text, word->color);
 
-		constexpr int inputBoxSize {g_canvasWidth / 6};
-		constexpr int statBoxSize {(g_canvasWidth / g_canvasCellWidth) - inputBoxSize};
+		constexpr int inputBoxWidth {g_canvasWidth / 6};
+		constexpr int statBoxWidth {(g_canvasWidth / g_canvasCellWidth) - inputBoxWidth};
 
 		auto frame
 		{
@@ -111,7 +111,7 @@ namespace Keywords
 				ftxui::canvas(std::move(c)) | ftxui::border,
 				ftxui::hbox
 				({
-					m_input.draw() | ftxui::border | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, inputBoxSize),
+					m_input.draw() | ftxui::border | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, inputBoxWidth),
 					ftxui::separatorEmpty(),
 					ftxui::window
 					(
@@ -124,7 +124,7 @@ namespace Keywords
 							createStatElement("CPS: ", m_charsPerSecond), ftxui::filler(),
 							createStatElement("Misses: ", m_misses), ftxui::filler(),
 						})
-					) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, statBoxSize),
+					) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, statBoxWidth),
 				}),
 				 ftxui::separatorEmpty()
 			}) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, g_canvasWidth / g_canvasCellWidth)
