@@ -1,5 +1,6 @@
 #include "game.h"
 #include "word_bank.h"
+#include "input_component.h"
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/component/loop.hpp>
 #include <chrono>
@@ -9,7 +10,15 @@
 
 namespace
 {
-	// void displayMainMenu();
+	void displayMainMenu(Keywords::SessionConfig& config /*std::function<void()> quit*/)
+	{
+		Keywords::InputComponent inputComponent {};
+
+		auto component {Keywords::getMainMenuComponent(config, inputComponent)};
+		auto screen {ftxui::ScreenInteractive::Fullscreen()};
+
+		screen.Loop(component);
+	}
 
 	void displaySession(const Keywords::SessionConfig& config /*std::function<void()> quit*/)
 	{
@@ -66,7 +75,9 @@ namespace Keywords
 
 			config.difficulty = SessionConfig::Difficulty::easy;
 
-			displaySession(config);
+			displayMainMenu(config);
+
+			//displaySession(config);
 		}
 		catch (const std::exception& e)
 		{
