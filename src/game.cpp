@@ -1,6 +1,7 @@
 #include "game.h"
 #include "word_bank.h"
 #include "input_component.h"
+#include "main_menu.h"
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/component/loop.hpp>
 #include <chrono>
@@ -10,26 +11,13 @@
 
 namespace
 {
-	void displayMainMenu(Keywords::SessionConfig& config /*std::function<void()> quit*/)
+	void runCustomLoop(ftxui::ScreenInteractive& screen,
+					   ftxui::Component component,
+					   const auto& update)
 	{
-		Keywords::InputComponent inputComponent {};
+		ftxui::Loop loop {&screen, component};
 
-		auto component {Keywords::getMainMenuComponent(config, inputComponent)};
-		auto screen {ftxui::ScreenInteractive::Fullscreen()};
-
-		screen.Loop(component);
-	}
-
-	void displaySession(const Keywords::SessionConfig& config /*std::function<void()> quit*/)
-	{
-		Keywords::Session session {config};
-
-		auto component {Keywords::getSessionComponent(session)};
-		auto screen {ftxui::ScreenInteractive::Fullscreen()};
-
-		ftxui::Loop loop {&screen, component | ftxui::center};
-
-		while (!loop.HasQuitted())
+		while(!loop.HasQuitted())
 		{
 			loop.RunOnce();
 
@@ -39,11 +27,36 @@ namespace
 
 			std::this_thread::sleep_for(frameDuration);
 
-			// Force a screen update 
+			// Force a screen update
+			// without interfering with events
 			screen.RequestAnimationFrame();
 
-			session.update();
+			update();
 		}
+	}
+
+	void displayMainMenu(Keywords::SessionConfig& config /*std::function<void()> quit*/)
+	{
+		Keywords::InputComponent inputComponent {};
+
+		auto component {Keywords::getMainMenuComponent(config, inputComponent)};
+		auto screen {ftxui::ScreenInteractive::Fullscreen()};
+
+		auto handleMainMenuInput {[&] { Keywords::MainMenu::handleInput(config, inputComponent); }};
+
+		runCustomLoop(screen, component, handleMainMenuInput);
+	}
+
+	void displaySession(const Keywords::SessionConfig& config /*std::function<void()> quit*/)
+	{
+		Keywords::Session session {config};
+
+		auto component {Keywords::getSessionComponent(session)};
+		auto screen {ftxui::ScreenInteractive::Fullscreen()};
+
+		auto updateSession {[&] { session.update(); }};
+
+		runCustomLoop(screen, component | ftxui::center, updateSession);
 	}
 
 	// void displayLeaderboard();

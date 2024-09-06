@@ -9,7 +9,8 @@ namespace Keywords
 	void startGame();
 
 	ftxui::Component getSessionComponent(const Session& session);
-	ftxui::Component getMainMenuComponent(SessionConfig& config, InputComponent& input);
+	ftxui::Component getMainMenuComponent(SessionConfig& config, 
+										  InputComponent& inputComponent);
 }
 
 #endif
