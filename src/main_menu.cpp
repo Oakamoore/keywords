@@ -34,11 +34,12 @@ namespace
 			ftxui::vbox
 			({
 				ftxui::filler(), 
-				ftxui::paragraphAlignCenter("To change difficulty type either"),
-				ftxui::paragraphAlignCenter("\"easy\", \"medium\" or \"hard\""),
+				ftxui::paragraphAlignCenter("To begin a game session type \"play\""),
 				ftxui::paragraphAlignCenter("then press ENTER."),
 				ftxui::separatorEmpty(),
-				ftxui::paragraphAlignCenter("To begin a game session type \"play\""),
+				ftxui::separatorEmpty(),
+				ftxui::paragraphAlignCenter("To change difficulty type either"),
+				ftxui::paragraphAlignCenter("\"easy\", \"medium\" or \"hard\""),
 				ftxui::paragraphAlignCenter("then press ENTER."),
 				ftxui::filler(),
 			})
@@ -47,24 +48,33 @@ namespace
 		return description;
 	}
 
-	ftxui::Element getDifficultySelection([[maybe_unused]] const Keywords::SessionConfig& config)
+	ftxui::Element getDifficultySelection(const Keywords::SessionConfig& config)
 	{
-		auto difficulty
+		auto getRegularText {[](const std::string& str) { return ftxui::text(str) | ftxui::center; }};
+		auto getInvertedText {[](const std::string& str) { return ftxui::text(str) | ftxui::inverted | ftxui::center; }};
+
+		using enum Keywords::SessionConfig::Difficulty;
+
+		auto easySelection {config.difficulty == easy ? getInvertedText(" easy ") : getRegularText(" easy ")};
+		auto mediumSelection {config.difficulty == medium ? getInvertedText(" medium ") : getRegularText(" medium ")};
+		auto hardSelection {config.difficulty == hard ? getInvertedText(" hard ") : getRegularText(" hard ")};
+
+		ftxui::Element difficultySelection 
 		{
 			ftxui::vbox
 			({
-				ftxui::text("DIFFICULTY:") | ftxui::bold | ftxui::center,
+				getRegularText("DIFFICULTY") | ftxui::bold | ftxui::underlined,
 				ftxui::separatorEmpty(),
-				ftxui::text(" easy ") | ftxui::inverted | ftxui::center,
+				easySelection,
 				ftxui::separatorEmpty(),
-				ftxui::text(" medium ") | ftxui::inverted | ftxui::center,
+				mediumSelection,
 				ftxui::separatorEmpty(),
-				ftxui::text(" hard ") | ftxui::inverted | ftxui::center,
+				hardSelection,
 				ftxui::separatorEmpty(),
-			 }) | ftxui::center
+				}) | ftxui::center
 		};
-		
-		return difficulty;
+
+		return difficultySelection;
 	}
 }
 
