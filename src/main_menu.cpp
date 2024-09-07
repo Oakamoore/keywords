@@ -34,16 +34,33 @@ namespace
 		return ftxui::text(str) | ftxui::color(color) | ftxui::center;
 	}
 
+	ftxui::Element getLogo()
+	{
+		auto logo
+		{
+			ftxui::vbox
+			({
+				ftxui::text(R"(    _______   _______   _______   _______   _______   _______   _______   _______    )"),
+				ftxui::text(R"(   ||     || ||     || ||     || ||     || ||     || ||     || ||     || ||     ||   )"),
+				ftxui::text(R"(   ||  K  || ||  E  || ||  Y  || ||  W  || ||  O  || ||  R  || ||  D  || ||  S  ||   )"),
+				ftxui::text(R"(   ||_____|| ||_____|| ||_____|| ||_____|| ||_____|| ||_____|| ||_____|| ||_____||   )"),
+				ftxui::text(R"(   |/_____\| |/_____\| |/_____\| |/_____\| |/_____\| |/_____\| |/_____\| |/_____\|   )"),
+			})
+		};
+
+		return logo;
+	}
+
 	ftxui::Element getDescription()
 	{
 		auto description
 		{
 			ftxui::vbox
 			({
+				ftxui::separatorEmpty(),
 				getAdjacentText(ftxui::text("To begin a game session type "), getColoredText("play"), ftxui::text(".")),
 				ftxui::separatorEmpty(),
-				ftxui::separatorEmpty(),
-				ftxui::paragraphAlignCenter("To change the difficulty of a game session (in the main menu), type either:"),
+				ftxui::paragraphAlignCenter("To change the difficulty of a game session (when none are active), type either:"),
 				getAdjacentText(getColoredText("easy"), ftxui::text(" (<=5 character words)")),
 				getAdjacentText(getColoredText("medium"), ftxui::text(" (>= 6 and <= 8 character words)")),
 				getAdjacentText(getColoredText("hard"), ftxui::text(" (>=9 character words)")),
@@ -53,7 +70,7 @@ namespace
 				getAdjacentText(ftxui::text("Press "), getColoredText("ENTER"), ftxui::text(" to confirm a typed word.")),
 				getAdjacentText(ftxui::text("Press "), getColoredText("BACKSPACE"), ftxui::text(" to erase individual characters.")),
 				getAdjacentText(ftxui::text("Press "), getColoredText("CTRL + W"), ftxui::text(" to erase an entire word all at once.")),
-				getAdjacentText(ftxui::text("Press "), getColoredText("ESCAPE"), ftxui::text(" to quit the game at any time.")),
+				getAdjacentText(ftxui::text("Press "), getColoredText("ESCAPE"), ftxui::text(" to quit the game at any time."))
 			})
 		};
 
@@ -75,6 +92,7 @@ namespace
 		{
 			ftxui::vbox
 			({
+				ftxui::separatorEmpty(),
 				getRegularText("DIFFICULTY") | ftxui::bold | ftxui::underlined,
 				ftxui::separatorEmpty(),
 				easySelection, ftxui::separatorEmpty(),
@@ -105,16 +123,18 @@ namespace Keywords
 
 	ftxui::Component getMainMenuComponent(SessionConfig& config, InputComponent& inputComponent)
 	{
+		constexpr int inputBoxSize {25};
+
 		auto component {ftxui::Renderer(inputComponent.component, [&]
 		{
 			return ftxui::vbox
 			({
-				ftxui::filler(),
-				ftxui::text("KEYWORDS") | ftxui::center, ftxui::filler(),
+				ftxui::filler(), ftxui::separatorEmpty(),
+				getLogo() | ftxui::center, ftxui::filler(), ftxui::separatorEmpty(),
 				getDescription(), ftxui::filler(),
 				getDifficultySelection(config), ftxui::filler(),
 				inputComponent.draw() | ftxui::border
-				| ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 25)
+				| ftxui::size(ftxui::WIDTH, ftxui::EQUAL, inputBoxSize)
 				| ftxui::notflex | ftxui::center,
 				ftxui::filler(),
 			}) | ftxui::border;
