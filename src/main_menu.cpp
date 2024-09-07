@@ -33,6 +33,14 @@ namespace
 	{
 		return ftxui::text(str) | ftxui::color(color) | ftxui::center;
 	}
+	
+	ftxui::Element getBorderLine()
+	{
+		constexpr int borderLineLength {85};
+
+		// Return a separator of a given length
+		return ftxui::vbox({ftxui::text(std::string(borderLineLength, ' ')), ftxui::separatorHeavy()}) | ftxui::center;
+	}
 
 	ftxui::Element getLogo()
 	{
@@ -129,9 +137,9 @@ namespace Keywords
 		{
 			return ftxui::vbox
 			({
-				ftxui::filler(), ftxui::separatorEmpty(),
-				getLogo() | ftxui::center, ftxui::filler(), ftxui::separatorEmpty(),
-				getDescription(), ftxui::filler(),
+				ftxui::filler(),
+				getLogo() | ftxui::center, ftxui::filler(),
+				getBorderLine(), getDescription(), getBorderLine(), ftxui::filler(),
 				getDifficultySelection(config), ftxui::filler(),
 				inputComponent.draw() | ftxui::border
 				| ftxui::size(ftxui::WIDTH, ftxui::EQUAL, inputBoxSize)
