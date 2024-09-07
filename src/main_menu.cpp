@@ -71,19 +71,16 @@ namespace
 		auto mediumSelection {config.difficulty == medium ? getInvertedText(" medium ") : getRegularText(" medium ")};
 		auto hardSelection {config.difficulty == hard ? getInvertedText(" hard ") : getRegularText(" hard ")};
 
-		ftxui::Element difficultySelection 
+		ftxui::Element difficultySelection
 		{
 			ftxui::vbox
 			({
 				getRegularText("DIFFICULTY") | ftxui::bold | ftxui::underlined,
 				ftxui::separatorEmpty(),
-				easySelection,
-				ftxui::separatorEmpty(),
-				mediumSelection,
-				ftxui::separatorEmpty(),
-				hardSelection,
-				ftxui::separatorEmpty(),
-				}) | ftxui::center
+				easySelection, ftxui::separatorEmpty(),
+				mediumSelection, ftxui::separatorEmpty(),
+				hardSelection, ftxui::separatorEmpty(),
+			}) | ftxui::center
 		};
 
 		return difficultySelection;
@@ -106,26 +103,21 @@ namespace Keywords
 		}
 	}
 
-	ftxui::Component getMainMenuComponent(SessionConfig& config, 
-										  InputComponent& inputComponent)
+	ftxui::Component getMainMenuComponent(SessionConfig& config, InputComponent& inputComponent)
 	{
 		auto component {ftxui::Renderer(inputComponent.component, [&]
 		{
-			return
-				ftxui::vbox({
+			return ftxui::vbox
+			({
 				ftxui::filler(),
-				ftxui::text("KEYWORDS") | ftxui::center,
-				ftxui::filler(),
-				getDescription(),
-				ftxui::filler(),
-				getDifficultySelection(config),
-				ftxui::filler(),
-				inputComponent.draw() 
-				| ftxui::border 
-				| ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 25) 
+				ftxui::text("KEYWORDS") | ftxui::center, ftxui::filler(),
+				getDescription(), ftxui::filler(),
+				getDifficultySelection(config), ftxui::filler(),
+				inputComponent.draw() | ftxui::border
+				| ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 25)
 				| ftxui::notflex | ftxui::center,
 				ftxui::filler(),
-							}) | ftxui::border;
+			}) | ftxui::border;
 		})};
 		
 		return component;

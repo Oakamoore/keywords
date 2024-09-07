@@ -37,8 +37,8 @@ namespace Keywords
 		// Filter out digit, uppercase, and non-letter characters
 		component |= ftxui::CatchEvent([&] (ftxui::Event event)
 		{
-			return event.is_character() && std::isupper(event.character()[0]) || 
-				   event.is_character() && !std::isalpha(event.character()[0]);
+			return event.is_character() && std::isupper(event.character()[0]) ||
+				event.is_character() && !std::isalpha(event.character()[0]);
 		});
 
 		// Register when the 'ENTER' key is pressed
@@ -53,7 +53,7 @@ namespace Keywords
 		component |= ftxui::CatchEvent([&] (ftxui::Event event)
 		{
 			const auto ctrlW {ftxui::Event::Special("\x17")};
-			
+
 			if (event == ctrlW)
 			{
 				reset();

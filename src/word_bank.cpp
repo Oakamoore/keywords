@@ -24,11 +24,10 @@ namespace
 			std::string lowercase(str.length(), ' ');
 
 			// Assign lowercase characters to the newly constructed string
-			std::transform(str.begin(), str.end(), lowercase.begin(),
-							[](unsigned char c)
-							{
-								return static_cast<char>(std::tolower(c));
-							});
+			std::transform(str.begin(), str.end(), lowercase.begin(), [] (unsigned char c)
+			{
+				return static_cast<char>(std::tolower(c));
+			});
 
 			return lowercase;
 		}

@@ -125,8 +125,7 @@ namespace Keywords
 							createStatElement("Misses: ", m_misses), ftxui::filler(),
 						})
 					) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, statBoxWidth),
-				}),
-				 ftxui::separatorEmpty()
+				}), ftxui::separatorEmpty()
 			}) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, g_canvasWidth / g_canvasCellWidth)
 		};
 
