@@ -8,6 +8,7 @@
 #include <thread>
 #include <filesystem>
 #include <exception>
+#include <functional>
 
 namespace
 {
@@ -35,16 +36,18 @@ namespace
 		}
 	}
 
-	void displayMainMenu(Keywords::SessionConfig& config /*std::function<void()> quit*/)
+	void displayMainMenu(Keywords::SessionConfig& config, const auto& quit)
 	{
 		Keywords::InputComponent inputComponent {};
 
 		auto component {Keywords::getMainMenuComponent(config, inputComponent)};
 		auto screen {ftxui::ScreenInteractive::Fullscreen()};
 
-		auto handleMainMenuInput {[&] { Keywords::MainMenu::handleInput(config, inputComponent); }};
+		auto exit {[&] { quit(); screen.Exit(); }};
 
-		runCustomLoop(screen, component, handleMainMenuInput);
+		auto updateMainMenu {[&] { Keywords::MainMenu::handleInput(config, inputComponent, exit); }};
+
+		runCustomLoop(screen, component, updateMainMenu);
 	}
 
 	void displaySession(const Keywords::SessionConfig& config /*std::function<void()> quit*/)
@@ -88,9 +91,16 @@ namespace Keywords
 
 			config.difficulty = SessionConfig::Difficulty::easy;
 
-			displayMainMenu(config);
+			bool hasQuit {false};
+			auto quit {[&] { hasQuit = true; }};
 
-			//displaySession(config);
+			while (!hasQuit)
+			{
+				displayMainMenu(config, quit);
+
+				//displaySession(config);
+			}
+
 		}
 		catch (const std::exception& e)
 		{

@@ -3,12 +3,15 @@
 
 #include "input_component.h"
 #include "session.h"
+#include <functional>
 
 namespace Keywords
 {
 	namespace MainMenu
 	{
-		void handleInput(SessionConfig& config, InputComponent& inputComponent);
+		void handleInput(SessionConfig& config, 
+						 InputComponent& inputComponent, 
+						 const std::function<void()>& quit);
 	}
 }
 

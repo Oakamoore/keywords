@@ -6,6 +6,7 @@
 #include <string>
 #include <string_view>
 #include <optional>
+#include <functional>
 
 namespace
 {
@@ -115,8 +116,11 @@ namespace
 
 namespace Keywords
 {
-	void MainMenu::handleInput(SessionConfig& config, InputComponent& inputComponent)
+	void MainMenu::handleInput(SessionConfig& config, InputComponent& inputComponent, const std::function<void()>& quit)
 	{
+		if (inputComponent.hasPressedEscape)
+			quit();
+
 		if (inputComponent.hasPressedEnter)
 		{
 			auto difficulty {getDifficultyFromString(inputComponent.content)};
