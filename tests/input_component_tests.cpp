@@ -53,40 +53,38 @@ TEST_CASE("Disallow certain input events")
 	}
 }
 
-TEST_CASE("Detect enter keypress")
+TEST_CASE("Detect given keypresses")
 {
 	Keywords::InputComponent inputComponent {};
 
 	// The component should be drawn without crashing
 	inputComponent.draw();
 
-	inputComponent.component->OnEvent(ftxui::Event::Return);
+	SECTION("Detect enter keypress")
+	{
+		inputComponent.component->OnEvent(ftxui::Event::Return);
 
-	// Following an 'ENTER' event, the enter key flag should be true
-	REQUIRE(inputComponent.hasPressedEnter);
+		// Following an 'ENTER' event, the enter key flag should be true
+		REQUIRE(inputComponent.hasPressedEnter);
 
-	inputComponent.component->OnEvent(ftxui::Event::Custom);
+		inputComponent.component->OnEvent(ftxui::Event::Custom);
 
-	// Following a non 'ENTER' event, the enter key flag should be false
-	REQUIRE_FALSE(inputComponent.hasPressedEnter);
-}
+		// Following a non 'ENTER' event, the enter key flag should be false
+		REQUIRE_FALSE(inputComponent.hasPressedEnter);
+	}
 
-TEST_CASE("Detect escape keypress")
-{
-	Keywords::InputComponent inputComponent {};
+	SECTION("Detect escape keypress")
+	{
+		inputComponent.component->OnEvent(ftxui::Event::Escape);
 
-	// The component should be drawn without crashing
-	inputComponent.draw();
+		// Following an 'ESCAPE' event, the escape key flag should be true
+		REQUIRE(inputComponent.hasPressedEscape);
 
-	inputComponent.component->OnEvent(ftxui::Event::Escape);
+		inputComponent.component->OnEvent(ftxui::Event::Custom);
 
-	// Following an 'ESCAPE' event, the escape key flag should be true
-	REQUIRE(inputComponent.hasPressedEscape);
-
-	inputComponent.component->OnEvent(ftxui::Event::Custom);
-
-	// Following an non 'ESCAPE' event, the escape key flag should be false
-	REQUIRE_FALSE(inputComponent.hasPressedEscape);
+		// Following an non 'ESCAPE' event, the escape key flag should be false
+		REQUIRE_FALSE(inputComponent.hasPressedEscape);
+	}
 }
 
 TEST_CASE("Respond appropriately to a word deletion event")
