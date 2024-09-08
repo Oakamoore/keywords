@@ -9,9 +9,9 @@ namespace Keywords
 {
 	namespace MainMenu
 	{
-		void handleInput(SessionConfig& config, 
-						 InputComponent& inputComponent, 
-						 const std::function<void()>& quit);
+		void handleInput(SessionConfig& config, InputComponent& inputComponent, 
+						 const std::function<void()>& quit, 
+						 const std::function<void()>& play);
 	}
 }
 

@@ -36,16 +36,17 @@ namespace
 		}
 	}
 
-	void displayMainMenu(Keywords::SessionConfig& config, const auto& quit)
+	void displayMainMenu(Keywords::SessionConfig& config, const auto& quit, const auto& play)
 	{
 		Keywords::InputComponent inputComponent {};
 
 		auto component {Keywords::getMainMenuComponent(config, inputComponent)};
 		auto screen {ftxui::ScreenInteractive::Fullscreen()};
 
-		auto exit {[&] { quit(); screen.Exit(); }};
+		auto onQuit {[&] { quit(); screen.Exit(); }};
+		auto onPlay {[&] { play(); screen.Exit(); }};
 
-		auto updateMainMenu {[&] { Keywords::MainMenu::handleInput(config, inputComponent, exit); }};
+		auto updateMainMenu {[&] { Keywords::MainMenu::handleInput(config, inputComponent, onQuit, onPlay); }};
 
 		runCustomLoop(screen, component, updateMainMenu);
 	}
@@ -89,16 +90,20 @@ namespace Keywords
 
 			SessionConfig config {};
 
-			config.difficulty = SessionConfig::Difficulty::easy;
-
-			bool hasQuit {false};
+			bool hasQuit {};
 			auto quit {[&] { hasQuit = true; }};
 
 			while (!hasQuit)
 			{
-				displayMainMenu(config, quit);
+				bool isPlaying {};
+				auto play {[&] { isPlaying = true; }};
 
-				//displaySession(config);
+				displayMainMenu(config, quit, play);
+
+				if (isPlaying)
+				{
+					displaySession(config);
+				}
 			}
 
 		}

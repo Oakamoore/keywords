@@ -116,13 +116,20 @@ namespace
 
 namespace Keywords
 {
-	void MainMenu::handleInput(SessionConfig& config, InputComponent& inputComponent, const std::function<void()>& quit)
+	void MainMenu::handleInput(SessionConfig& config, InputComponent& inputComponent, 
+							   const std::function<void()>& quit, 
+							   const std::function<void()>& play)
 	{
 		if (inputComponent.hasPressedEscape)
 			quit();
 
+		constexpr std::string_view playText {"play"};
+
 		if (inputComponent.hasPressedEnter)
 		{
+			if (inputComponent.content == playText)
+				play();
+			
 			auto difficulty {getDifficultyFromString(inputComponent.content)};
 
 			if (difficulty)
