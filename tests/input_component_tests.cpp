@@ -71,6 +71,24 @@ TEST_CASE("Detect enter keypress")
 	REQUIRE_FALSE(inputComponent.hasPressedEnter);
 }
 
+TEST_CASE("Detect escape keypress")
+{
+	Keywords::InputComponent inputComponent {};
+
+	// The component should be drawn without crashing
+	inputComponent.draw();
+
+	inputComponent.component->OnEvent(ftxui::Event::Escape);
+
+	// Following an 'ESCAPE' event, the escape key flag should be true
+	REQUIRE(inputComponent.hasPressedEscape);
+
+	inputComponent.component->OnEvent(ftxui::Event::Custom);
+
+	// Following an non 'ESCAPE' event, the escape key flag should be false
+	REQUIRE_FALSE(inputComponent.hasPressedEscape);
+}
+
 TEST_CASE("Respond appropriately to a word deletion event")
 {
 	Keywords::InputComponent inputComponent {};
