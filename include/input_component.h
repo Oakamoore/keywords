@@ -19,6 +19,7 @@ namespace Keywords
 		const std::string placeholder {};
 		ftxui::Component component {};
 		bool hasPressedEnter {};
+		bool hasPressedEscape {};
 	};
 }
 

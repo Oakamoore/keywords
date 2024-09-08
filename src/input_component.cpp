@@ -10,7 +10,6 @@ namespace Keywords
 	{
 		ftxui::InputOption settings {};
 
-		// Set the default settings 
 		settings.content = &content;
 		settings.placeholder = this->placeholder;
 		settings.multiline = false;
@@ -47,6 +46,14 @@ namespace Keywords
 			hasPressedEnter = (event == ftxui::Event::Return ? true : false);
 
 			return hasPressedEnter;
+		});
+
+		// Register when the 'ESCAPE' key is pressed
+		component |= ftxui::CatchEvent([&] (ftxui::Event event)
+		{
+			hasPressedEscape = (event == ftxui::Event::Escape ? true : false);
+
+			return hasPressedEscape;
 		});
 
 		// Bind 'CTRL + W' to word deletion
