@@ -130,13 +130,53 @@ TEST_CASE("Change the difficulty of a session")
 	}
 }
 
-//
-//TEST_CASE("Allow quitting from the main menu")
-//{
-//
-//}
-//
-//TEST_CASE("Allow a game session to be started")
-//{
-//
-//}
+TEST_CASE("Allow quitting from the main menu")
+{
+	Keywords::SessionConfig config {};
+	Keywords::InputComponent inputComponent {};
+
+	auto component {Keywords::getMainMenuComponent(config, inputComponent)};
+
+	// The component should render without crashing
+	component->Render();
+
+	bool hasQuit {};
+	auto quit {[&] { hasQuit = true; }};
+
+	REQUIRE(hasQuit == false);
+
+	component->OnEvent(ftxui::Event::Escape);
+
+	// Respond to the above event
+	Keywords::MainMenu::handleInput(config, inputComponent, quit, g_emptyFunction);
+
+	REQUIRE(hasQuit == true);
+}
+
+TEST_CASE("Allow a game session to be started")
+{
+	Keywords::SessionConfig config {};
+	Keywords::InputComponent inputComponent {};
+
+	auto component {Keywords::getMainMenuComponent(config, inputComponent)};
+
+	// The component should render without crashing
+	component->Render();
+
+	bool isPlaying {};
+	auto play {[&] { isPlaying = true; }};
+
+	constexpr std::string_view playText {"play"};
+
+	// Fill the input component without "play"
+	inputComponent.content = playText;
+
+	REQUIRE(isPlaying == false);
+
+	component->OnEvent(ftxui::Event::Return);
+	
+	// Respond to the above event
+	Keywords::MainMenu::handleInput(config, inputComponent, g_emptyFunction, play);
+
+	REQUIRE(isPlaying == true);
+}
