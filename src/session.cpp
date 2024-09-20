@@ -70,8 +70,9 @@ namespace
 
 namespace Keywords
 {
-	Session::Session(const SessionConfig& config)
+	Session::Session(const SessionConfig& config, std::function<void()> back)
 		: m_config {config}
+		, m_back {back}
 	{
 		using enum SessionConfig::Difficulty;
 
