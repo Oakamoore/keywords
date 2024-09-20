@@ -6,7 +6,6 @@
 #include <catch2/catch_test_macros.hpp>
 #include <array>
 #include <string_view>
-#include <iostream>
 
 namespace
 {
@@ -14,9 +13,6 @@ namespace
 	{
 		return static_cast<std::size_t>(difficulty);
 	}
-
-	// Used in the place of an actual 'std::function' parameter
-	constexpr auto g_emptyFunction {[] { ; }};
 }
 
 TEST_CASE("Empty the input component following 'ENTER' keypress")
@@ -44,7 +40,7 @@ TEST_CASE("Empty the input component following 'ENTER' keypress")
 	component->OnEvent(ftxui::Event::Return);
 
 	// Responds to the above event
-	Keywords::MainMenu::handleInput(config, inputComponent, g_emptyFunction, g_emptyFunction);
+	Keywords::MainMenu::handleInput(config, inputComponent, nullptr, nullptr);
 
 	// An 'ENTER' keypress event empties the input component
 	REQUIRE(inputComponent.content.empty());
@@ -79,7 +75,7 @@ TEST_CASE("Change the difficulty of a session")
 		component->OnEvent(ftxui::Event::Return);
 
 		// Respond to the above event
-		Keywords::MainMenu::handleInput(config, inputComponent, g_emptyFunction, g_emptyFunction);
+		Keywords::MainMenu::handleInput(config, inputComponent, nullptr, nullptr);
 
 		// The difficulty stays the same
 		REQUIRE(config.difficulty == easy);
@@ -95,7 +91,7 @@ TEST_CASE("Change the difficulty of a session")
 		component->OnEvent(ftxui::Event::Return);
 
 		// Respond to the above event
-		Keywords::MainMenu::handleInput(config, inputComponent, g_emptyFunction, g_emptyFunction);
+		Keywords::MainMenu::handleInput(config, inputComponent, nullptr, nullptr);
 
 		// The difficulty should have reverted
 		REQUIRE(config.difficulty == easy);
@@ -109,7 +105,7 @@ TEST_CASE("Change the difficulty of a session")
 		component->OnEvent(ftxui::Event::Return);
 
 		// Respond to the above event
-		Keywords::MainMenu::handleInput(config, inputComponent, g_emptyFunction, g_emptyFunction);
+		Keywords::MainMenu::handleInput(config, inputComponent, nullptr, nullptr);
 
 		// The difficulty should change
 		REQUIRE(config.difficulty == medium);
@@ -123,7 +119,7 @@ TEST_CASE("Change the difficulty of a session")
 		component->OnEvent(ftxui::Event::Return);
 
 		// Respond to the above event
-		Keywords::MainMenu::handleInput(config, inputComponent, g_emptyFunction, g_emptyFunction);
+		Keywords::MainMenu::handleInput(config, inputComponent, nullptr, nullptr);
 
 		// The difficulty should change 
 		REQUIRE(config.difficulty == hard);
@@ -148,7 +144,7 @@ TEST_CASE("Allow quitting from the main menu")
 	component->OnEvent(ftxui::Event::Escape);
 
 	// Respond to the above event
-	Keywords::MainMenu::handleInput(config, inputComponent, quit, g_emptyFunction);
+	Keywords::MainMenu::handleInput(config, inputComponent, quit, nullptr);
 
 	REQUIRE(hasQuit == true);
 }
@@ -176,7 +172,7 @@ TEST_CASE("Allow a game session to be started")
 	component->OnEvent(ftxui::Event::Return);
 	
 	// Respond to the above event
-	Keywords::MainMenu::handleInput(config, inputComponent, g_emptyFunction, play);
+	Keywords::MainMenu::handleInput(config, inputComponent, nullptr, play);
 
 	REQUIRE(isPlaying == true);
 }
