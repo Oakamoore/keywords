@@ -55,6 +55,7 @@ namespace Keywords
 		/*std::function<void()> m_lose {};*/
 		InputComponent m_input {};
 		Timer m_uptime {};
+		double m_timeStamp {};
 		int m_misses {};
 		int m_charsTyped {};
 		int m_wordsTyped {};

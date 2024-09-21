@@ -51,12 +51,16 @@ namespace
 		runCustomLoop(screen, component, updateMainMenu);
 	}
 
-	void displaySession(const Keywords::SessionConfig& config /*std::function<void()> quit*/)
+	void displaySession(const Keywords::SessionConfig& config, const auto& back /*const auto& lose*/)
 	{
-		Keywords::Session session {config};
+		auto screen {ftxui::ScreenInteractive::Fullscreen()};
+		
+		auto onBack {[&] { back(); screen.Exit(); }};
+		// auto onLose {[&] { lose(); screen.Exit(); };
+
+		Keywords::Session session {config, onBack};
 
 		auto component {Keywords::getSessionComponent(session)};
-		auto screen {ftxui::ScreenInteractive::Fullscreen()};
 
 		auto updateSession {[&] { session.update(); }};
 
@@ -68,7 +72,7 @@ namespace
 
 namespace Keywords
 {
-	ftxui::Component getSessionComponent(const Session& session /*std::function<void()> quit*/)
+	ftxui::Component getSessionComponent(const Session& session)
 	{
 		auto component {ftxui::Renderer(session.getInputComponent(), [&]
 		{
@@ -102,8 +106,16 @@ namespace Keywords
 
 				if (isPlaying)
 				{
-					displaySession(config);
+					auto back {[&] { isPlaying = false; }};
+
+					displaySession(config, back);
 				}
+
+				/*if(!isPlaying && hasLost)
+				{
+					displayLeaderboard();
+				}
+				*/
 			}
 
 		}

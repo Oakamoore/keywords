@@ -135,7 +135,6 @@ namespace Keywords
 
 	void Session::update()
 	{
-		static double s_timeStamp {0.0};
 		constexpr Timer::Second spawnDelay {3.5};
 
 		// Continue while 'm_misses' < 'g_maxMisses' or a 'SessionConfig' defined max
@@ -148,10 +147,10 @@ namespace Keywords
 		}
 
 		// The session has just begun, or the delay between spawns has passed 
-		if (s_timeStamp == 0.0 || (m_uptime.elapsed() - s_timeStamp) >= spawnDelay.count())
+		if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >= spawnDelay.count())
 		{
 			addWords();
-			s_timeStamp = m_uptime.elapsed();
+			m_timeStamp = m_uptime.elapsed();
 		}
 
 		handleInput();
@@ -264,8 +263,14 @@ namespace Keywords
 
 	void Session::handleInput()
 	{
+		// Quit the current session
+		if (m_input.hasPressedEscape)
+			m_back();
+
 		if (m_input.hasPressedEnter)
 		{
+			// Check against input, 
+			// erasing any matching words
 			if (isWordPresent(m_input.content))
 			{
 				auto word {std::ranges::find_if(m_words,[&] (const auto& word)
