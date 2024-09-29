@@ -2,6 +2,7 @@
 #include "session.h"
 #include "input_component.h"
 #include "main_menu.h"
+#include "constants.h"
 #include <ftxui/component/event.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <array>
@@ -59,9 +60,6 @@ TEST_CASE("Change the difficulty of a session")
 	// The default difficulty should be "easy"
 	REQUIRE(config.difficulty == easy);
 
-	using namespace std::string_view_literals;
-	static constexpr std::array difficultyOptions {"easy"sv, "medium"sv, "hard"sv};
-
 	auto component {Keywords::getMainMenuComponent(config, inputComponent)};
 	
 	// The component should render without crashing
@@ -70,7 +68,7 @@ TEST_CASE("Change the difficulty of a session")
 	SECTION("Retain the same previous difficulty")
 	{
 		// Fill input component with "easy"
-		inputComponent.content = difficultyOptions[getIndex(easy)];
+		inputComponent.content = Keywords::Constants::difficultyOptions[getIndex(easy)];
 
 		component->OnEvent(ftxui::Event::Return);
 
@@ -86,7 +84,7 @@ TEST_CASE("Change the difficulty of a session")
 		config.difficulty = hard;
 
 		// Fill input component with "easy"
-		inputComponent.content = difficultyOptions[getIndex(easy)];
+		inputComponent.content = Keywords::Constants::difficultyOptions[getIndex(easy)];
 
 		component->OnEvent(ftxui::Event::Return);
 
@@ -100,7 +98,7 @@ TEST_CASE("Change the difficulty of a session")
 	SECTION("Change difficulty to medium")
 	{
 		// Fill input component with "medium"
-		inputComponent.content = difficultyOptions[getIndex(medium)];
+		inputComponent.content = Keywords::Constants::difficultyOptions[getIndex(medium)];
 
 		component->OnEvent(ftxui::Event::Return);
 
@@ -114,7 +112,7 @@ TEST_CASE("Change the difficulty of a session")
 	SECTION("Change difficulty to hard")
 	{
 		// Fill input component with "hard"
-		inputComponent.content = difficultyOptions[getIndex(hard)];
+		inputComponent.content = Keywords::Constants::difficultyOptions[getIndex(hard)];
 
 		component->OnEvent(ftxui::Event::Return);
 
@@ -162,10 +160,8 @@ TEST_CASE("Allow a game session to be started")
 	bool isPlaying {};
 	auto play {[&] { isPlaying = true; }};
 
-	constexpr std::string_view playText {"play"};
-
-	// Fill the input component without "play"
-	inputComponent.content = playText;
+	// Fill the input component with "play"
+	inputComponent.content = Keywords::Constants::playInput;
 
 	REQUIRE(isPlaying == false);
 
