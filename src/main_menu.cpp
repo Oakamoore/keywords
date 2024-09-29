@@ -1,4 +1,5 @@
 #include "main_menu.h"
+#include "constants.h"
 #include <ftxui/component/component.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/color.hpp>
@@ -12,11 +13,9 @@ namespace
 {
 	std::optional<Keywords::SessionConfig::Difficulty> getDifficultyFromString(std::string_view str)
 	{
-		using namespace std::string_view_literals;
-		
-		static constexpr std::array difficultyOptions {"easy"sv, "medium"sv, "hard"sv};
+		using namespace Keywords::Constants;
 
-		for (std::size_t i {0}; i < difficultyOptions.size(); ++i)
+		for (std::size_t i {0}; i < difficultyCount; ++i)
 		{
 			if (str == difficultyOptions[i])
 				return static_cast<Keywords::SessionConfig::Difficulty>(i);
@@ -123,11 +122,9 @@ namespace Keywords
 		if (inputComponent.hasPressedEscape)
 			quit();
 
-		constexpr std::string_view playText {"play"};
-
 		if (inputComponent.hasPressedEnter)
 		{
-			if (inputComponent.content == playText)
+			if (inputComponent.content == Constants::playInput)
 				play();
 			
 			auto difficulty {getDifficultyFromString(inputComponent.content)};

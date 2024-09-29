@@ -2,6 +2,7 @@
 #include "word_bank.h"
 #include "input_component.h"
 #include "main_menu.h"
+#include "constants.h"
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/component/loop.hpp>
 #include <chrono>
@@ -86,11 +87,9 @@ namespace Keywords
 
 	void startGame()
 	{
-		const std::filesystem::path filePath {"resources/us-english-language-dictionary.txt"};
-
 		try
 		{
-			WordBank::readFromFile(filePath);
+			WordBank::readFromFile(Constants::filePath);
 
 			SessionConfig config {};
 
