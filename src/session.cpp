@@ -10,6 +10,7 @@
 #include <cmath>
 #include <algorithm>
 #include <cctype>
+#include <array>
 
 namespace
 {
@@ -177,9 +178,12 @@ namespace Keywords
 
 	void Session::update()
 	{
-		constexpr Timer::Second spawnDelay {3.5};
+		/*
+		constexpr int maxMisses {10};
 
-		// Continue while 'm_misses' < 'g_maxMisses' or a 'SessionConfig' defined max
+		if(m_misses >= maxMisses)
+			// m_lose();
+		*/
 
 		// Update word position and color
 		for (auto& word : m_words)
@@ -187,9 +191,12 @@ namespace Keywords
 			word->move();
 			word->updateColor(g_canvasWidth);
 		}
+		
+		constexpr static std::array<double, SessionConfig::difficultyCount> spawnDelays {3.5, 4.5, 5.5};
 
 		// The session has just begun, or the delay between spawns has passed 
-		if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >= spawnDelay.count())
+		if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >= 
+			spawnDelays[static_cast<std::size_t>(m_config.difficulty)])
 		{
 			addWords();
 			m_timeStamp = m_uptime.elapsed();

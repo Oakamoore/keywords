@@ -11,7 +11,6 @@
 #include <string_view>
 #include <optional>
 #include <functional>
-#include <array>
 
 namespace Keywords
 {
@@ -28,7 +27,6 @@ namespace Keywords
 		constexpr static auto difficultyCount {static_cast<std::size_t>(Difficulty::max_difficulty)};
 
 		Difficulty difficulty {};
-		std::array<int, difficultyCount> spawnCounts {3, 2, 1};
 	
 	};
 
