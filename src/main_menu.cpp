@@ -24,16 +24,6 @@ namespace
 		return {};
 	}
 
-	ftxui::Element getAdjacentText(const auto& ...e)
-	{
-		return ftxui::hbox({e...}) | ftxui::center;
-	}
-
-	ftxui::Element getColoredText(const std::string& str, const ftxui::Color& color = ftxui::Color::Yellow)
-	{
-		return ftxui::text(str) | ftxui::color(color) | ftxui::center;
-	}
-	
 	ftxui::Element getBorderLine()
 	{
 		constexpr int borderLineLength {85};
@@ -61,24 +51,26 @@ namespace
 
 	ftxui::Element getDescription()
 	{
+		using namespace ftxui;
+
 		auto description
 		{
-			ftxui::vbox
+			vbox
 			({
-				ftxui::separatorEmpty(),
-				getAdjacentText(ftxui::text("To begin a game session type "), getColoredText("play"), ftxui::text(".")),
-				ftxui::separatorEmpty(),
-				ftxui::paragraphAlignCenter("To change the difficulty of a game session (when none are active), type either:"),
-				getAdjacentText(getColoredText("easy"), ftxui::text(" (<=5 character words)")),
-				getAdjacentText(getColoredText("medium"), ftxui::text(" (>= 6 and <= 8 character words)")),
-				getAdjacentText(getColoredText("hard"), ftxui::text(" (>=9 character words)")),
-				ftxui::separatorEmpty(),
-				ftxui::paragraphAlignCenter("During a game session, type the onscreen words."),
-				ftxui::separatorEmpty(),
-				getAdjacentText(ftxui::text("Press "), getColoredText("ENTER"), ftxui::text(" to confirm a typed word.")),
-				getAdjacentText(ftxui::text("Press "), getColoredText("BACKSPACE"), ftxui::text(" to erase individual characters.")),
-				getAdjacentText(ftxui::text("Press "), getColoredText("CTRL + W"), ftxui::text(" to erase an entire word all at once.")),
-				getAdjacentText(ftxui::text("Press "), getColoredText("ESCAPE"), ftxui::text(" to quit the game at any time."))
+				separatorEmpty(),
+				hbox({text("To begin a game session type "), text("play") | color(Color::Yellow), text(".")}) | center,
+				separatorEmpty(),
+				paragraphAlignCenter("To change the difficulty of a game session (when none are active), type either:"),
+				hbox({text("easy") | color(Color::Yellow), text(" (<=5 character words)")}) | center,
+				hbox({text("medium") | color(Color::Yellow), text(" (>= 6 and <= 8 character words)")}) | center,
+				hbox({text("hard") | color(Color::Yellow), text(" (>=9 character words)")}) | center,
+				separatorEmpty(),
+				paragraphAlignCenter("During a game session, type the onscreen words."),
+				separatorEmpty(),
+				hbox({text("Press "), text("ENTER") | color(Color::Yellow), text(" to confirm a typed word.")}) | center,
+				hbox({text("Press "), text("BACKSPACE") | color(Color::Yellow), text(" to erase individual characters.")}) | center,
+				hbox({text("Press "), text("CTRL + W") | color(Color::Yellow), text(" to erase an entire word all at once.")}) | center,
+				hbox({text("Press "), text("ESCAPE") | color(Color::Yellow), text(" to quit the game at any time.")}) | center
 			})
 		};
 
