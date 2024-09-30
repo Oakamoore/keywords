@@ -20,10 +20,8 @@ namespace
 	{
 		if (!str.empty())
 		{
-			// Construct a string of a given length
 			std::string lowercase(str.length(), ' ');
 
-			// Assign lowercase characters to the newly constructed string
 			std::transform(str.begin(), str.end(), lowercase.begin(), [] (unsigned char c)
 			{
 				return static_cast<char>(std::tolower(c));
