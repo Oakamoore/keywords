@@ -1,6 +1,7 @@
 #include "session.h"
 #include "random.h"
 #include "word_bank.h"
+#include "constants.h"
 #include <ftxui/dom/canvas.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/color.hpp>
@@ -8,6 +9,7 @@
 #include <type_traits>
 #include <cmath>
 #include <algorithm>
+#include <cctype>
 
 namespace
 {
@@ -66,6 +68,36 @@ namespace
 	{
 		return std::abs(valueOne - valueTwo) <= deviation;
 	}
+
+	std::string_view getStringFromDifficulty(Keywords::SessionConfig::Difficulty difficulty)
+	{
+		using enum Keywords::SessionConfig::Difficulty;
+		using namespace Keywords::Constants;
+
+		switch (difficulty)
+		{
+			case medium:	return	difficultyOptions[static_cast<std::size_t>(medium)];
+			case hard:		return	difficultyOptions[static_cast<std::size_t>(hard)];
+			default:		return	difficultyOptions[static_cast<std::size_t>(easy)];
+		}
+	}
+
+	std::string convertToUppercase(std::string_view str)
+	{
+		if (!str.empty())
+		{
+			std::string uppercase(str.length(), ' ');
+
+			std::transform(str.begin(), str.end(), uppercase.begin(), [] (unsigned char c)
+			{
+				return static_cast<char>(std::toupper(c));
+			});
+
+			return uppercase;
+		}
+
+		return std::string {};
+	}
 }
 
 namespace Keywords
@@ -73,6 +105,7 @@ namespace Keywords
 	Session::Session(const SessionConfig& config, std::function<void()> back)
 		: m_config {config}
 		, m_back {back}
+		, m_difficulty {getStringFromDifficulty(m_config.difficulty)}
 	{
 		using enum SessionConfig::Difficulty;
 
@@ -103,31 +136,40 @@ namespace Keywords
 		constexpr int inputBoxWidth {g_canvasWidth / 6};
 		constexpr int statBoxWidth {(g_canvasWidth / g_canvasCellWidth) - inputBoxWidth};
 
+		using namespace ftxui;
+
 		auto frame
 		{
-			ftxui::vbox
+			vbox
 			({
-				ftxui::text("KEYWORDS") | ftxui::center,
-				ftxui::separatorEmpty(),
-				ftxui::canvas(std::move(c)) | ftxui::border,
-				ftxui::hbox
+				text("KEYWORDS") | center,
+				separatorEmpty(),
+				canvas(std::move(c)) | border,
+				hbox
 				({
-					m_input.draw() | ftxui::border | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, inputBoxWidth),
-					ftxui::separatorEmpty(),
-					ftxui::window
+					m_input.draw() | border | size(WIDTH, EQUAL, inputBoxWidth),
+					separatorEmpty(),
+					window
 					(
-						ftxui::text("Session Stats") | ftxui::color(ftxui::Color::White) | ftxui::center,
-						ftxui::hbox
+						hbox
 						({
-							ftxui::filler(),
-							createStatElement("Time: ", m_uptime.elapsed(), 's'), ftxui::filler(),
-							createStatElement("WPM: ", m_wordsPerMinute), ftxui::filler(),
-							createStatElement("CPS: ", m_charsPerSecond), ftxui::filler(),
-							createStatElement("Misses: ", m_misses), ftxui::filler(),
+							text("Session Stats ("),
+							text(convertToUppercase(m_difficulty)) | color(Color::Cyan),
+							text(")")
+						}) | center,
+
+						hbox
+						({
+							filler(),
+							createStatElement("Time: ", m_uptime.elapsed(), 's'), filler(),
+							createStatElement("WPM: ", m_wordsPerMinute), filler(),
+							createStatElement("CPS: ", m_charsPerSecond), filler(),
+							createStatElement("Misses: ", m_misses), filler(),
 						})
-					) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, statBoxWidth),
-				}), ftxui::separatorEmpty()
-			}) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, g_canvasWidth / g_canvasCellWidth)
+
+					) | size(WIDTH, EQUAL, statBoxWidth),
+				}), separatorEmpty()
+			}) | size(WIDTH, EQUAL, g_canvasWidth / g_canvasCellWidth)
 		};
 
 		return frame;

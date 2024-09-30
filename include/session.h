@@ -8,6 +8,7 @@
 #include <ftxui/component/component.hpp>
 #include <vector>
 #include <string>
+#include <string_view>
 #include <optional>
 #include <functional>
 
@@ -49,6 +50,7 @@ namespace Keywords
 
 	private:
 		const SessionConfig m_config {};
+		std::string_view m_difficulty {};
 		const std::vector<std::string>* m_wordBank {};
 		std::vector<std::unique_ptr<Word>> m_words {};
 		std::function<void()> m_back {};
