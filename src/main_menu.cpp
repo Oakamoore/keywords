@@ -13,12 +13,12 @@ namespace
 {
 	std::optional<Keywords::SessionConfig::Difficulty> getDifficultyFromString(std::string_view str)
 	{
-		using namespace Keywords::Constants;
+		using namespace Keywords;
 
-		for (std::size_t i {0}; i < difficultyCount; ++i)
+		for (std::size_t i {0}; i < SessionConfig::difficultyCount; ++i)
 		{
-			if (str == difficultyOptions[i])
-				return static_cast<Keywords::SessionConfig::Difficulty>(i);
+			if (str == Constants::difficultyOptions[i])
+				return static_cast<SessionConfig::Difficulty>(i);
 		}
 
 		return {};

@@ -10,9 +10,7 @@ namespace Keywords
 {
 	namespace Constants
 	{
-		inline constexpr auto difficultyCount {static_cast<std::size_t>(SessionConfig::Difficulty::max_difficulty)};
-		
-		inline constexpr std::array<std::string_view, difficultyCount> difficultyOptions 
+		inline constexpr std::array<std::string_view, SessionConfig::difficultyCount> difficultyOptions 
 		{
 			"easy", 
 			"medium", 
