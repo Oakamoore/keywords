@@ -33,7 +33,7 @@ namespace Keywords
 	class Session
 	{
 	public:
-		Session(const SessionConfig& config, std::function<void()> back);
+		Session(const SessionConfig& config, std::function<void()> back, std::function<void()> lose);
 
 		ftxui::Element draw() const;
 		void update();
@@ -53,11 +53,11 @@ namespace Keywords
 
 	private:
 		const SessionConfig m_config {};
-		std::string_view m_difficulty {};
 		const std::vector<std::string>* m_wordBank {};
 		std::vector<std::unique_ptr<Word>> m_words {};
 		std::function<void()> m_back {};
-		/*std::function<void()> m_lose {};*/
+		std::function<void()> m_lose {};
+		std::string_view m_difficulty {};
 		InputComponent m_input {};
 		Timer m_uptime {};
 		double m_timeStamp {};

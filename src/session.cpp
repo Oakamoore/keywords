@@ -103,9 +103,10 @@ namespace
 
 namespace Keywords
 {
-	Session::Session(const SessionConfig& config, std::function<void()> back)
+	Session::Session(const SessionConfig& config, std::function<void()> back, std::function<void()> lose)
 		: m_config {config}
 		, m_back {back}
+		, m_lose {lose}
 		, m_difficulty {getStringFromDifficulty(m_config.difficulty)}
 	{
 		using enum SessionConfig::Difficulty;
@@ -178,12 +179,8 @@ namespace Keywords
 
 	void Session::update()
 	{
-		/*
-		constexpr int maxMisses {10};
-
-		if(m_misses >= maxMisses)
-			// m_lose();
-		*/
+		if(m_misses >= Constants::maxMisses)
+			m_lose();
 
 		// Update word position and color
 		for (auto& word : m_words)
@@ -192,11 +189,11 @@ namespace Keywords
 			word->updateColor(g_canvasWidth);
 		}
 		
-		constexpr static std::array<double, SessionConfig::difficultyCount> spawnDelays {3.5, 4.5, 5.5};
+		constexpr static std::array<double, SessionConfig::difficultyCount> s_spawnDelays {3.5, 4.5, 5.5};
 
 		// The session has just begun, or the delay between spawns has passed 
 		if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >= 
-			spawnDelays[static_cast<std::size_t>(m_config.difficulty)])
+			s_spawnDelays[static_cast<std::size_t>(m_config.difficulty)])
 		{
 			addWords();
 			m_timeStamp = m_uptime.elapsed();
