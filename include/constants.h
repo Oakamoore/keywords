@@ -18,6 +18,7 @@ namespace Keywords
 		};
 
 		inline constexpr std::string_view playInput {"play"};
+		inline constexpr int maxMisses {10};
 		
 		inline const std::filesystem::path filePath {"resources/us-english-language-dictionary.txt"};
 	}

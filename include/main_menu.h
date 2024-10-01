@@ -10,8 +10,8 @@ namespace Keywords
 	namespace MainMenu
 	{
 		void handleInput(SessionConfig& config, InputComponent& inputComponent, 
-						 const std::function<void()>& quit, 
-						 const std::function<void()>& play);
+						 std::function<void()> quit, 
+						 std::function<void()> play);
 	}
 }
 

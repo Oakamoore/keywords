@@ -65,7 +65,11 @@ namespace
 				hbox({text("medium") | color(Color::Yellow), text(" (>= 6 and <= 8 character words)")}) | center,
 				hbox({text("hard") | color(Color::Yellow), text(" (>=9 character words)")}) | center,
 				separatorEmpty(),
-				paragraphAlignCenter("During a game session, type the onscreen words."),
+				hbox
+				({
+				 text("During a game session, type the onscreen words, and stay below "), 
+				 text(std::to_string(Keywords::Constants::maxMisses) + " misses.") | color(Color::Red)
+				}) | center,
 				separatorEmpty(),
 				hbox({text("Press "), text("ENTER") | color(Color::Yellow), text(" to confirm a typed word.")}) | center,
 				hbox({text("Press "), text("BACKSPACE") | color(Color::Yellow), text(" to erase individual characters.")}) | center,
@@ -108,8 +112,8 @@ namespace
 namespace Keywords
 {
 	void MainMenu::handleInput(SessionConfig& config, InputComponent& inputComponent, 
-							   const std::function<void()>& quit, 
-							   const std::function<void()>& play)
+							   std::function<void()> quit, 
+							   std::function<void()> play)
 	{
 		if (inputComponent.hasPressedEscape)
 			quit();
