@@ -48,15 +48,15 @@ namespace Keywords
 		void readFromFile(const std::filesystem::path& filePath)
 		{
 			if (!std::filesystem::exists(filePath))
-				throw std::runtime_error("Failed to locate file");
+				throw std::runtime_error("Failed to locate word bank");
 
 			if (std::filesystem::is_empty(filePath))
-				throw std::runtime_error("Cannot read from an empty file");
+				throw std::runtime_error("Cannot read from an empty word bank");
 
 			std::ifstream file {filePath.string()};
 
 			if (!file.is_open())
-				throw std::runtime_error("Failed to open file");
+				throw std::runtime_error("Failed to open word bank");
 
 			auto isEasyWord {[](std::string_view str) { return str.length() <= 5; }};
 			auto isMediumWord {[](std::string_view str) { return str.length() >= 6 && str.length() <= 8; }};
