@@ -21,6 +21,8 @@ namespace
 
 		while(!loop.HasQuitted())
 		{
+			update();
+
 			loop.RunOnce();
 
 			using namespace std::chrono_literals;
@@ -32,8 +34,6 @@ namespace
 			// Force a screen update
 			// without interfering with events
 			screen.RequestAnimationFrame();
-
-			update();
 		}
 	}
 
@@ -59,7 +59,7 @@ namespace
 		auto onBack {[&] { back(); screen.Exit(); }};
 		auto onLose {[&] { lose(); screen.Exit(); }};
 
-		Keywords::Session session {config, onBack, onLose};
+		Keywords::Session session {config, Keywords::Constants::savedSessionStats, onBack, onLose};
 
 		auto component {Keywords::getSessionComponent(session)};
 
@@ -89,7 +89,7 @@ namespace Keywords
 	{
 		try
 		{
-			WordBank::readFromFile(Constants::filePath);
+			WordBank::readFromFile(Constants::wordList);
 
 			SessionConfig config {};
 
@@ -109,6 +109,8 @@ namespace Keywords
 					bool hasLost {};
 					auto lose {[&] { hasLost = true; isPlaying = false; }};
 
+					// TODO: Add a try-catch block to catch 
+					// session file write failure
 					displaySession(config, back, lose);
 					
 					/*if(hasLost)
