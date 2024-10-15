@@ -11,6 +11,8 @@
 #include <algorithm>
 #include <cctype>
 #include <array>
+#include <fstream>
+#include <exception>
 
 namespace
 {
@@ -103,11 +105,11 @@ namespace
 
 namespace Keywords
 {
-	Session::Session(const SessionConfig& config, std::function<void()> back, std::function<void()> lose)
+	Session::Session(const SessionConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> back, std::function<void()> lose)
 		: m_config {config}
+		, m_saveFilePath {saveFilePath}
 		, m_back {back}
 		, m_lose {lose}
-		, m_difficulty {getStringFromDifficulty(m_config.difficulty)}
 	{
 		using enum SessionConfig::Difficulty;
 
@@ -124,6 +126,8 @@ namespace Keywords
 				m_wordBank = &WordBank::easyWords;
 				break;
 		}
+
+		m_stats.difficulty = getStringFromDifficulty(config.difficulty);
 	}
 
 	ftxui::Element Session::draw() const
@@ -156,7 +160,7 @@ namespace Keywords
 						hbox
 						({
 							text("Session Stats ("),
-							text(convertToUppercase(m_difficulty)) | color(Color::Cyan),
+							text(convertToUppercase(m_stats.difficulty)) | color(Color::Cyan),
 							text(")")
 						}) | center,
 
@@ -164,8 +168,9 @@ namespace Keywords
 						({
 							filler(),
 							createStatElement("Time: ", m_uptime.elapsed(), 's'), filler(),
-							createStatElement("WPM: ", m_wordsPerMinute), filler(),
-							createStatElement("CPS: ", m_charsPerSecond), filler(),
+							createStatElement("Score: ", m_stats.score), filler(),
+							createStatElement("WPM: ", m_stats.wordsPerMinute), filler(),
+							createStatElement("CPS: ", m_stats.charsPerSecond), filler(),
 							createStatElement("Misses: ", m_misses), filler(),
 						})
 
@@ -179,29 +184,35 @@ namespace Keywords
 
 	void Session::update()
 	{
-		if(m_misses >= Constants::maxMisses)
-			m_lose();
-
-		// Update word position and color
-		for (auto& word : m_words)
-		{
-			word->move();
-			word->updateColor(g_canvasWidth);
-		}
-		
-		constexpr static std::array<double, SessionConfig::difficultyCount> s_spawnDelays {3.5, 4.5, 5.5};
-
-		// The session has just begun, or the delay between spawns has passed 
-		if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >= 
-			s_spawnDelays[static_cast<std::size_t>(m_config.difficulty)])
-		{
-			addWords();
-			m_timeStamp = m_uptime.elapsed();
-		}
-
-		handleInput();
 		updateStats();
-		eraseWords();
+
+		if (m_misses >= Constants::maxMisses)
+		{
+			writeToFile();
+			m_lose();
+		}
+		else
+		{
+			// Update word position and color
+			for (auto& word : m_words)
+			{
+				word->move();
+				word->updateColor(g_canvasWidth);
+			}
+
+			constexpr static std::array<double, SessionConfig::difficultyCount> s_spawnDelays {3.5, 4.5, 5.5};
+
+			// The session has just begun, or the delay between spawns has passed 
+			if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >=
+				s_spawnDelays[static_cast<std::size_t>(m_config.difficulty)])
+			{
+				addWords();
+				m_timeStamp = m_uptime.elapsed();
+			}
+
+			handleInput();
+			eraseWords();
+		}
 	}
 
 	bool Session::isWordPresent(std::string_view str) const
@@ -330,8 +341,9 @@ namespace Keywords
 				if (word != m_words.end())
 					m_words.erase(word);
 
-				++m_wordsTyped;
-				m_charsTyped += static_cast<int>(m_input.content.length());
+				++m_stats.wordsTyped;
+				m_stats.charsTyped += static_cast<int>(m_input.content.length());
+				m_stats.score += static_cast<int>(m_input.content.length()) + m_stats.wordsTyped;
 			}
 
 			// Clear the input component
@@ -341,7 +353,30 @@ namespace Keywords
 
 	void Session::updateStats()
 	{
-		m_wordsPerMinute = static_cast<int>(m_wordsTyped / (m_uptime.elapsed() / 60));
-		m_charsPerSecond = m_charsTyped / m_uptime.elapsed();
+		m_stats.wordsPerMinute = static_cast<int>(m_stats.wordsTyped / (m_uptime.elapsed() / 60));
+		m_stats.charsPerSecond = m_stats.charsTyped / m_uptime.elapsed();
+	}
+
+	void Session::writeToFile()
+	{
+		if (!std::filesystem::exists(m_saveFilePath))
+			throw std::runtime_error("Unable to locate save file");
+
+		std::ofstream file {m_saveFilePath, std::fstream::app};
+
+		if (!file.is_open())
+			throw std::runtime_error("Failed to open save file");
+
+		//const auto timeElasped {m_uptime.elapsed()};
+
+		file << "test";
+
+		/*file << toStringWithPrecision(timeElasped, 2) << Constants::statSeparator;
+		file << m_highestWordsPerMinute << Constants::statSeparator;
+		file << toStringWithPrecision(m_highestCharsPerSecond, 2) << Constants::statSeparator;
+		file << convertToUppercase(m_difficulty) << Constants::statSeparator;
+		file << '\n';*/
+
+		file.close();
 	}
 }
