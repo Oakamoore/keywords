@@ -13,6 +13,7 @@
 #include <array>
 #include <fstream>
 #include <exception>
+#include <ostream>
 
 namespace
 {
@@ -100,6 +101,17 @@ namespace
 		}
 
 		return std::string {};
+	}
+
+	std::ostream& operator<<(std::ostream& out, const Keywords::SessionStats& stats)
+	{
+		auto c {Keywords::Constants::statSeparator};
+
+		out << stats.score << c << stats.wordsTyped << c << stats.charsTyped << c
+			<< stats.wordsPerMinute << c << stats.charsPerSecond << c
+			<< stats.totalTime << c << convertToUppercase(stats.difficulty) << '\n';
+
+		return out;
 	}
 }
 
@@ -326,10 +338,10 @@ namespace Keywords
 
 		if (m_input.hasPressedEnter)
 		{
-			// Check against input, 
-			// erasing any matching words
 			if (isWordPresent(m_input.content))
 			{
+				constexpr int scoreModifier {5};
+
 				auto word {std::ranges::find_if(m_words,[&] (const auto& word)
 				{
 					if (word->text == m_input.content)
@@ -339,11 +351,14 @@ namespace Keywords
 				})};
 
 				if (word != m_words.end())
+				{
+					// More points are gained for typing 'newer' words
+					m_stats.score += (static_cast<int>(m_input.content.length()) + g_canvasWidth - word->get()->x) / scoreModifier;
 					m_words.erase(word);
+				}
 
 				++m_stats.wordsTyped;
 				m_stats.charsTyped += static_cast<int>(m_input.content.length());
-				m_stats.score += static_cast<int>(m_input.content.length()) + m_stats.wordsTyped;
 			}
 
 			// Clear the input component
@@ -367,15 +382,13 @@ namespace Keywords
 		if (!file.is_open())
 			throw std::runtime_error("Failed to open save file");
 
-		//const auto timeElasped {m_uptime.elapsed()};
+		m_stats.totalTime = m_uptime.elapsed();
+		
+		// Average WPM and CPS
+		m_stats.wordsPerMinute = static_cast<int>(m_stats.wordsTyped / (m_stats.totalTime / 60));
+		m_stats.charsPerSecond = m_stats.charsTyped / m_stats.totalTime;
 
-		file << "test";
-
-		/*file << toStringWithPrecision(timeElasped, 2) << Constants::statSeparator;
-		file << m_highestWordsPerMinute << Constants::statSeparator;
-		file << toStringWithPrecision(m_highestCharsPerSecond, 2) << Constants::statSeparator;
-		file << convertToUppercase(m_difficulty) << Constants::statSeparator;
-		file << '\n';*/
+		file << m_stats;
 
 		file.close();
 	}
