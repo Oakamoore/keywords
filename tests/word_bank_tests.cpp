@@ -20,7 +20,7 @@ TEST_CASE("Pass in a file that doesn't exist")
 	const std::filesystem::path filePath {"tests/resources/file.txt"};
 
 	// The appropriate exception should be thrown
-	REQUIRE_THROWS_MATCHES(Keywords::WordBank::readFromFile(filePath), std::runtime_error, Message("Failed to locate file"));
+	REQUIRE_THROWS_MATCHES(Keywords::WordBank::readFromFile(filePath), std::runtime_error, Message("Failed to locate word bank"));
 }
 
 TEST_CASE("Pass in an empty file")
@@ -28,7 +28,7 @@ TEST_CASE("Pass in an empty file")
 	const std::filesystem::path filePath {"tests/resources/empty_file.txt"};
 
 	// The appropriate exception should be thrown
-	REQUIRE_THROWS_MATCHES(Keywords::WordBank::readFromFile(filePath), std::runtime_error, Message("Cannot read from an empty file"));
+	REQUIRE_THROWS_MATCHES(Keywords::WordBank::readFromFile(filePath), std::runtime_error, Message("Cannot read from an empty word bank"));
 }
 
 TEST_CASE("Pass in a file full of invalid words")
