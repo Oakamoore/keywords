@@ -28,7 +28,6 @@ namespace Keywords
 		constexpr static auto difficultyCount {static_cast<std::size_t>(Difficulty::max_difficulty)};
 
 		Difficulty difficulty {};
-	
 	};
 
 	struct SessionStats
@@ -76,7 +75,6 @@ namespace Keywords
 		Timer m_uptime {};
 		int m_misses {};
 		double m_timeStamp {};
-
 	};
 }
 

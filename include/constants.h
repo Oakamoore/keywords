@@ -18,9 +18,11 @@ namespace Keywords
 		};
 
 		inline constexpr std::string_view playInput {"play"};
+		inline constexpr char statSeparator {'|'};
 		inline constexpr int maxMisses {10};
 		
-		inline const std::filesystem::path filePath {"resources/us-english-language-dictionary.txt"};
+		inline const std::filesystem::path wordList {"resources/us-english-language-dictionary.txt"};
+		inline const std::filesystem::path savedSessionStats {"resources/saved-session-stats.txt"};
 	}
 }
 

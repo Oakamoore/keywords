@@ -14,6 +14,8 @@
 #include <fstream>
 #include <exception>
 #include <ostream>
+#include <chrono>
+#include <format>
 
 namespace
 {
@@ -109,9 +111,17 @@ namespace
 
 		out << stats.score << c << stats.wordsTyped << c << stats.charsTyped << c
 			<< stats.wordsPerMinute << c << stats.charsPerSecond << c
-			<< stats.totalTime << c << convertToUppercase(stats.difficulty) << '\n';
+			<< toStringWithPrecision(stats.totalTime, 2) << c 
+			<< convertToUppercase(stats.difficulty) << c;
 
 		return out;
+	}
+
+	std::string getFormattedDateTime()
+	{
+		auto const dateTime {std::chrono::current_zone()->to_local(std::chrono::system_clock::now())};
+
+		return std::format("{:%Y-%m-%d %X}", dateTime);
 	}
 }
 
@@ -352,7 +362,7 @@ namespace Keywords
 
 				if (word != m_words.end())
 				{
-					// More points are gained for typing 'newer' words
+					// Less points are gained by typing a word further along the canvas
 					m_stats.score += (static_cast<int>(m_input.content.length()) + g_canvasWidth - word->get()->x) / scoreModifier;
 					m_words.erase(word);
 				}
@@ -388,7 +398,7 @@ namespace Keywords
 		m_stats.wordsPerMinute = static_cast<int>(m_stats.wordsTyped / (m_stats.totalTime / 60));
 		m_stats.charsPerSecond = m_stats.charsTyped / m_stats.totalTime;
 
-		file << m_stats;
+		file << m_stats << getFormattedDateTime() << '\n';
 
 		file.close();
 	}
