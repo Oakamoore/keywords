@@ -1,4 +1,5 @@
 #include "input_component.h"
+#include "constants.h"
 #include <ftxui/component/component_options.hpp>
 #include <ftxui/component/event.hpp>
 #include <cctype>
@@ -56,12 +57,10 @@ namespace Keywords
 			return hasPressedEscape;
 		});
 
-		// Bind 'CTRL + W' to word deletion
+		// Bind a given key combination to word deletion
 		component |= ftxui::CatchEvent([&] (ftxui::Event event)
 		{
-			const auto ctrlW {ftxui::Event::Special("\x17")};
-
-			if (event == ctrlW)
+			if (event == Constants::wordDeletionEvent)
 			{
 				reset();
 				return true;
