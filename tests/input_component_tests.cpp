@@ -1,4 +1,5 @@
 #include "input_component.h"
+#include "constants.h"
 #include <ftxui/component/event.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <string>
@@ -94,12 +95,9 @@ TEST_CASE("Respond appropriately to a word deletion event")
 	// The component should be drawn without crashing
 	inputComponent.draw();
 
-	// Event tied to word deletion
-	const auto ctrlW {ftxui::Event::Special("\x17")};
-
 	SECTION("An empty input component")
 	{
-		inputComponent.component->OnEvent(ctrlW);
+		inputComponent.component->OnEvent(Keywords::Constants::wordDeletionEvent);
 
 		// A deletion event shouldn't affect an empty input component
 		REQUIRE(inputComponent.content.empty());
@@ -109,7 +107,7 @@ TEST_CASE("Respond appropriately to a word deletion event")
 	{
 		inputComponent.content = "lorem";
 
-		inputComponent.component->OnEvent(ctrlW);
+		inputComponent.component->OnEvent(Keywords::Constants::wordDeletionEvent);
 
 		// The word should be deleted, rendering the input component empty
 		REQUIRE(inputComponent.content.empty());
