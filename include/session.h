@@ -49,7 +49,8 @@ namespace Keywords
 		ftxui::Element draw() const;
 		void update();
 
-		ftxui::Component getInputComponent() const { return m_input.component; }
+		InputComponent& getInputComponent() { return m_input; }
+		const std::vector<std::unique_ptr<Word>>& getWords() const { return m_words; } 
 		
 	private:
 		bool isWordPresent(std::string_view str) const;
