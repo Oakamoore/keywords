@@ -212,29 +212,28 @@ namespace Keywords
 		{
 			writeToFile();
 			m_lose();
+			return;
 		}
-		else
+
+		// Update word position and color
+		for (auto& word : m_words)
 		{
-			// Update word position and color
-			for (auto& word : m_words)
-			{
-				word->move();
-				word->updateColor(g_canvasWidth);
-			}
-
-			constexpr static std::array<double, SessionConfig::difficultyCount> s_spawnDelays {3.5, 4.5, 5.5};
-
-			// The session has just begun, or the delay between spawns has passed 
-			if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >=
-				s_spawnDelays[static_cast<std::size_t>(m_config.difficulty)])
-			{
-				addWords();
-				m_timeStamp = m_uptime.elapsed();
-			}
-
-			handleInput();
-			eraseWords();
+			word->move();
+			word->updateColor(g_canvasWidth);
 		}
+
+		constexpr static std::array<double, SessionConfig::difficultyCount> s_spawnDelays {3.5, 4.5, 5.5};
+
+		// The session has just begun, or the delay between spawns has passed 
+		if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >=
+			s_spawnDelays[static_cast<std::size_t>(m_config.difficulty)])
+		{
+			addWords();
+			m_timeStamp = m_uptime.elapsed();
+		}
+
+		handleInput();
+		eraseWords();
 	}
 
 	bool Session::isWordPresent(std::string_view str) const
