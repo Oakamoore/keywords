@@ -210,8 +210,8 @@ namespace Keywords
 
 		if (m_misses >= Constants::maxMisses)
 		{
-			writeToFile();
 			m_lose();
+			writeToFile();
 			return;
 		}
 
@@ -386,7 +386,7 @@ namespace Keywords
 		if (!std::filesystem::exists(m_saveFilePath))
 			throw std::runtime_error("Unable to locate save file");
 
-		std::ofstream file {m_saveFilePath, std::fstream::app};
+		std::ofstream file {m_saveFilePath, std::ios::app};
 
 		if (!file.is_open())
 			throw std::runtime_error("Failed to open save file");
