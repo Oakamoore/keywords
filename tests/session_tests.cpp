@@ -4,27 +4,39 @@
 #include "word_bank.h"
 #include <ftxui/component/event.hpp>
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_exception.hpp>
 #include <filesystem>
-#include <vector>
-#include <memory>
+#include <fstream>
+#include <exception>
+
+namespace Keywords
+{
+	struct SessionTest
+	{
+		static const auto& getWords(const Keywords::Session& session) { return session.m_words; }
+		static int getMisses(const Keywords::Session& session) { return session.m_misses; }
+	};
+}
 
 namespace
 {
 	const std::filesystem::path g_wordList {"tests/resources/valid_words_file.txt"};
 
-	/*class SessionTest
+	void runSession(Keywords::Session& session)
 	{
-	public:
-		auto getWords(const Keywords::Session& session) const { return session.m_words; }
-		int getMisses(const Keywords::Session& session) const { return session.m_misses; }
-		void resetSpawnDelay(Keywords::Session& session) { session.m_timeStamp = 0.0; }
-	};*/
+		// Wait for the session to end
+		while (Keywords::SessionTest::getMisses(session) != Keywords::Constants::maxMisses)
+		{
+			// Spawn a batch of words
+			session.update();
+		}
+	}
 }
 
 TEST_CASE("Respond appropriately to a typed word")
 {
 	Keywords::Session session {Keywords::SessionConfig {}, {}, nullptr, nullptr};
-
+	
 	auto component {Keywords::getSessionComponent(session)};
 
 	// The component should render without crashing
@@ -36,13 +48,13 @@ TEST_CASE("Respond appropriately to a typed word")
 	// Spawn the first batch of words
 	session.update();
 
-	auto wordCount {session.getWords().size()};
+	auto wordCount {Keywords::SessionTest::getWords(session).size()};
 	
 	REQUIRE(session.getInputComponent().content.empty());
 
 	SECTION("A correct word is typed")
 	{
-		auto firstWord {session.getWords().front()->text};
+		auto firstWord {Keywords::SessionTest::getWords(session).front()->text};
 
 		// Fill the component with a valid word
 		session.getInputComponent().content = firstWord;
@@ -58,7 +70,7 @@ TEST_CASE("Respond appropriately to a typed word")
 		REQUIRE(session.getInputComponent().content.empty());
 
 		// The number of words should have decreased
-		REQUIRE(session.getWords().size() < wordCount);
+		REQUIRE(Keywords::SessionTest::getWords(session).size() < wordCount);
 	}
 
 	SECTION("An incorrect word is typed")
@@ -77,7 +89,7 @@ TEST_CASE("Respond appropriately to a typed word")
 		REQUIRE(session.getInputComponent().content.empty());
 
 		// The number of words should stay the same
-		REQUIRE(session.getWords().size() == wordCount);
+		REQUIRE(Keywords::SessionTest::getWords(session).size() == wordCount);
 	}
 }
 
@@ -100,46 +112,45 @@ TEST_CASE("Allow quitting from a session")
 	REQUIRE(isPlaying == false);
 }
 
-//TEST_CASE("End a session when a given lose condition is met")
-//{
-//	bool hasLost {};
-//	auto lose {[&] { hasLost = true; }};
-//
-//	Keywords::Session session {Keywords::SessionConfig {}, {}, nullptr, lose};
-//	SessionTest sessionTest {};
-//
-//	auto component {Keywords::getSessionComponent(session)};
-//
-//	// The component should render without crashing
-//	component->Render();
-//
-//	// Populate the word bank
-//	Keywords::WordBank::readFromFile(g_wordList);
-//
-//	while (true)
-//	{
-//		// Spawn the first batch of words
-//		session.update();
-//
-//		sessionTest.resetSpawnDelay(session); 
-//
-//		if (sessionTest.getMisses(session) == Keywords::Constants::maxMisses)
-//		{
-//			try
-//			{
-//				session.update();
-//			}
-//			catch (...) { }
-//
-//			break;
-//		}
-//	}
-//}
+TEST_CASE("End a session when a given lose condition is met", "[.realtime]")
+{
+	bool hasLost {};
+	auto lose {[&] { hasLost = true; }};
 
-//TEST_CASE("Insert a new entry in a given save file")
-//{
-//	SECTION("Pass in a file that doesn't exist")
-//	{
-//
-//	}
-//}
+	Keywords::Session session {Keywords::SessionConfig {}, {}, nullptr, lose};
+
+	// Populate the word bank
+	Keywords::WordBank::readFromFile(g_wordList);
+
+	runSession(session);
+
+	REQUIRE_THROWS_MATCHES(session.update(), std::runtime_error, Catch::Matchers::Message("Unable to locate save file"));
+
+	REQUIRE(hasLost == true);
+}
+
+TEST_CASE("Insert a new entry in a given save file", "[.realtime]")
+{
+	// Populate the word bank
+	Keywords::WordBank::readFromFile(g_wordList);
+
+	// Prevents 'std::bad_function_call' from being thrown
+	auto emptyFunction {[] { ; }};
+
+	const std::filesystem::path saveFilePath {"tests/resources/session_save_file.txt"};
+
+	// Erase the contents of the file 
+	std::fstream file {saveFilePath, std::ios::out};
+
+	REQUIRE(std::filesystem::is_empty(saveFilePath));
+
+	Keywords::Session session {Keywords::SessionConfig {}, saveFilePath, nullptr, emptyFunction};
+
+	runSession(session);
+
+	// Writes to the save file 
+	session.update();
+
+	// The file has been populated 
+	REQUIRE_FALSE(std::filesystem::is_empty(saveFilePath));
+}
