@@ -50,8 +50,9 @@ namespace Keywords
 		void update();
 
 		InputComponent& getInputComponent() { return m_input; }
-		const std::vector<std::unique_ptr<Word>>& getWords() const { return m_words; } 
-		
+
+		friend struct SessionTest;
+
 	private:
 		bool isWordPresent(std::string_view str) const;
 		bool isWordOverlapping(const Word& word) const;
@@ -73,9 +74,9 @@ namespace Keywords
 		std::function<void()> m_lose {};
 		InputComponent m_input {};
 		SessionStats m_stats {};
+		double m_timeStamp {};
 		Timer m_uptime {};
 		int m_misses {};
-		double m_timeStamp {};
 	};
 }
 
