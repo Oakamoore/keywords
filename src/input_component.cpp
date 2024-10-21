@@ -6,7 +6,7 @@
 
 namespace Keywords
 {
-	InputComponent::InputComponent(std::string_view placeholder)
+	InputComponent::InputComponent(std::string_view placeholder, bool isFiltered)
 		: placeholder {placeholder}
 	{
 		ftxui::InputOption settings {};
@@ -18,7 +18,6 @@ namespace Keywords
 		// Format the underlying element 
 		settings.transform = [&] (ftxui::InputState state)
 		{
-			// Change the attributes of the placeholder text
 			if (state.is_placeholder)
 				(state.element |= ftxui::color(ftxui::Color::Grey30)) |= ftxui::dim;
 			else
@@ -34,12 +33,15 @@ namespace Keywords
 		// Apply the above settings
 		component = ftxui::Input(settings);
 
-		// Filter out digit, uppercase, and non-letter characters
-		component |= ftxui::CatchEvent([&] (ftxui::Event event)
+		if (isFiltered)
 		{
-			return event.is_character() && std::isupper(event.character()[0]) ||
-				event.is_character() && !std::isalpha(event.character()[0]);
-		});
+			// Filter out digit, uppercase, and non-letter characters
+			component |= ftxui::CatchEvent([&] (ftxui::Event event)
+			{
+				return event.is_character() && std::isupper(event.character()[0]) ||
+					event.is_character() && !std::isalpha(event.character()[0]);
+			});
+		}
 
 		// Register when the 'ENTER' key is pressed
 		component |= ftxui::CatchEvent([&] (ftxui::Event event)

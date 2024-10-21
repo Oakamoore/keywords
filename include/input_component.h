@@ -10,7 +10,7 @@ namespace Keywords
 {
 	struct InputComponent
 	{
-		InputComponent(std::string_view placeholder = "type here");
+		InputComponent(std::string_view placeholder = "type here", bool isFiltered = true);
 
 		ftxui::Element draw() const { return component->Render(); }
 		void reset() { content.clear(); }
