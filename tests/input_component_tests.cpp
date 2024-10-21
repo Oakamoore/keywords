@@ -4,23 +4,31 @@
 #include <catch2/catch_test_macros.hpp>
 #include <string>
 #include <cctype>
+#include <array>
 
-TEST_CASE("Disallow certain input events")
+TEST_CASE("Disallow/Allow certain input events")
 {
-	Keywords::InputComponent inputComponent {};
+	enum : std::size_t {filtered, unfiltered, max_input_types};
 
-	// The component should be drawn without crashing
-	inputComponent.draw();
+	std::array<Keywords::InputComponent, max_input_types> inputComponents
+	{
+		Keywords::InputComponent {},			// Filtered
+		Keywords::InputComponent {{}, false}	// Unfiltered
+	};
+
+	// The components should be drawn without crashing
+	inputComponents[filtered].draw();
+	inputComponents[unfiltered].draw();
 
 	SECTION("Uppercase characters should be ignored")
 	{
 		for (char c {'A'}; c <= 'Z'; ++c)
 		{
 			// Uppercase character events should be caught 
-			REQUIRE(inputComponent.component->OnEvent(ftxui::Event::Character(c)) == true);
+			REQUIRE(inputComponents[filtered].component->OnEvent(ftxui::Event::Character(c)) == true);
 
 			// The input component should remain unchanged 
-			REQUIRE(inputComponent.content.empty());
+			REQUIRE(inputComponents[filtered].content.empty());
 		}
 	}
 
@@ -29,10 +37,10 @@ TEST_CASE("Disallow certain input events")
 		for (int i {0}; i <= 9; ++i)
 		{
 			// Digit character events should be caught
-			REQUIRE(inputComponent.component->OnEvent(ftxui::Event::Character(std::to_string(i))) == true);
+			REQUIRE(inputComponents[filtered].component->OnEvent(ftxui::Event::Character(std::to_string(i))) == true);
 
 			// The input component should remain unchanged
-			REQUIRE(inputComponent.content.empty());
+			REQUIRE(inputComponents[filtered].content.empty());
 		}
 	}
 
@@ -45,11 +53,26 @@ TEST_CASE("Disallow certain input events")
 			if (!std::isalpha(c) && !std::isdigit(c))
 			{
 				// Special character events should be caught
-				REQUIRE(inputComponent.component->OnEvent(ftxui::Event::Character(c)) == true);
+				REQUIRE(inputComponents[filtered].component->OnEvent(ftxui::Event::Character(c)) == true);
 
 				// The input component should remain unchanged
-				REQUIRE(inputComponent.content.empty());
+				REQUIRE(inputComponents[filtered].content.empty());
 			}
+		}
+	}
+
+	SECTION("No characters should be ignored")
+	{
+		for (char c {' '}; c <= '~'; ++c)
+		{
+			// All character events should be caught
+			REQUIRE(inputComponents[unfiltered].component->OnEvent(ftxui::Event::Character(c)) == true);
+
+			// The input component should be populated
+			REQUIRE_FALSE(inputComponents[unfiltered].content.empty());
+
+			// Clear the component
+			inputComponents[unfiltered].reset();
 		}
 	}
 }
