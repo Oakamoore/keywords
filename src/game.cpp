@@ -2,6 +2,7 @@
 #include "word_bank.h"
 #include "input_component.h"
 #include "main_menu.h"
+#include "leaderboard.h"
 #include "constants.h"
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/component/loop.hpp>
@@ -68,14 +69,25 @@ namespace
 		runCustomLoop(screen, component | ftxui::center, updateSession);
 	}
 
-	// void displayLeaderboard();
+	void displayLeaderboard()
+	{
+		// Unflitered input 
+		Keywords::InputComponent inputComponent {"Enter leaderboard entry name", false};
+
+		auto screen {ftxui::ScreenInteractive::Fullscreen()};
+		auto component {Keywords::getLeaderboard(inputComponent)};
+
+		auto updateLeaderboard {[&] { Keywords::Leaderboard::handleInput(inputComponent); }};
+
+		runCustomLoop(screen, component, updateLeaderboard);
+	}
 }
 
 namespace Keywords
 {
-	ftxui::Component getSessionComponent(const Session& session)
+	ftxui::Component getSessionComponent(Session& session)
 	{
-		auto component {ftxui::Renderer(session.getInputComponent(), [&]
+		auto component {ftxui::Renderer(session.getInputComponent().component, [&]
 		{
 			{
 				return session.draw();
@@ -109,15 +121,17 @@ namespace Keywords
 					bool hasLost {};
 					auto lose {[&] { hasLost = true; isPlaying = false; }};
 
-					// TODO: Add a try-catch block to catch 
-					// session file write failure
-					displaySession(config, back, lose);
-					
-					/*if(hasLost)
+					try
 					{
-						displayLeaderboard();
+						displaySession(config, back, lose);
+					
+						if(hasLost) 
+							displayLeaderboard();
 					}
-					*/
+					catch (const std::exception& e)
+					{
+						std::cerr << "Error: " << e.what();
+					}
 				}
 			}
 		}
