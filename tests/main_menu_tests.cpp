@@ -8,14 +8,6 @@
 #include <array>
 #include <string_view>
 
-namespace
-{
-	std::size_t getIndex(Keywords::SessionConfig::Difficulty difficulty)
-	{
-		return static_cast<std::size_t>(difficulty);
-	}
-}
-
 TEST_CASE("Empty the input component following 'ENTER' keypress")
 {
 	Keywords::SessionConfig config {};
@@ -68,7 +60,7 @@ TEST_CASE("Change the difficulty of a session")
 	SECTION("Retain the same previous difficulty")
 	{
 		// Fill input component with "easy"
-		inputComponent.content = Keywords::Constants::difficultyOptions[getIndex(easy)];
+		inputComponent.content = Keywords::Constants::difficultyOptions[easy];
 
 		component->OnEvent(ftxui::Event::Return);
 
@@ -84,7 +76,7 @@ TEST_CASE("Change the difficulty of a session")
 		config.difficulty = hard;
 
 		// Fill input component with "easy"
-		inputComponent.content = Keywords::Constants::difficultyOptions[getIndex(easy)];
+		inputComponent.content = Keywords::Constants::difficultyOptions[easy];
 
 		component->OnEvent(ftxui::Event::Return);
 
@@ -98,7 +90,7 @@ TEST_CASE("Change the difficulty of a session")
 	SECTION("Change difficulty to medium")
 	{
 		// Fill input component with "medium"
-		inputComponent.content = Keywords::Constants::difficultyOptions[getIndex(medium)];
+		inputComponent.content = Keywords::Constants::difficultyOptions[medium];
 
 		component->OnEvent(ftxui::Event::Return);
 
@@ -112,7 +104,7 @@ TEST_CASE("Change the difficulty of a session")
 	SECTION("Change difficulty to hard")
 	{
 		// Fill input component with "hard"
-		inputComponent.content = Keywords::Constants::difficultyOptions[getIndex(hard)];
+		inputComponent.content = Keywords::Constants::difficultyOptions[hard];
 
 		component->OnEvent(ftxui::Event::Return);
 
