@@ -60,7 +60,7 @@ namespace
 		auto onBack {[&] { back(); screen.Exit(); }};
 		auto onLose {[&] { lose(); screen.Exit(); }};
 
-		Keywords::Session session {config, Keywords::Constants::savedSessionStats, onBack, onLose};
+		Keywords::Session session {config, Keywords::Constants::saveFilePaths[config.difficulty], onBack, onLose};
 
 		auto component {Keywords::getSessionComponent(session)};
 
@@ -69,18 +69,18 @@ namespace
 		runCustomLoop(screen, component | ftxui::center, updateSession);
 	}
 
-	void displayLeaderboard()
+	void displayLeaderboard(const Keywords::SessionConfig& config)
 	{
 		// Unflitered input 
 		Keywords::InputComponent inputComponent {"Enter leaderboard entry name", false};
 
 		auto screen {ftxui::ScreenInteractive::Fullscreen()};
-		auto component {Keywords::getLeaderboard(inputComponent)};
+		auto component {Keywords::getLeaderboard(config, inputComponent)};
 
 		auto quit {[&] { screen.Exit(); }};
 		auto save {quit};
 
-		auto updateLeaderboard {[&] { Keywords::Leaderboard::handleInput(inputComponent, quit, save); }};
+		auto updateLeaderboard {[&] { Keywords::Leaderboard::handleInput(inputComponent, Keywords::Constants::saveFilePaths[config.difficulty], quit, save); }};
 
 		runCustomLoop(screen, component, updateLeaderboard);
 	}
@@ -102,6 +102,8 @@ namespace Keywords
 
 	void startGame()
 	{
+		//displayLeaderboard();
+
 		try
 		{
 			WordBank::readFromFile(Constants::wordList);
@@ -129,7 +131,7 @@ namespace Keywords
 						displaySession(config, back, lose);
 					
 						if(hasLost) 
-							displayLeaderboard();
+							displayLeaderboard(config);
 					}
 					catch (const std::exception& e)
 					{

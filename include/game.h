@@ -10,7 +10,7 @@ namespace Keywords
 
 	ftxui::Component getSessionComponent(Session& session);
 	ftxui::Component getMainMenuComponent(SessionConfig& config, InputComponent& inputComponent);
-	ftxui::Component getLeaderboard(InputComponent& inputComponent);
+	ftxui::Component getLeaderboard(const SessionConfig& config, InputComponent& inputComponent);
 }
 
 #endif
