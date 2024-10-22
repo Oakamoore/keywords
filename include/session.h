@@ -17,15 +17,13 @@ namespace Keywords
 {
 	struct SessionConfig
 	{
-		enum class Difficulty
+		enum Difficulty : std::size_t
 		{
 			easy,
 			medium,
 			hard,
 			max_difficulty
 		};
-
-		constexpr static auto difficultyCount {static_cast<std::size_t>(Difficulty::max_difficulty)};
 
 		Difficulty difficulty {};
 	};

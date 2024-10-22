@@ -15,10 +15,10 @@ namespace
 	{
 		using namespace Keywords;
 
-		for (std::size_t i {0}; i < SessionConfig::difficultyCount; ++i)
+		for (std::size_t i {0}; i < SessionConfig::max_difficulty; ++i)
 		{
 			if (str == Constants::difficultyOptions[i])
-				return static_cast<SessionConfig::Difficulty>(i);
+				return SessionConfig::Difficulty {i};
 		}
 
 		return {};

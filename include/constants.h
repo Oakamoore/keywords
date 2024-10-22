@@ -11,10 +11,10 @@ namespace Keywords
 {
 	namespace Constants
 	{
-		inline constexpr std::array<std::string_view, SessionConfig::difficultyCount> difficultyOptions 
+		inline constexpr std::array<std::string_view, SessionConfig::max_difficulty> difficultyOptions
 		{
-			"easy", 
-			"medium", 
+			"easy",
+			"medium",
 			"hard"
 		};
 

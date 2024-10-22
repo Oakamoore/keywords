@@ -82,9 +82,9 @@ namespace
 
 		switch (difficulty)
 		{
-			case medium:	return	difficultyOptions[static_cast<std::size_t>(medium)];
-			case hard:		return	difficultyOptions[static_cast<std::size_t>(hard)];
-			default:		return	difficultyOptions[static_cast<std::size_t>(easy)];
+			case medium:	return	difficultyOptions[medium];
+			case hard:		return	difficultyOptions[hard];
+			default:		return	difficultyOptions[easy];
 		}
 	}
 
@@ -222,11 +222,10 @@ namespace Keywords
 			word->updateColor(g_canvasWidth);
 		}
 
-		constexpr static std::array<double, SessionConfig::difficultyCount> s_spawnDelays {3.5, 4.5, 5.5};
+		constexpr static std::array<double, SessionConfig::max_difficulty> s_spawnDelays {3.5, 4.5, 5.5};
 
 		// The session has just begun, or the delay between spawns has passed 
-		if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >=
-			s_spawnDelays[static_cast<std::size_t>(m_config.difficulty)])
+		if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >= s_spawnDelays[m_config.difficulty])
 		{
 			addWords();
 			m_timeStamp = m_uptime.elapsed();
