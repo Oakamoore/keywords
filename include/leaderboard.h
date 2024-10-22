@@ -8,7 +8,8 @@ namespace Keywords
 {
 	namespace Leaderboard
 	{
-		void handleInput(InputComponent& inputComponent);
+		void handleInput(InputComponent& inputComponent, std::function<void()> quit,
+						 std::function<void()> save);
 	}
 }
 

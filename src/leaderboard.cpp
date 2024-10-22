@@ -9,9 +9,12 @@ namespace
 
 namespace Keywords
 {
-	void Leaderboard::handleInput([[maybe_unused]] InputComponent& inputComponent)
+	void Leaderboard::handleInput(InputComponent& inputComponent, std::function<void()> quit,
+								  std::function<void()> save)
 	{
-		// 'ENTER' and 'ESCAPE' both result in the component being quit
+		if (inputComponent.hasPressedEscape)
+			quit();
+
 
 
 	}

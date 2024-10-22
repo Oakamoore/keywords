@@ -77,7 +77,10 @@ namespace
 		auto screen {ftxui::ScreenInteractive::Fullscreen()};
 		auto component {Keywords::getLeaderboard(inputComponent)};
 
-		auto updateLeaderboard {[&] { Keywords::Leaderboard::handleInput(inputComponent); }};
+		auto quit {[&] { screen.Exit(); }};
+		auto save {quit};
+
+		auto updateLeaderboard {[&] { Keywords::Leaderboard::handleInput(inputComponent, quit, save); }};
 
 		runCustomLoop(screen, component, updateLeaderboard);
 	}
