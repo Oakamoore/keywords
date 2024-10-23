@@ -1,4 +1,5 @@
 #include "word_bank.h"
+#include "util.h"
 #include <cctype>
 #include <fstream>
 #include <exception>
@@ -14,23 +15,6 @@ namespace
 	bool hasUppercaseChars(std::string_view str)
 	{
 		return std::ranges::find_if(str, [] (unsigned char c) { return std::isupper(c); }) != str.end();
-	}
-
-	std::string convertToLowercase(std::string_view str)
-	{
-		if (!str.empty())
-		{
-			std::string lowercase(str.length(), ' ');
-
-			std::transform(str.begin(), str.end(), lowercase.begin(), [] (unsigned char c)
-			{
-				return static_cast<char>(std::tolower(c));
-			});
-
-			return lowercase;
-		}
-
-		return std::string {};
 	}
 
 	void clearWordBanks()
@@ -74,7 +58,7 @@ namespace Keywords
 					continue;
 
 				if (hasUppercaseChars(word))
-					word = convertToLowercase(word);
+					word = Util::convertToCase(word, ::tolower);
 
 				// Populate the appropriate word bank
 				if (isEasyWord(word))

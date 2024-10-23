@@ -2,6 +2,7 @@
 #include "random.h"
 #include "word_bank.h"
 #include "constants.h"
+#include "util.h"
 #include <ftxui/dom/canvas.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/color.hpp>
@@ -75,36 +76,6 @@ namespace
 		return std::abs(valueOne - valueTwo) <= deviation;
 	}
 
-	std::string_view getStringFromDifficulty(Keywords::SessionConfig::Difficulty difficulty)
-	{
-		using enum Keywords::SessionConfig::Difficulty;
-		using namespace Keywords::Constants;
-
-		switch (difficulty)
-		{
-			case medium:	return	difficultyOptions[medium];
-			case hard:		return	difficultyOptions[hard];
-			default:		return	difficultyOptions[easy];
-		}
-	}
-
-	std::string convertToUppercase(std::string_view str)
-	{
-		if (!str.empty())
-		{
-			std::string uppercase(str.length(), ' ');
-
-			std::transform(str.begin(), str.end(), uppercase.begin(), [] (unsigned char c)
-			{
-				return static_cast<char>(std::toupper(c));
-			});
-
-			return uppercase;
-		}
-
-		return std::string {};
-	}
-
 	std::ostream& operator<<(std::ostream& out, const Keywords::SessionStats& stats)
 	{
 		auto c {Keywords::Constants::statSeparator};
@@ -112,7 +83,7 @@ namespace
 		out << stats.score << c << stats.wordsTyped << c << stats.charsTyped << c
 			<< stats.wordsPerMinute << c << stats.charsPerSecond << c
 			<< toStringWithPrecision(stats.totalTime, 2) << c 
-			<< convertToUppercase(stats.difficulty) << c;
+			<< Keywords::Util::convertToCase(stats.difficulty, ::toupper) << c;
 
 		return out;
 	}
@@ -149,7 +120,7 @@ namespace Keywords
 				break;
 		}
 
-		m_stats.difficulty = getStringFromDifficulty(config.difficulty);
+		m_stats.difficulty = Util::getStringFromDifficulty(config.difficulty);
 	}
 
 	ftxui::Element Session::draw() const
@@ -182,7 +153,7 @@ namespace Keywords
 						hbox
 						({
 							text("Session Stats ("),
-							text(convertToUppercase(m_stats.difficulty)) | color(Color::Cyan),
+							text(Util::convertToCase(m_stats.difficulty, ::toupper)) | color(Color::Cyan),
 							text(")")
 						}) | center,
 
