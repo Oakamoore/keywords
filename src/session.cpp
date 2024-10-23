@@ -82,8 +82,7 @@ namespace
 
 		out << stats.score << c << stats.wordsTyped << c << stats.charsTyped << c
 			<< stats.wordsPerMinute << c << stats.charsPerSecond << c
-			<< toStringWithPrecision(stats.totalTime, 2) << c 
-			<< Keywords::Util::convertToCase(stats.difficulty, ::toupper) << c;
+			<< toStringWithPrecision(stats.totalTime, 2) << c;
 
 		return out;
 	}
