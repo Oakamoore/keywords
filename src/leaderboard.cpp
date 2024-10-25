@@ -34,8 +34,9 @@ namespace
 		table.SelectAll().Border(ftxui::ROUNDED);
 		table.SelectAll().Separator(ftxui::EMPTY);
 
-		// Add a border to the first column
+		// Add a border to the first column, and right align contents
 		table.SelectColumn(0).Border();
+		table.SelectColumn(0).DecorateCells(ftxui::align_right);
 
 		// Add a separator between each row
 		table.SelectRows(0, -1).SeparatorHorizontal();
@@ -52,10 +53,10 @@ namespace
 	ftxui::Element getTable([[maybe_unused]] const Keywords::SessionConfig& config)
 	{
 		// Form a 'std::vector<std::vector<std::string>>' using the above functions
-		std::vector<std::vector<std::string>> entries(10, std::vector<std::string>(9));
+		std::vector<std::vector<std::string>> entries(16, std::vector<std::string>(9));
 
 		// Headings
-		entries[0] = {"   ", "Score", "Words Typed", "Chars Typed", "WPM", "CPS", "Time", "Date-Time", "Username"};
+		entries[0] = {"  ", "Score", "Words Typed", "Chars Typed", "WPM", "CPS", "Time", "Date-Time", "Username"};
 
 		// Fill vector
 		for (std::size_t i {1}; i < entries.size(); ++i)
@@ -115,7 +116,7 @@ namespace Keywords
 		*/
 	}
 
-	ftxui::Component getLeaderboard(const SessionConfig& config, [[maybe_unused]] InputComponent& inputComponent)
+	ftxui::Component getLeaderboardComponent(const SessionConfig& config, [[maybe_unused]] InputComponent& inputComponent)
 	{
 		auto component {ftxui::Renderer(inputComponent.component, [&]
 		{
@@ -130,10 +131,9 @@ namespace Keywords
 					ftxui::text("LEADERBOARD"),
 					ftxui::text(" ("),
 					ftxui::text(Util::convertToCase(difficulty, ::toupper)) | ftxui::color(ftxui::Color::Cyan),
-					ftxui::text(")")
-				}) | ftxui::center,
-
-				ftxui::filler(), getTable(config), ftxui::filler(),
+					ftxui::text(")"), 
+				}) | ftxui::center, ftxui::filler(),
+				getTable(config) | ftxui::center, ftxui::filler(),
 				inputComponent.draw(), ftxui::filler(),
 			 });
 		})};

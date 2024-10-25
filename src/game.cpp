@@ -72,10 +72,10 @@ namespace
 	void displayLeaderboard(const Keywords::SessionConfig& config)
 	{
 		// Unflitered input 
-		Keywords::InputComponent inputComponent {"Enter leaderboard entry name", false};
+		Keywords::InputComponent inputComponent {"Enter Username", false};
 
 		auto screen {ftxui::ScreenInteractive::Fullscreen()};
-		auto component {Keywords::getLeaderboard(config, inputComponent)};
+		auto component {Keywords::getLeaderboardComponent(config, inputComponent)};
 
 		auto quit {[&] { screen.Exit(); }};
 		auto save {quit};
@@ -102,8 +102,14 @@ namespace Keywords
 
 	void startGame()
 	{
-		//displayLeaderboard();
 
+#if 1
+		SessionConfig config {SessionConfig::hard};
+		
+		displayLeaderboard(config);
+#endif
+
+#if 0
 		try
 		{
 			WordBank::readFromFile(Constants::wordList);
@@ -144,5 +150,6 @@ namespace Keywords
 		{
 			std::cerr << "Error: " << e.what();
 		}
+#endif
 	}
 }
