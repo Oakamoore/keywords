@@ -23,8 +23,6 @@ namespace Keywords
 			else
 				state.element |= ftxui::bold;
 
-			// Widen and center the element
-			state.element |= ftxui::borderEmpty;
 			state.element |= ftxui::center;
 
 			return state.element;

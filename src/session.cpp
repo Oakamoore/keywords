@@ -132,6 +132,7 @@ namespace Keywords
 			c.DrawText(word->x, word->y, word->text, word->color);
 
 		constexpr int inputBoxWidth {g_canvasWidth / 6};
+		constexpr int inputBoxHeight {5};
 		constexpr int statBoxWidth {(g_canvasWidth / g_canvasCellWidth) - inputBoxWidth};
 
 		using namespace ftxui;
@@ -145,7 +146,9 @@ namespace Keywords
 				canvas(std::move(c)) | border,
 				hbox
 				({
-					m_input.draw() | border | size(WIDTH, EQUAL, inputBoxWidth),
+					m_input.draw() | border 
+					| size(WIDTH, EQUAL, inputBoxWidth) 
+					| size(HEIGHT, EQUAL, inputBoxHeight),
 					separatorEmpty(),
 					window
 					(

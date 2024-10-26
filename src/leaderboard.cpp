@@ -98,7 +98,7 @@ namespace Keywords
 		}
 
 		/*
-		* 
+		* // Only if the most recent entry is a highscore
 		* if(inputComponent.hasPressedEnter)
 		* {
 		*	if(inputComponent.contents.empty())
@@ -118,23 +118,31 @@ namespace Keywords
 
 	ftxui::Component getLeaderboardComponent(const SessionConfig& config, [[maybe_unused]] InputComponent& inputComponent)
 	{
-		auto component {ftxui::Renderer(inputComponent.component, [&]
+		constexpr int inputBoxWidth {20};
+		constexpr int inputBoxHeight {3};
+		
+		using namespace ftxui;
+
+		auto component {Renderer(inputComponent.component, [&]
 		{
 			// Placed in the lambda body to prevent it dangling 
 			auto difficulty {Util::getStringFromDifficulty(config.difficulty)};
 			
-			return ftxui::vbox
+			return vbox
 			({
-				ftxui::filler(),
-				ftxui::hbox
+				filler(),
+				hbox
 				({
-					ftxui::text("LEADERBOARD"),
-					ftxui::text(" ("),
-					ftxui::text(Util::convertToCase(difficulty, ::toupper)) | ftxui::color(ftxui::Color::Cyan),
-					ftxui::text(")"), 
-				}) | ftxui::center, ftxui::filler(),
-				getTable(config) | ftxui::center, ftxui::filler(),
-				inputComponent.draw(), ftxui::filler(),
+					text("LEADERBOARD"),
+					text(" ("),
+					text(Util::convertToCase(difficulty, ::toupper)) | color(Color::Cyan),
+					text(")"), 
+				}) | center, filler(),
+				getTable(config) | center, filler(),
+				inputComponent.draw() | border 
+				| size(WIDTH, EQUAL, inputBoxWidth)
+				| size(HEIGHT, EQUAL, inputBoxHeight)
+				| notflex | center, filler(),
 			 });
 		})};
 

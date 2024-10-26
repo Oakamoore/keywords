@@ -135,21 +135,25 @@ namespace Keywords
 
 	ftxui::Component getMainMenuComponent(SessionConfig& config, InputComponent& inputComponent)
 	{
-		constexpr int inputBoxSize {25};
+		constexpr int inputBoxWidth {25};
+		constexpr int inputBoxHeight {5};
 
-		auto component {ftxui::Renderer(inputComponent.component, [&]
+		using namespace ftxui;
+
+		auto component {Renderer(inputComponent.component, [&]
 		{
-			return ftxui::vbox
+			return vbox
 			({
-				ftxui::filler(),
-				getLogo() | ftxui::center, ftxui::filler(),
-				getBorderLine(), getDescription(), getBorderLine(), ftxui::filler(),
-				getDifficultySelection(config), ftxui::filler(),
-				inputComponent.draw() | ftxui::border
-				| ftxui::size(ftxui::WIDTH, ftxui::EQUAL, inputBoxSize)
-				| ftxui::notflex | ftxui::center,
-				ftxui::filler(),
-			}) | ftxui::border;
+				filler(),
+				getLogo() | center, filler(),
+				getBorderLine(), getDescription(), getBorderLine(), filler(),
+				getDifficultySelection(config), filler(),
+				inputComponent.draw() | border 
+				| size(WIDTH, EQUAL, inputBoxWidth)
+				| size(HEIGHT, EQUAL, inputBoxHeight)
+				| notflex | center,
+				filler(),
+			}) | border;
 		})};
 		
 		return component;
