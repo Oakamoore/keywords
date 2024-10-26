@@ -80,8 +80,9 @@ namespace
 	{
 		auto c {Keywords::Constants::statSeparator};
 
-		out << stats.score << c << stats.wordsTyped << c << stats.charsTyped << c
-			<< stats.wordsPerMinute << c << stats.charsPerSecond << c
+		out << stats.score << c << stats.wordsTyped << c 
+			<< stats.charsTyped << c << stats.wordsPerMinute << c 
+			<< toStringWithPrecision(stats.charsPerSecond, 2) << c
 			<< toStringWithPrecision(stats.totalTime, 2) << c;
 
 		return out;
