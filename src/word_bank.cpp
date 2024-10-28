@@ -37,7 +37,7 @@ namespace Keywords
 			if (std::filesystem::is_empty(filePath))
 				throw std::runtime_error("Cannot read from an empty word bank");
 
-			std::ifstream file {filePath.string()};
+			std::ifstream file {filePath};
 
 			if (!file.is_open())
 				throw std::runtime_error("Failed to open word bank");
