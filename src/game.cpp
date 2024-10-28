@@ -4,6 +4,7 @@
 #include "main_menu.h"
 #include "leaderboard.h"
 #include "constants.h"
+#include "util.h"
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/component/loop.hpp>
 #include <chrono>
@@ -60,7 +61,7 @@ namespace
 		auto onBack {[&] { back(); screen.Exit(); }};
 		auto onLose {[&] { lose(); screen.Exit(); }};
 
-		Keywords::Session session {config, Keywords::Constants::saveFilePaths[config.difficulty], onBack, onLose};
+		Keywords::Session session {config, Keywords::Util::getFilePathFromDifficulty(config.difficulty), onBack, onLose};
 
 		auto component {Keywords::getSessionComponent(session)};
 
@@ -80,7 +81,7 @@ namespace
 		auto quit {[&] { screen.Exit(); }};
 		auto save {quit};
 
-		auto updateLeaderboard {[&] { Keywords::Leaderboard::handleInput(inputComponent, Keywords::Constants::saveFilePaths[config.difficulty], quit, save); }};
+		auto updateLeaderboard {[&] { Keywords::Leaderboard::handleInput(inputComponent, Keywords::Util::getFilePathFromDifficulty(config.difficulty), quit, save); }};
 
 		runCustomLoop(screen, component, updateLeaderboard);
 	}

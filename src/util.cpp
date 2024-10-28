@@ -18,6 +18,18 @@ namespace Keywords
 			}
 		}
 
+		const std::filesystem::path& getFilePathFromDifficulty(SessionConfig::Difficulty difficulty)
+		{
+			using enum Keywords::SessionConfig::Difficulty;
+
+			switch (difficulty)
+			{
+				case medium:	return Constants::saveFilePaths[medium];
+				case hard:		return Constants::saveFilePaths[hard];
+				default:		return Constants::saveFilePaths[easy];
+			}
+		}
+
 		std::string convertToCase(std::string_view str, std::function<int(int)> conversion)
 		{
 			if (!str.empty())
