@@ -214,4 +214,16 @@ namespace Keywords
 		//save();
 		//}
 	}
+
+	ftxui::Component getLeaderboardComponent(Leaderboard& leaderboard)
+	{
+		auto component {ftxui::Renderer(leaderboard.getInputComponent().component, [&]
+		{
+			{
+				return leaderboard.draw();
+			}
+		})};
+
+		return component;
+	}
 }

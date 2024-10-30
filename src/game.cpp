@@ -65,7 +65,7 @@ namespace
 
 		auto updateSession {[&] { session.update(); }};
 
-		runCustomLoop(screen, component | ftxui::center, updateSession);
+		runCustomLoop(screen, component, updateSession);
 	}
 
 	void displayLeaderboard(const Keywords::SessionConfig& config)
@@ -83,31 +83,6 @@ namespace
 
 namespace Keywords
 {
-	// TODO: Move these into their respective implementation files
-	ftxui::Component getSessionComponent(Session& session)
-	{
-		auto component {ftxui::Renderer(session.getInputComponent().component, [&]
-		{
-			{
-				return session.draw();
-			}
-		})};
-
-		return component;
-	}
-
-	ftxui::Component getLeaderboardComponent(Leaderboard& leaderboard)
-	{
-		auto component {ftxui::Renderer(leaderboard.getInputComponent().component, [&]
-		{
-			{
-				return leaderboard.draw();
-			}
-		})};
-
-		return component;
-	}
-
 	void startGame()
 	{
 

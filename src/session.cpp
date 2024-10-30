@@ -175,7 +175,7 @@ namespace Keywords
 			}) | size(WIDTH, EQUAL, g_canvasWidth / g_canvasCellWidth)
 		};
 
-		return frame;
+		return frame | center;
 	}
 
 	void Session::update()
@@ -374,5 +374,17 @@ namespace Keywords
 		file << m_stats << getFormattedDateTime()  << Constants::statSeparator << std::string {" "} << '\n';
 
 		file.close();
+	}
+
+	ftxui::Component getSessionComponent(Session& session)
+	{
+		auto component {ftxui::Renderer(session.getInputComponent().component, [&]
+		{
+			{
+				return session.draw();
+			}
+		})};
+
+		return component;
 	}
 }
