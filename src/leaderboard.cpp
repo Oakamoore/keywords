@@ -70,10 +70,11 @@ namespace
 
 namespace Keywords
 {
-	Leaderboard::Leaderboard(const SessionConfig& config, const std::filesystem::path& saveFilePath)
+	Leaderboard::Leaderboard(const SessionConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> quit)
 		: m_config {config}
 		, m_saveFilePath {saveFilePath}
 		, m_sortedEntries {g_leaderboardRows - 1}	
+		, m_quit {quit}
 		, m_input {"Enter Username", false} 
 	{
 		getEntriesFromFile();
@@ -125,7 +126,7 @@ namespace Keywords
 
 	void Leaderboard::update()
 	{
-
+		handleInput();
 	}
 
 	bool Leaderboard::isHighScorePresent() const
@@ -163,6 +164,7 @@ namespace Keywords
 		// Set the colours of given cells
 		table.SelectRow(0).DecorateCells(ftxui::color(ftxui::Color::GrayDark));
 		table.SelectColumn(0).DecorateCells(ftxui::color(ftxui::Color::GrayDark));
+		table.SelectColumn(-1).DecorateCells(ftxui::color(ftxui::Color::Yellow));
 	}
 
 	void Leaderboard::getEntriesFromFile()
@@ -192,26 +194,21 @@ namespace Keywords
 
 	void Leaderboard::handleInput()
 	{
-		//if (inputComponent.hasPressedEscape)
-		//{
-		//	/*appendNameToEntry(saveFilePath) - append "Untitled"*/
-		//	quit();
-		//}
+		// std::string_view placeholder {"Untitled"}
 
-		//
-		// // Only if the most recent entry is a highscore
-		//if (inputComponent.hasPressedEnter)
-		//{
-		//	{
-		//		appendNameToEntry(saveFilePath, "Untitled");
-		//	}
-		//else
-		//{
-		//	appendNameToEntry(saveFilePath, inputComponent.contents);
-		//}
+		if (m_input.hasPressedEscape)
+		{
+			m_quit();
 
-		//// Maybe wait a while before calling this
-		//save();
+			//appendNameToEntry(placeholder);
+		}
+
+		//if (m_input.hasPressedEscape)
+		//{
+		//	if(isHighScorePresent() && !m_input.content.empty())
+		//		appendNameToEntry(m_input.content);
+		//	else
+		//		appendNameToEntry(placeholder); 
 		//}
 	}
 

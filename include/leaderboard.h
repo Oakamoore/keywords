@@ -8,13 +8,14 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <functional>
 
 namespace Keywords
 {
 	class Leaderboard
 	{
 	public:
-		Leaderboard(const SessionConfig& config, const std::filesystem::path& saveFilePath);
+		Leaderboard(const SessionConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> quit);
 
 		ftxui::Element draw();
 		void update();
@@ -34,6 +35,7 @@ namespace Keywords
 		const std::filesystem::path m_saveFilePath {};
 		std::vector<std::vector<std::string>> m_unsortedEntries {};
 		std::vector<std::vector<std::string>> m_sortedEntries {};
+		std::function<void()> m_quit {};
 		InputComponent m_input {};
 
 	};

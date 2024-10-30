@@ -70,9 +70,12 @@ namespace
 
 	void displayLeaderboard(const Keywords::SessionConfig& config)
 	{
-		Keywords::Leaderboard leaderboard {config, Keywords::Util::getFilePathFromDifficulty(config.difficulty) /*onQuit*/};
-
 		auto screen {ftxui::ScreenInteractive::Fullscreen()};
+
+		auto onQuit {[&] { screen.Exit(); }};
+
+		Keywords::Leaderboard leaderboard {config, Keywords::Util::getFilePathFromDifficulty(config.difficulty), onQuit};
+
 		auto component {Keywords::getLeaderboardComponent(leaderboard)};
 
 		auto updateLeaderboard {[&] { leaderboard.update(); }};
