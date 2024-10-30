@@ -9,9 +9,7 @@
 #include <ftxui/component/loop.hpp>
 #include <chrono>
 #include <thread>
-#include <filesystem>
 #include <exception>
-#include <functional>
 
 namespace
 {
@@ -72,16 +70,12 @@ namespace
 
 	void displayLeaderboard(const Keywords::SessionConfig& config)
 	{
-		// Unflitered input 
-		Keywords::InputComponent inputComponent {"Enter Username", false};
+		Keywords::Leaderboard leaderboard {config, Keywords::Util::getFilePathFromDifficulty(config.difficulty) /*onQuit*/};
 
 		auto screen {ftxui::ScreenInteractive::Fullscreen()};
-		auto component {Keywords::getLeaderboardComponent(config, inputComponent)};
+		auto component {Keywords::getLeaderboardComponent(leaderboard)};
 
-		auto quit {[&] { screen.Exit(); }};
-		auto save {quit};
-
-		auto updateLeaderboard {[&] { Keywords::Leaderboard::handleInput(inputComponent, Keywords::Util::getFilePathFromDifficulty(config.difficulty), quit, save); }};
+		auto updateLeaderboard {[&] { leaderboard.update(); }};
 
 		runCustomLoop(screen, component, updateLeaderboard);
 	}
@@ -89,6 +83,7 @@ namespace
 
 namespace Keywords
 {
+	// TODO: Move these into their respective implementation files
 	ftxui::Component getSessionComponent(Session& session)
 	{
 		auto component {ftxui::Renderer(session.getInputComponent().component, [&]
@@ -101,11 +96,23 @@ namespace Keywords
 		return component;
 	}
 
+	ftxui::Component getLeaderboardComponent(Leaderboard& leaderboard)
+	{
+		auto component {ftxui::Renderer(leaderboard.getInputComponent().component, [&]
+		{
+			{
+				return leaderboard.draw();
+			}
+		})};
+
+		return component;
+	}
+
 	void startGame()
 	{
 
 #if 1
-		SessionConfig config {SessionConfig::hard};
+		SessionConfig config {};
 		
 		displayLeaderboard(config);
 #endif

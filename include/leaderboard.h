@@ -16,18 +16,17 @@ namespace Keywords
 	public:
 		Leaderboard(const SessionConfig& config, const std::filesystem::path& saveFilePath);
 
-		ftxui::Element draw() const;
+		ftxui::Element draw();
 		void update();
+
+		InputComponent& getInputComponent() { return m_input; }
 
 	private:
 		bool isHighScorePresent() const;
 
-		std::vector<std::string> readLinesFromFile(std::ifstream& file) const;
-		std::vector<std::string> separateStatsFromLine(const std::string& line) const;
-
 		void formatTable(ftxui::Table& table);
 		void getEntriesFromFile();
-		void getSortedEntries();
+		void sortEntries();
 		void handleInput();
 
 	private:
@@ -38,12 +37,6 @@ namespace Keywords
 		InputComponent m_input {};
 
 	};
-
-	/*namespace Leaderboard
-	{
-		void handleInput(InputComponent& inputComponent, const std::filesystem::path& saveFilePath,
-						 std::function<void()> quit, std::function<void()> save);
-	}*/
 }
 
 #endif
