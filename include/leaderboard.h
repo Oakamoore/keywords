@@ -18,7 +18,7 @@ namespace Keywords
 		Leaderboard(const SessionConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> quit);
 
 		ftxui::Element draw();
-		void update();
+		void handleInput();
 
 		InputComponent& getInputComponent() { return m_input; }
 
@@ -28,7 +28,6 @@ namespace Keywords
 		void formatTable(ftxui::Table& table);
 		void getEntriesFromFile();
 		void sortEntries();
-		void handleInput();
 
 	private:
 		const SessionConfig m_config {};

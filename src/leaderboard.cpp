@@ -81,10 +81,8 @@ namespace Keywords
 		sortEntries();
 
 		/*
-		* 
 		*	// The most recent entry is not a high score
-		*	m_input.component |= ftxui::Maybe(isHighScorePresent());
-		* 
+		*	m_input.component |= ftxui::Maybe([&] { return false; });
 		*/
 	}
 
@@ -124,11 +122,26 @@ namespace Keywords
 		return frame;
 	}
 
-	void Leaderboard::update()
+	void Leaderboard::handleInput()
 	{
-		handleInput();
-	}
+		// std::string_view placeholder {"Untitled"}
 
+		if (m_input.hasPressedEscape)
+		{
+			m_quit();
+
+			//appendNameToEntry(placeholder);
+		}
+
+		//if (m_input.hasPressedEscape)
+		//{
+		//	if(isHighScorePresent() && !m_input.content.empty())
+		//		appendNameToEntry(m_input.content);
+		//	else
+		//		appendNameToEntry(placeholder); 
+		//}
+	}
+	
 	bool Leaderboard::isHighScorePresent() const
 	{
 		// Return 'true' if 'm_sortedEntries' is full
@@ -190,26 +203,6 @@ namespace Keywords
 		{
 			return std::stoi(a[0]) > std::stoi(b[0]);
 		});
-	}
-
-	void Leaderboard::handleInput()
-	{
-		// std::string_view placeholder {"Untitled"}
-
-		if (m_input.hasPressedEscape)
-		{
-			m_quit();
-
-			//appendNameToEntry(placeholder);
-		}
-
-		//if (m_input.hasPressedEscape)
-		//{
-		//	if(isHighScorePresent() && !m_input.content.empty())
-		//		appendNameToEntry(m_input.content);
-		//	else
-		//		appendNameToEntry(placeholder); 
-		//}
 	}
 
 	ftxui::Component getLeaderboardComponent(Leaderboard& leaderboard)

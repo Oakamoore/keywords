@@ -78,7 +78,7 @@ namespace
 
 		auto component {Keywords::getLeaderboardComponent(leaderboard)};
 
-		auto updateLeaderboard {[&] { leaderboard.update(); }};
+		auto updateLeaderboard {[&] { leaderboard.handleInput(); }};
 
 		runCustomLoop(screen, component, updateLeaderboard);
 	}
@@ -89,13 +89,13 @@ namespace Keywords
 	void startGame()
 	{
 
-#if 1
+#if 0
 		SessionConfig config {};
 		
 		displayLeaderboard(config);
 #endif
 
-#if 0
+#if 1
 		try
 		{
 			WordBank::readFromFile(Constants::wordList);
