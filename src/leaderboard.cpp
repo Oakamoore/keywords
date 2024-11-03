@@ -66,6 +66,22 @@ namespace
 
 		return table;
 	}
+
+	ftxui::Element getDescription(bool hasEnterPrompt)
+	{
+		using namespace ftxui;
+
+		auto description
+		{
+			vbox
+			({
+				hbox({text("Press "), text("ESCAPE") | color(Color::Yellow), text(" to exit from the leaderboard.")}) | center,
+				(hasEnterPrompt ? hbox({text("Press "), text("ENTER") | color(Color::Yellow), text(" to confirm a typed username.")}) : emptyElement()) | center
+			}),
+		};
+
+		return description;
+	}
 }
 
 namespace Keywords
@@ -79,11 +95,6 @@ namespace Keywords
 	{
 		getEntriesFromFile();
 		sortEntries();
-
-		/*
-		*	// The most recent entry is not a high score
-		*	m_input.component |= ftxui::Maybe([&] { return false; });
-		*/
 	}
 
 	ftxui::Element Leaderboard::draw()
@@ -99,11 +110,17 @@ namespace Keywords
 		
 		using namespace ftxui;
 
+		auto inputBox
+		{
+			m_input.draw() | border | size(WIDTH, EQUAL, inputBoxWidth)
+			| size(HEIGHT, EQUAL, inputBoxHeight) | notflex | center
+		};
+
 		auto frame
 		{
 			vbox
 			({
-				filler(),
+				separatorEmpty(), filler(),
 				hbox
 				({
 					text("LEADERBOARD"),
@@ -112,10 +129,8 @@ namespace Keywords
 					text(")"),
 				}) | center, filler(),
 				table.Render() | center, filler(),
-				m_input.draw() | border
-				| size(WIDTH, EQUAL, inputBoxWidth)
-				| size(HEIGHT, EQUAL, inputBoxHeight)
-				| notflex | center, filler(),
+				getDescription(isHighScorePresent()), filler(),
+				(isHighScorePresent() ? inputBox : emptyElement()), filler(),
 			 })
 		};
 
@@ -133,7 +148,7 @@ namespace Keywords
 			//appendNameToEntry(placeholder);
 		}
 
-		//if (m_input.hasPressedEscape)
+		//if (m_input.hasPressedEnter)
 		//{
 		//	if(isHighScorePresent() && !m_input.content.empty())
 		//		appendNameToEntry(m_input.content);
@@ -144,11 +159,17 @@ namespace Keywords
 	
 	bool Leaderboard::isHighScorePresent() const
 	{
-		// Return 'true' if 'm_sortedEntries' is full
-		// and the score for the most recent entry 
-		// isn't greater than any in 'm_sortedEntries'
+		auto isFull {std::ranges::all_of(m_sortedEntries, [&] (const auto& a) { return !a.empty(); })};
+		
+		// Whether the most recent entry is a highscore
+		auto isPresent {std::ranges::find(m_sortedEntries, m_unsortedEntries.back()) != m_sortedEntries.end()};
 
-		return false;
+		if (!isFull)
+			return true;
+		else if (isFull && isPresent)
+			return true;
+		else 
+			return false;
 	}
 
 	void Leaderboard::formatTable(ftxui::Table& table)
