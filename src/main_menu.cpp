@@ -43,6 +43,7 @@ namespace
 				ftxui::text(R"(   ||  K  || ||  E  || ||  Y  || ||  W  || ||  O  || ||  R  || ||  D  || ||  S  ||   )"),
 				ftxui::text(R"(   ||_____|| ||_____|| ||_____|| ||_____|| ||_____|| ||_____|| ||_____|| ||_____||   )"),
 				ftxui::text(R"(   |/_____\| |/_____\| |/_____\| |/_____\| |/_____\| |/_____\| |/_____\| |/_____\|   )"),
+				ftxui::separatorEmpty(), ftxui::text("By Emmanuel Ogie") | ftxui::center
 			})
 		};
 
@@ -67,7 +68,7 @@ namespace
 				separatorEmpty(),
 				hbox
 				({
-				 text("During a game session, type the onscreen words, and stay below "), 
+				 text("During a game session, type the onscreen words, and stay below "),
 				 text(std::to_string(Keywords::Constants::maxMisses) + " misses.") | color(Color::Red)
 				}) | center,
 				separatorEmpty(),
