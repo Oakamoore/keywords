@@ -159,17 +159,13 @@ namespace Keywords
 	
 	bool Leaderboard::isHighScorePresent() const
 	{
+		// The number of entries equals or exceeds highscore count
 		auto isFull {std::ranges::all_of(m_sortedEntries, [&] (const auto& a) { return !a.empty(); })};
 		
 		// Whether the most recent entry is a highscore
 		auto isPresent {std::ranges::find(m_sortedEntries, m_unsortedEntries.back()) != m_sortedEntries.end()};
 
-		if (!isFull)
-			return true;
-		else if (isFull && isPresent)
-			return true;
-		else 
-			return false;
+		return ((!isFull || isFull && isPresent) ? true : false);
 	}
 
 	void Leaderboard::formatTable(ftxui::Table& table)
@@ -198,7 +194,17 @@ namespace Keywords
 		// Set the colours of given cells
 		table.SelectRow(0).DecorateCells(ftxui::color(ftxui::Color::GrayDark));
 		table.SelectColumn(0).DecorateCells(ftxui::color(ftxui::Color::GrayDark));
-		table.SelectColumn(-1).DecorateCells(ftxui::color(ftxui::Color::Yellow));
+
+		if (isHighScorePresent())
+		{
+			auto iter {std::ranges::find(m_sortedEntries, m_unsortedEntries.back())};
+
+			// Position of the newest highscore
+			// Offset to account for column headings
+			auto rowIndex {static_cast<int>(std::distance(m_sortedEntries.begin(), iter)) + 1};
+
+			table.SelectRow(rowIndex).DecorateCells(ftxui::color(ftxui::Color::Yellow));
+		}
 	}
 
 	void Leaderboard::getEntriesFromFile()
