@@ -76,11 +76,25 @@ namespace
 			vbox
 			({
 				hbox({text("Press "), text("ESCAPE") | color(Color::Yellow), text(" to exit from the leaderboard.")}) | center,
-				(hasEnterPrompt ? hbox({text("Press "), text("ENTER") | color(Color::Yellow), text(" to confirm a typed username.")}) : emptyElement()) | center
+				(hasEnterPrompt ? hbox({text("Press "), text("ENTER") | color(Color::Yellow), text(" to confirm a typed username (<= 8 characters).")}) : emptyElement()) | center
 			}),
 		};
 
 		return description;
+	}
+
+	ftxui::Element getSingleEntry(const std::vector<std::string>& entry)
+	{
+		ftxui::Elements elements {};
+
+		for (std::size_t i {}; i < entry.size(); ++i)
+		{
+			auto separator {i != entry.size() - 1 ? ',' : '\0'};
+
+			elements.push_back(ftxui::text("  " + entry[i] + separator));
+		}
+
+		return ftxui::vbox({ftxui::text("Session Stats:") | ftxui::center | ftxui::color(ftxui::Color::GrayDark), ftxui::hbox({elements}) | ftxui::center});
 	}
 }
 
@@ -101,7 +115,9 @@ namespace Keywords
 	{
 		ftxui::Table table {std::move(getTable(m_sortedEntries))};
 
-		formatTable(table);
+		bool isNewHighScore {isHighScorePresent()};
+
+		formatTable(table, isNewHighScore);
 
 		constexpr int inputBoxWidth {20};
 		constexpr int inputBoxHeight {3};
@@ -129,8 +145,9 @@ namespace Keywords
 					text(")"),
 				}) | center, filler(),
 				table.Render() | center, filler(),
-				getDescription(isHighScorePresent()), filler(),
-				(isHighScorePresent() ? inputBox : emptyElement()), filler(),
+				(!isNewHighScore ? getSingleEntry(m_unsortedEntries.back()) : emptyElement()), filler(),
+				getDescription(isNewHighScore), filler(),
+				(isNewHighScore ? inputBox : emptyElement()), filler(),
 			 })
 		};
 
@@ -139,17 +156,12 @@ namespace Keywords
 
 	void Leaderboard::handleInput()
 	{
-		// std::string_view placeholder {"Untitled"}
-
 		if (m_input.hasPressedEscape)
-		{
 			m_quit();
-
-			//appendNameToEntry(placeholder);
-		}
 
 		//if (m_input.hasPressedEnter)
 		//{
+		//  // Ensure the content doesn't contain the separator char
 		//	if(isHighScorePresent() && !m_input.content.empty())
 		//		appendNameToEntry(m_input.content);
 		//	else
@@ -168,7 +180,7 @@ namespace Keywords
 		return ((!isFull || isFull && isPresent) ? true : false);
 	}
 
-	void Leaderboard::formatTable(ftxui::Table& table)
+	void Leaderboard::formatTable(ftxui::Table& table, bool isHighlighted)
 	{
 		constexpr int minColumnWidth {12};
 
@@ -180,7 +192,7 @@ namespace Keywords
 		table.SelectAll().Border(ftxui::ROUNDED);
 		table.SelectAll().Separator(ftxui::EMPTY);
 
-		// Add a border to the first column, and right align contents
+		// Add a border to the first column, and right align its contents
 		table.SelectColumn(0).Border();
 		table.SelectColumn(0).DecorateCells(ftxui::align_right);
 
@@ -195,7 +207,7 @@ namespace Keywords
 		table.SelectRow(0).DecorateCells(ftxui::color(ftxui::Color::GrayDark));
 		table.SelectColumn(0).DecorateCells(ftxui::color(ftxui::Color::GrayDark));
 
-		if (isHighScorePresent())
+		if (isHighlighted)
 		{
 			auto iter {std::ranges::find(m_sortedEntries, m_unsortedEntries.back())};
 

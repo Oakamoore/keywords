@@ -25,7 +25,7 @@ namespace Keywords
 	private:
 		bool isHighScorePresent() const;
 
-		void formatTable(ftxui::Table& table);
+		void formatTable(ftxui::Table& table, bool isHighlighted);
 		void getEntriesFromFile();
 		void sortEntries();
 
