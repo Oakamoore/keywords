@@ -370,8 +370,8 @@ namespace Keywords
 		m_stats.wordsPerMinute = static_cast<int>(m_stats.wordsTyped / (m_stats.totalTime / 60));
 		m_stats.charsPerSecond = m_stats.charsTyped / m_stats.totalTime;
 
-		// The empty string represents a blank username
-		file << m_stats << getFormattedDateTime()  << Constants::statSeparator << std::string {" "} << '\n';
+		// The hypen string represents a blank username
+		file << m_stats << getFormattedDateTime()  << Constants::statSeparator << std::string {"-----"} << '\n';
 
 		file.close();
 	}
