@@ -140,7 +140,7 @@ TEST_CASE("Insert a new entry in a given save file", "[.realtime]")
 	const std::filesystem::path saveFilePath {"tests/resources/session_save_file.txt"};
 
 	// Erase the contents of the file 
-	std::fstream file {saveFilePath, std::ios::out};
+	std::ofstream file {saveFilePath};
 
 	REQUIRE(std::filesystem::is_empty(saveFilePath));
 
