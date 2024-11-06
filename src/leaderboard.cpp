@@ -9,6 +9,7 @@ namespace
 {
 	constexpr int g_leaderboardRows {16};
 	constexpr int g_leaderboardCols {9};
+	constexpr int g_inputLength {10};
 
 	std::vector<std::string> readLinesFromFile(std::ifstream& file)
 	{
@@ -76,7 +77,8 @@ namespace
 			vbox
 			({
 				hbox({text("Press "), text("ESCAPE") | color(Color::Yellow), text(" to exit from the leaderboard.")}) | center,
-				(hasEnterPrompt ? hbox({text("Press "), text("ENTER") | color(Color::Yellow), text(" to confirm a typed username (<= 8 characters).")}) : emptyElement()) | center
+				(hasEnterPrompt ? hbox({text("Press "), text("ENTER") | color(Color::Yellow), text(" to confirm a typed username (<= " 
+								+ std::to_string(g_inputLength) + "characters).")}) : emptyElement()) | center
 			}),
 		};
 
@@ -106,24 +108,43 @@ namespace
 		return stats;
 	}
 
-	void appendStringToFile(/*const std::filesystem::path& filePath, std::string_view str*/)
+	void appendStringToFile(const std::filesystem::path& filePath, std::string_view str)
 	{
-		// Read from the file into a string, until the separator character
-
-		// Add the string onto the end of the file 
-
-
-		// Open a file (ofstream overrides by default), when write to this file
-
-
-		/*if (!std::filesystem::exists(filePath))
+		if (!std::filesystem::exists(filePath))
 			throw std::runtime_error("Unable to locate save file");
 
-		std::ofstream file {filePath, std::ios::app};
+		std::ifstream input {filePath};
 
-		if (!file.is_open())
+		if (!input.is_open())
 			throw std::runtime_error("Failed to open save file");
-		*/
+
+		std::string line {};
+		std::string contents {};
+
+		// Read the entire file 
+		while (std::getline(input, line))
+			contents += line + '\n';
+
+		auto editIndex {contents.find_last_of(Keywords::Constants::statSeparator)};
+
+		// Remove the blank username from the most recent entry
+		if (editIndex != std::string::npos)
+			contents = contents.substr(0, editIndex);
+
+		input.close();
+
+		// Overwrite the save file 
+		std::ofstream output {filePath};
+
+		if (!output.is_open())
+			throw std::runtime_error("Failed to open save file");
+
+		// Append the username to the save file data
+		contents += Keywords::Constants::statSeparator + std::string {str} + '\n';
+
+		output << contents;
+
+		output.close();
 	}
 }
 
@@ -174,7 +195,6 @@ namespace Keywords
 					text(")"),
 				}) | center, filler(),
 				table.Render() | center, filler(),
-				// Call the full function here
 				(!isHighScorePresent() ? getSingleEntry(m_unsortedEntries.back()) : emptyElement()), filler(),
 				getDescription(m_isInputNeeded), filler(),
 				(m_isInputNeeded ? inputBox : emptyElement()), filler(),
@@ -199,22 +219,19 @@ namespace Keywords
 
 		if (m_input.hasPressedEnter)
 		{
-			// Check if 'm_isInputNeeded' is true before doing anything below
+			if (m_isInputNeeded && (!m_input.content.empty() && m_input.content.size() <= g_inputLength))
+			{
+				appendStringToFile(m_saveFilePath, m_input.content);
 
-			//constexpr int usernameLength {10};
+				// Hide the input component
+				m_isInputNeeded = false;
 
-			//if (isHighScorePresent() && (!m_input.content.empty() && m_input.content.size() <= usernameLength))
-				//appendStringToFile(m_saveFilePath, m_input.content);
+				m_unsortedEntries.clear();
 
-			// Change 'm_isInputNeeded' to false
-				// This hides the input component, so a new username can't be entered
-			m_isInputNeeded = false;
-
-			/*
-			* // Update the leaderboard entries
-			* getEntriesFromFile();
-			* sortEntries();
-			*/
+				// Update leaderboard entries
+				getEntriesFromFile();
+				sortEntries();
+			}
 		}
 	}
 	
