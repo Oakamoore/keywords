@@ -25,7 +25,7 @@ namespace Keywords
 	private:
 		bool isHighScorePresent() const;
 
-		void formatTable(ftxui::Table& table, bool isHighlighted);
+		void formatTable(ftxui::Table& table);
 		void getEntriesFromFile();
 		void sortEntries();
 
@@ -36,6 +36,7 @@ namespace Keywords
 		std::vector<std::vector<std::string>> m_sortedEntries {};
 		std::function<void()> m_quit {};
 		InputComponent m_input {};
+		bool m_isInputNeeded {};
 
 	};
 }

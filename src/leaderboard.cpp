@@ -108,6 +108,14 @@ namespace
 
 	void appendStringToFile(/*const std::filesystem::path& filePath, std::string_view str*/)
 	{
+		// Read from the file into a string, until the separator character
+
+		// Add the string onto the end of the file 
+
+
+		// Open a file (ofstream overrides by default), when write to this file
+
+
 		/*if (!std::filesystem::exists(filePath))
 			throw std::runtime_error("Unable to locate save file");
 
@@ -130,15 +138,15 @@ namespace Keywords
 	{
 		getEntriesFromFile();
 		sortEntries();
+
+		m_isInputNeeded = isHighScorePresent();
 	}
 
 	ftxui::Element Leaderboard::draw()
 	{
 		ftxui::Table table {std::move(getTable(m_sortedEntries))};
 
-		bool isNewHighScore {isHighScorePresent()};
-
-		formatTable(table, isNewHighScore);
+		formatTable(table);
 
 		constexpr int inputBoxWidth {20};
 		constexpr int inputBoxHeight {3};
@@ -166,9 +174,10 @@ namespace Keywords
 					text(")"),
 				}) | center, filler(),
 				table.Render() | center, filler(),
-				(!isNewHighScore ? getSingleEntry(m_unsortedEntries.back()) : emptyElement()), filler(),
-				getDescription(isNewHighScore), filler(),
-				(isNewHighScore ? inputBox : emptyElement()), filler(),
+				// Call the full function here
+				(!isHighScorePresent() ? getSingleEntry(m_unsortedEntries.back()) : emptyElement()), filler(),
+				getDescription(m_isInputNeeded), filler(),
+				(m_isInputNeeded ? inputBox : emptyElement()), filler(),
 			 })
 		};
 
@@ -180,15 +189,26 @@ namespace Keywords
 		if (m_input.hasPressedEscape)
 		{
 			m_quit();
-			// Add a newline to the file 
+
+			// Check if 'm_isInputNeeded' is true
+				// This means that the user has pressed is quitting without 
+				// entering a new username for a high score
+				// Therefore add a newline to the file 
+			// appendStringToFile(m_saveFilePath, '\n');
 		}
 
 		if (m_input.hasPressedEnter)
 		{
-			//constexpr int usernameLength {8};
+			// Check if 'm_isInputNeeded' is true before doing anything below
+
+			//constexpr int usernameLength {10};
 
 			//if (isHighScorePresent() && (!m_input.content.empty() && m_input.content.size() <= usernameLength))
 				//appendStringToFile(m_saveFilePath, m_input.content);
+
+			// Change 'm_isInputNeeded' to false
+				// This hides the input component, so a new username can't be entered
+			m_isInputNeeded = false;
 
 			/*
 			* // Update the leaderboard entries
@@ -209,7 +229,7 @@ namespace Keywords
 		return ((!isFull || isFull && isPresent) ? true : false);
 	}
 
-	void Leaderboard::formatTable(ftxui::Table& table, bool isHighlighted)
+	void Leaderboard::formatTable(ftxui::Table& table)
 	{
 		constexpr int minColumnWidth {12};
 
@@ -236,7 +256,7 @@ namespace Keywords
 		table.SelectRow(0).DecorateCells(ftxui::color(ftxui::Color::GrayDark));
 		table.SelectColumn(0).DecorateCells(ftxui::color(ftxui::Color::GrayDark));
 
-		if (isHighlighted)
+		if (isHighScorePresent())
 		{
 			auto iter {std::ranges::find(m_sortedEntries, m_unsortedEntries.back())};
 
