@@ -87,14 +87,35 @@ namespace
 	{
 		ftxui::Elements elements {};
 
-		for (std::size_t i {}; i < entry.size(); ++i)
+		for (std::size_t i {}; i < entry.size() - 1; ++i)
 		{
-			auto separator {i != entry.size() - 1 ? ',' : '\0'};
+			auto separator {i != entry.size() - 2 ? ',' : '\0'};
 
 			elements.push_back(ftxui::text("  " + entry[i] + separator));
 		}
 
-		return ftxui::vbox({ftxui::text("Session Stats:") | ftxui::center | ftxui::color(ftxui::Color::GrayDark), ftxui::hbox({elements}) | ftxui::center});
+		auto stats
+		{
+			ftxui::vbox
+			({
+				ftxui::text("Most Recent Session:") | ftxui::center | ftxui::color(ftxui::Color::GrayDark),
+				ftxui::hbox({elements}) | ftxui::center | ftxui::color(ftxui::Color::GrayDark)
+			 })
+		};
+
+		return stats;
+	}
+
+	void appendStringToFile(/*const std::filesystem::path& filePath, std::string_view str*/)
+	{
+		/*if (!std::filesystem::exists(filePath))
+			throw std::runtime_error("Unable to locate save file");
+
+		std::ofstream file {filePath, std::ios::app};
+
+		if (!file.is_open())
+			throw std::runtime_error("Failed to open save file");
+		*/
 	}
 }
 
@@ -157,16 +178,24 @@ namespace Keywords
 	void Leaderboard::handleInput()
 	{
 		if (m_input.hasPressedEscape)
+		{
 			m_quit();
+			// Add a newline to the file 
+		}
 
-		//if (m_input.hasPressedEnter)
-		//{
-		//  // Ensure the content doesn't contain the separator char
-		//	if(isHighScorePresent() && !m_input.content.empty())
-		//		appendNameToEntry(m_input.content);
-		//	else
-		//		appendNameToEntry(placeholder); 
-		//}
+		if (m_input.hasPressedEnter)
+		{
+			//constexpr int usernameLength {8};
+
+			//if (isHighScorePresent() && (!m_input.content.empty() && m_input.content.size() <= usernameLength))
+				//appendStringToFile(m_saveFilePath, m_input.content);
+
+			/*
+			* // Update the leaderboard entries
+			* getEntriesFromFile();
+			* sortEntries();
+			*/
+		}
 	}
 	
 	bool Leaderboard::isHighScorePresent() const
