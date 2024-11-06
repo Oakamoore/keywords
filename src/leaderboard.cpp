@@ -207,15 +207,7 @@ namespace Keywords
 	void Leaderboard::handleInput()
 	{
 		if (m_input.hasPressedEscape)
-		{
 			m_quit();
-
-			// Check if 'm_isInputNeeded' is true
-				// This means that the user has pressed is quitting without 
-				// entering a new username for a high score
-				// Therefore add a newline to the file 
-			// appendStringToFile(m_saveFilePath, '\n');
-		}
 
 		if (m_input.hasPressedEnter)
 		{
@@ -281,6 +273,7 @@ namespace Keywords
 			// Offset to account for column headings
 			auto rowIndex {static_cast<int>(std::distance(m_sortedEntries.begin(), iter)) + 1};
 
+			// Highlight the high score
 			table.SelectRow(rowIndex).DecorateCells(ftxui::color(ftxui::Color::Yellow));
 		}
 	}
