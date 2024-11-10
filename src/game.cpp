@@ -27,7 +27,7 @@ namespace
 
 			using namespace std::chrono_literals;
 
-			const auto frameDuration {1.0s / 30.0};
+			const auto frameDuration {1.0s / 15.0};
 
 			std::this_thread::sleep_for(frameDuration);
 
@@ -62,7 +62,6 @@ namespace
 		Keywords::Session session {config, Keywords::Util::getFilePathFromDifficulty(config.difficulty), onBack, onLose};
 
 		auto component {Keywords::getSessionComponent(session)};
-
 		auto updateSession {[&] { session.update(); }};
 
 		runCustomLoop(screen, component, updateSession);
@@ -71,13 +70,11 @@ namespace
 	void displayLeaderboard(const Keywords::SessionConfig& config)
 	{
 		auto screen {ftxui::ScreenInteractive::Fullscreen()};
-
 		auto onQuit {[&] { screen.Exit(); }};
 
 		Keywords::Leaderboard leaderboard {config, Keywords::Util::getFilePathFromDifficulty(config.difficulty), onQuit};
 
 		auto component {Keywords::getLeaderboardComponent(leaderboard)};
-
 		auto updateLeaderboard {[&] { leaderboard.handleInput(); }};
 
 		runCustomLoop(screen, component, updateLeaderboard);
