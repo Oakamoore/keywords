@@ -94,6 +94,24 @@ namespace
 
 		return std::format("{:%Y-%m-%d %X}", dateTime);
 	}
+
+	double getSpawnDelay(const Keywords::SessionConfig::Difficulty difficulty, int wordsTyped)
+	{
+		constexpr std::array<double, Keywords::SessionConfig::max_difficulty> spawnDelays {3.5, 4.5, 6.0};
+		constexpr std::array delayModifiers {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+		constexpr std::array<int, Keywords::SessionConfig::max_difficulty> wordSteps {20, 15, 10};
+
+		// Every 'wordStep' words typed
+		// the spawn delay is decreased
+		int index {wordsTyped / wordSteps[difficulty]};
+
+		if (index == 0)
+			return spawnDelays[difficulty];								// Base delay
+		else if (index - 1 >= delayModifiers.size())
+			return spawnDelays[difficulty] - delayModifiers.back();		// Smallest delay
+		else
+			return spawnDelays[difficulty] - delayModifiers[index - 1]; // Decreased delay
+	}
 }
 
 namespace Keywords
@@ -196,10 +214,8 @@ namespace Keywords
 			word->updateColor(g_canvasWidth);
 		}
 
-		constexpr static std::array<double, SessionConfig::max_difficulty> s_spawnDelays {3.5, 4.5, 5.5};
-
 		// The session has just begun, or the delay between spawns has passed 
-		if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >= s_spawnDelays[m_config.difficulty])
+		if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >= getSpawnDelay(m_config.difficulty, m_stats.wordsTyped))
 		{
 			addWords();
 			m_timeStamp = m_uptime.elapsed();
