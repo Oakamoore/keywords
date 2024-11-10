@@ -94,24 +94,6 @@ namespace
 
 		return std::format("{:%Y-%m-%d %X}", dateTime);
 	}
-
-	double getSpawnDelay(const Keywords::SessionConfig::Difficulty difficulty, int wordsTyped)
-	{
-		constexpr std::array<double, Keywords::SessionConfig::max_difficulty> spawnDelays {3.5, 4.5, 6.0};
-		constexpr std::array delayModifiers {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-		constexpr std::array<int, Keywords::SessionConfig::max_difficulty> wordSteps {20, 15, 10};
-
-		// Every 'wordStep' words typed
-		// the spawn delay is decreased
-		int index {wordsTyped / wordSteps[difficulty]};
-
-		if (index == 0)
-			return spawnDelays[difficulty];								// Base delay
-		else if (index - 1 >= delayModifiers.size())
-			return spawnDelays[difficulty] - delayModifiers.back();		// Smallest delay
-		else
-			return spawnDelays[difficulty] - delayModifiers[index - 1]; // Decreased delay
-	}
 }
 
 namespace Keywords
@@ -215,7 +197,7 @@ namespace Keywords
 		}
 
 		// The session has just begun, or the delay between spawns has passed 
-		if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >= getSpawnDelay(m_config.difficulty, m_stats.wordsTyped))
+		if (m_timeStamp == 0.0 || (m_uptime.elapsed() - m_timeStamp) >= getSpawnDelay())
 		{
 			addWords();
 			m_timeStamp = m_uptime.elapsed();
@@ -298,6 +280,24 @@ namespace Keywords
 		} while (isWordOverlapping(word) && repositionCount > 0);
 
 		return (repositionCount <= 0 ? std::optional<Word> {} : word);
+	}
+
+	double Session::getSpawnDelay() const
+	{
+		constexpr std::array<double, SessionConfig::max_difficulty> spawnDelays {3.5, 4.5, 6.0};
+		constexpr std::array<int, SessionConfig::max_difficulty> wordSteps {20, 15, 10};
+		constexpr std::array delayModifiers {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+
+		// Every 'wordStep' words typed
+		// the spawn delay is decreased
+		int index {m_stats.wordsTyped / wordSteps[m_config.difficulty]};
+
+		if (index == 0)
+			return spawnDelays[m_config.difficulty];							 // Base delay
+		else if (index - 1 >= delayModifiers.size())
+			return spawnDelays[m_config.difficulty] - delayModifiers.back();	 // Smallest delay
+		else
+			return spawnDelays[m_config.difficulty] - delayModifiers[index - 1]; // Decreased delay
 	}
 
 	void Session::addWords()

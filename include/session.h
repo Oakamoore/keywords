@@ -56,6 +56,7 @@ namespace Keywords
 		bool isWordOverlapping(const Word& word) const;
 		
 		std::optional<Word> getRandomWord() const;
+		double getSpawnDelay() const;
 
 		void addWords();
 		void eraseWords();
