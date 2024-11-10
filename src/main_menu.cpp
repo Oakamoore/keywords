@@ -43,7 +43,7 @@ namespace
 				ftxui::text(R"(   ||  K  || ||  E  || ||  Y  || ||  W  || ||  O  || ||  R  || ||  D  || ||  S  ||   )"),
 				ftxui::text(R"(   ||_____|| ||_____|| ||_____|| ||_____|| ||_____|| ||_____|| ||_____|| ||_____||   )"),
 				ftxui::text(R"(   |/_____\| |/_____\| |/_____\| |/_____\| |/_____\| |/_____\| |/_____\| |/_____\|   )"),
-				ftxui::separatorEmpty(), ftxui::text("By Emmanuel Ogie") | ftxui::center
+				ftxui::separatorEmpty(), ftxui::text("By Oakamoore") | ftxui::center
 			})
 		};
 
@@ -62,9 +62,9 @@ namespace
 				hbox({text("To begin a game session type "), text("play") | color(Color::Yellow), text(".")}) | center,
 				separatorEmpty(),
 				paragraphAlignCenter("To change the difficulty of a game session (when none are active), type either:"),
-				hbox({text("easy") | color(Color::Yellow), text(" (<=5 character words)")}) | center,
+				hbox({text("easy") | color(Color::Yellow), text(" (<= 5 character words)")}) | center,
 				hbox({text("medium") | color(Color::Yellow), text(" (>= 6 and <= 8 character words)")}) | center,
-				hbox({text("hard") | color(Color::Yellow), text(" (>=9 character words)")}) | center,
+				hbox({text("hard") | color(Color::Yellow), text(" (>= 9 character words)")}) | center,
 				separatorEmpty(),
 				hbox
 				({

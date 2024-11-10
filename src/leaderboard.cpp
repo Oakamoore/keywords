@@ -78,7 +78,7 @@ namespace
 			({
 				hbox({text("Press "), text("ESCAPE") | color(Color::Yellow), text(" to exit from the leaderboard.")}) | center,
 				(hasEnterPrompt ? hbox({text("Press "), text("ENTER") | color(Color::Yellow), text(" to confirm a typed username (<= " 
-								+ std::to_string(g_inputLength) + "characters).")}) : emptyElement()) | center
+								+ std::to_string(g_inputLength) + " characters).")}) : emptyElement()) | center
 			}),
 		};
 
@@ -194,6 +194,7 @@ namespace Keywords
 					text(Util::convertToCase(difficulty, ::toupper)) | color(Color::Cyan),
 					text(")"),
 				}) | center, filler(),
+				(m_isInputNeeded ? emptyElement() : separatorEmpty()),
 				table.Render() | center, filler(),
 				(!isHighScorePresent() ? getSingleEntry(m_unsortedEntries.back()) : emptyElement()), filler(),
 				getDescription(m_isInputNeeded), filler(),
