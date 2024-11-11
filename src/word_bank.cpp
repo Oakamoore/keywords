@@ -62,11 +62,11 @@ namespace Keywords
 
 				// Populate the appropriate word bank
 				if (isEasyWord(word))
-					easyWords.push_back(word);
+					easyWords.push_back(std::move(word));
 				else if (isMediumWord(word))
-					mediumWords.push_back(word);
+					mediumWords.push_back(std::move(word));
 				else
-					hardWords.push_back(word);
+					hardWords.push_back(std::move(word));
 			}
 
 			if (easyWords.empty() || mediumWords.empty() || hardWords.empty())
