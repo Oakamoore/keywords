@@ -13,29 +13,19 @@ namespace Keywords
 {
 	struct SessionTest
 	{
-		static const auto& getWords(const Keywords::Session& session) { return session.m_words; }
-		static int getMisses(const Keywords::Session& session) { return session.m_misses; }
+		static const auto& getWords(const Session& session) { return session.m_words; }
+		static int& getMisses(Session& session) { return session.m_misses; }
+		static double getSpawnDelay(const Session& session) { return session.getSpawnDelay(); }
+		static void addWords(Session& session) { session.addWords(); }
+		static void handleInput(Session& session) { session.handleInput(); }
 	};
 }
 
-namespace
-{
-	const std::filesystem::path g_wordList {"tests/resources/valid_words_file.txt"};
-
-	void runSession(Keywords::Session& session)
-	{
-		// Wait for the session to end
-		while (Keywords::SessionTest::getMisses(session) != Keywords::Constants::maxMisses)
-		{
-			// Spawn a batch of words
-			session.update();
-		}
-	}
-}
+const std::filesystem::path g_wordList {"tests/resources/valid_words_file.txt"};
 
 TEST_CASE("Respond appropriately to a typed word")
 {
-	Keywords::Session session {Keywords::SessionConfig {}, {}, nullptr, nullptr};
+	Keywords::Session session {{}, {}, nullptr, nullptr};
 	
 	auto component {Keywords::getSessionComponent(session)};
 
@@ -98,7 +88,7 @@ TEST_CASE("Allow quitting from a session")
 	bool isPlaying {true};
 	auto back {[&] { isPlaying = false; }};
 
-	Keywords::Session session {Keywords::SessionConfig {}, {}, back, nullptr};
+	Keywords::Session session {{}, {}, back, nullptr};
 
 	auto component {Keywords::getSessionComponent(session)};
 
@@ -112,30 +102,56 @@ TEST_CASE("Allow quitting from a session")
 	REQUIRE(isPlaying == false);
 }
 
-TEST_CASE("End a session when a given lose condition is met", "[.realtime]")
+TEST_CASE("Gradually decrease word spawn delay")
 {
+	Keywords::Session session {{}, {}, nullptr, nullptr};
+
+	auto delay {Keywords::SessionTest::getSpawnDelay(session)};
+	auto component {Keywords::getSessionComponent(session)};
+
+	int iterations {10};
+
+	while (iterations--)
+	{
+		// Spawn a batch of words
+		Keywords::SessionTest::addWords(session);
+
+		// Type out the spawned words
+		for (const auto& word : Keywords::SessionTest::getWords(session))
+		{
+			if(word)
+				session.getInputComponent().content = word->text;
+
+			component->OnEvent(ftxui::Event::Return);
+
+			Keywords::SessionTest::handleInput(session);
+		}
+	}
+
+	// The delay should decrease after a certain amount of words are typed
+	REQUIRE(delay > Keywords::SessionTest::getSpawnDelay(session));
+}
+
+TEST_CASE("End a session when a given lose condition is met")
+{
+	Keywords::WordBank::readFromFile(g_wordList);
+
 	bool hasLost {};
 	auto lose {[&] { hasLost = true; }};
 
-	Keywords::Session session {Keywords::SessionConfig {}, {}, nullptr, lose};
+	Keywords::Session session {{}, {}, nullptr, lose};
 
-	// Populate the word bank
-	Keywords::WordBank::readFromFile(g_wordList);
-
-	runSession(session);
+	// Meet the lose condition
+	Keywords::SessionTest::getMisses(session) = Keywords::Constants::maxMisses;
 
 	REQUIRE_THROWS_MATCHES(session.update(), std::runtime_error, Catch::Matchers::Message("Unable to locate save file"));
 
 	REQUIRE(hasLost == true);
 }
 
-TEST_CASE("Insert a new entry in a given save file", "[.realtime]")
+TEST_CASE("Insert a new entry in a given save file")
 {
-	// Populate the word bank
 	Keywords::WordBank::readFromFile(g_wordList);
-
-	// Prevents 'std::bad_function_call' from being thrown
-	auto emptyFunction {[] { ; }};
 
 	const std::filesystem::path saveFilePath {"tests/resources/session_save_file.txt"};
 
@@ -144,9 +160,13 @@ TEST_CASE("Insert a new entry in a given save file", "[.realtime]")
 
 	REQUIRE(std::filesystem::is_empty(saveFilePath));
 
-	Keywords::Session session {Keywords::SessionConfig {}, saveFilePath, nullptr, emptyFunction};
+	// Prevents 'std::bad_function_call' from being thrown
+	auto emptyFunction {[] { ; }};
 
-	runSession(session);
+	Keywords::Session session {{}, saveFilePath, nullptr, emptyFunction};
+
+	// Meet the lose condition
+	Keywords::SessionTest::getMisses(session) = Keywords::Constants::maxMisses;
 
 	// Writes to the save file 
 	session.update();
