@@ -284,7 +284,7 @@ namespace Keywords
 
 	double Session::getSpawnDelay() const
 	{
-		constexpr std::array<double, SessionConfig::max_difficulty> spawnDelays {3.5, 4.5, 6.0};
+		constexpr std::array<double, SessionConfig::max_difficulty> spawnDelays {3.5, 5.5, 7.5};
 		constexpr std::array<int, SessionConfig::max_difficulty> wordSteps {20, 15, 10};
 		constexpr std::array delayModifiers {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 
