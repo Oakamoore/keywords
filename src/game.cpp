@@ -5,6 +5,7 @@
 #include "leaderboard.h"
 #include "constants.h"
 #include "util.h"
+#include "transition.h"
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/component/loop.hpp>
 #include <chrono>
@@ -119,8 +120,11 @@ namespace Keywords
 					{
 						displaySession(config, back, lose);
 					
-						if(hasLost) 
+						if (hasLost)
+						{
+							displayTransition();
 							displayLeaderboard(config);
+						}
 					}
 					catch (const std::exception& e)
 					{
