@@ -22,8 +22,6 @@ namespace
 {
 	constexpr int g_canvasWidth {240};
 	constexpr int g_canvasHeight {100};
-	constexpr int g_canvasCellWidth {2};
-	constexpr int g_canvasCellHeight {4};
 
 	std::string toStringWithPrecision(const auto& value, int precision)
 	{
@@ -53,7 +51,7 @@ namespace
 	{
 		std::vector<int> canvasRows {};
 
-		for (int i {0}; i < g_canvasHeight; i += g_canvasCellHeight)
+		for (int i {0}; i < g_canvasHeight; i += Keywords::Constants::canvasCellHeight)
 			canvasRows.push_back(i);
 
 		return canvasRows;
@@ -62,13 +60,13 @@ namespace
 	int getWordStartPosition(std::string_view str)
 	{
 		// Minimum horizontal starting position for a word to appear off screen
-		return -static_cast<int>(str.length() * g_canvasCellWidth);
+		return -static_cast<int>(str.length() * Keywords::Constants::canvasCellWidth);
 	}
 
 	int getWordEndPosition(const Keywords::Word& word)
 	{
 		// The canvas cell occupied by the last letter of a given word
-		return static_cast<int>(word.x + word.text.length() * g_canvasCellWidth);
+		return static_cast<int>(word.x + word.text.length() * Keywords::Constants::canvasCellWidth);
 	}
 
 	bool isWithinRange(int valueOne, int valueTwo, int deviation)
@@ -134,7 +132,7 @@ namespace Keywords
 
 		constexpr int inputBoxWidth {g_canvasWidth / 6};
 		constexpr int inputBoxHeight {5};
-		constexpr int statBoxWidth {(g_canvasWidth / g_canvasCellWidth) - inputBoxWidth};
+		constexpr int statBoxWidth {(g_canvasWidth / Constants::canvasCellWidth) - inputBoxWidth};
 
 		using namespace ftxui;
 
@@ -172,7 +170,7 @@ namespace Keywords
 
 					) | size(WIDTH, EQUAL, statBoxWidth),
 				}), separatorEmpty()
-			}) | size(WIDTH, EQUAL, g_canvasWidth / g_canvasCellWidth)
+			}) | size(WIDTH, EQUAL, g_canvasWidth / Constants::canvasCellWidth)
 		};
 
 		return frame | center;

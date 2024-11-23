@@ -25,6 +25,10 @@ namespace Keywords
 			"resources/hard-session-save-file.txt"
 		};
 
+		// The dimensions of an 'ftxui::Canvas' cell
+		inline constexpr int canvasCellWidth {2};
+		inline constexpr int canvasCellHeight {4};
+
 		inline constexpr int maxMisses {10};
 		inline constexpr std::string_view playInput {"play"};
 		inline const auto wordDeletionEvent {ftxui::Event::Special("\x17")}; // CTRL + W 
