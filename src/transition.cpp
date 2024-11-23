@@ -1,4 +1,5 @@
 #include "transition.h"
+#include "constants.h"
 #include <ftxui/screen/screen.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/dom/canvas.hpp>
@@ -6,9 +7,6 @@
 
 namespace
 {
-	constexpr int g_screenClearance {50};
-	constexpr int g_radiusModifier {2};
-
 	void printScreen(ftxui::Screen& screen)
 	{
 		static std::string resetPosition {};
@@ -21,37 +19,8 @@ namespace
 	void drawCanvasToScreen(ftxui::Screen& screen, ftxui::Canvas& canvas)
 	{
 		ftxui::Render(screen, ftxui::canvas(canvas));
+
 		printScreen(screen);
-	}
-
-	void fillScreen(ftxui::Screen& screen, ftxui::Canvas& canvas)
-	{
-		int radius {};
-
-		while (radius < screen.dimx() + g_screenClearance)
-		{
-			// A filled circle increasing in size
-			canvas.DrawBlockCircleFilled(screen.dimx(), screen.dimy() * 2, radius, ftxui::Color::Red);
-
-			drawCanvasToScreen(screen, canvas);
-
-			radius += g_radiusModifier;
-		}
-	}
-
-	void reverseFillScreen(ftxui::Screen& screen, ftxui::Canvas& canvas)
-	{
-		int radius {screen.dimx() + g_screenClearance};
-
-		while (radius > 0)
-		{
-			// An unfilled circle decreasing in size
-			canvas.DrawBlockCircle(screen.dimx(), screen.dimy() * 2, radius, ftxui::Color::Black);
-
-			drawCanvasToScreen(screen, canvas);
-
-			radius -= g_radiusModifier;
-		}
 	}
 }
 
@@ -65,7 +34,31 @@ namespace Keywords
 		auto screen {ftxui::Screen::Create(ftxui::Dimension::Full())};
 		auto canvas {ftxui::Canvas {canvasWidth, canvasHeight}};
 
-		fillScreen(screen, canvas);
-		reverseFillScreen(screen, canvas);
+		int maxY {screen.dimy() * Constants::canvasCellHeight};
+		int maxX {screen.dimx() * Constants::canvasCellWidth};
+
+		// Increment through and fill each canvas cell
+		for (int x {0}; x <= screen.dimx(); ++x)
+		{
+			for (int y {0}; y <= maxY; ++y)
+			{
+				canvas.DrawBlock(x, y, true, ftxui::Color::Red);
+				canvas.DrawBlock(maxX - x, y, true, ftxui::Color::Red);
+			}
+
+			drawCanvasToScreen(screen, canvas);
+		}
+
+		// Increment through and clear each canvas cell
+		for (int x {screen.dimx()}; x >= 0; --x)
+		{
+			for (int y {0}; y <= maxY; ++y)
+			{
+				canvas.DrawBlock(x, y, true, ftxui::Color::Black);
+				canvas.DrawBlock(maxX - x, y, true, ftxui::Color::Black);
+			}
+
+			drawCanvasToScreen(screen, canvas);
+		}
 	}
 }
