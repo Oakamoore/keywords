@@ -20,9 +20,9 @@ namespace Keywords
 
 		inline const std::array<std::filesystem::path, SessionConfig::max_difficulty> saveFilePaths
 		{
-			"resources/easy-session-save-file.txt",
-			"resources/medium-session-save-file.txt",
-			"resources/hard-session-save-file.txt"
+			"resources/save_files/easy_session_save_file.txt",
+			"resources/save_files/medium_session_save_file.txt",
+			"resources/save_files/hard_session_save_file.txt"
 		};
 
 		// The dimensions of an 'ftxui::Canvas' cell
@@ -34,7 +34,7 @@ namespace Keywords
 		inline const auto wordDeletionEvent {ftxui::Event::Special("\x17")}; // CTRL + W 
 		inline constexpr char statSeparator {'|'};
 		
-		inline const std::filesystem::path wordList {"resources/us-english-language-dictionary.txt"};
+		inline const std::filesystem::path wordList {"resources/word_bank/us_english_language_dictionary.txt"};
 	}
 }
 
