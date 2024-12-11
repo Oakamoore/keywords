@@ -3,7 +3,7 @@
 
 #include "miniaudio.h"
 #include <filesystem>
-#include <cstddef>
+#include <array>
 
 namespace Keywords
 {
@@ -13,7 +13,6 @@ namespace Keywords
 		{
 			main_menu,
 			session,
-			transition,
 			leaderboard,
 			max_track_id
 		};
@@ -21,6 +20,7 @@ namespace Keywords
 		class Track
 		{
 		public:
+			Track() = default;
 			Track(const std::filesystem::path& filePath);
 			~Track();
 
@@ -33,9 +33,6 @@ namespace Keywords
 			ma_device m_device {};
 
 		};
-
-		//inline std::array<Track, TrackID::max_track_id> tracks {};
-		void readFromFile();
 	}
 }
 

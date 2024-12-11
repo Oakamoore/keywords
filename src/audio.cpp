@@ -66,11 +66,5 @@ namespace Keywords
 			if (ma_device_is_started(&m_device))
 				ma_device_stop(&m_device);
 		}
-
-		void readFromFile()
-		{
-
-		}
 	}
 }
-
