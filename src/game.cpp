@@ -6,6 +6,7 @@
 #include "constants.h"
 #include "util.h"
 #include "transition.h"
+#include "audio.h"
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/component/loop.hpp>
 #include <chrono>
@@ -16,9 +17,14 @@ namespace
 {
 	void runCustomLoop(ftxui::ScreenInteractive& screen,
 					   ftxui::Component component,
-					   const auto& update)
+					   const auto& update,
+					   Keywords::Audio::TrackID trackID)
 	{
 		ftxui::Loop loop {&screen, component};
+
+		Keywords::Audio::Track track {Keywords::Constants::audioFilePaths[trackID]};
+
+		track.play();
 
 		while(!loop.HasQuitted())
 		{
@@ -36,6 +42,8 @@ namespace
 			// without interfering with events
 			screen.RequestAnimationFrame();
 		}
+
+		track.stop();
 	}
 
 	void displayMainMenu(Keywords::SessionConfig& config, const auto& quit, const auto& play)
@@ -50,7 +58,7 @@ namespace
 
 		auto updateMainMenu {[&] { Keywords::MainMenu::handleInput(config, inputComponent, onQuit, onPlay); }};
 
-		runCustomLoop(screen, component, updateMainMenu);
+		runCustomLoop(screen, component, updateMainMenu, Keywords::Audio::main_menu);
 	}
 
 	void displaySession(const Keywords::SessionConfig& config, const auto& back, const auto& lose)
@@ -65,7 +73,7 @@ namespace
 		auto component {Keywords::getSessionComponent(session)};
 		auto updateSession {[&] { session.update(); }};
 
-		runCustomLoop(screen, component, updateSession);
+		runCustomLoop(screen, component, updateSession, Keywords::Audio::session);
 	}
 
 	void displayLeaderboard(const Keywords::SessionConfig& config)
@@ -78,7 +86,7 @@ namespace
 		auto component {Keywords::getLeaderboardComponent(leaderboard)};
 		auto updateLeaderboard {[&] { leaderboard.handleInput(); }};
 
-		runCustomLoop(screen, component, updateLeaderboard);
+		runCustomLoop(screen, component, updateLeaderboard, Keywords::Audio::leaderboard);
 	}
 }
 
@@ -86,17 +94,9 @@ namespace Keywords
 {
 	void startGame()
 	{
-
-#if 0
-		SessionConfig config {};
-		
-		displayLeaderboard(config);
-#endif
-
-#if 1
 		try
 		{
-			WordBank::readFromFile(Constants::wordList);
+			WordBank::readFromFile(Constants::wordBankFilePath);
 
 			SessionConfig config {};
 
@@ -119,7 +119,7 @@ namespace Keywords
 					try
 					{
 						displaySession(config, back, lose);
-					
+
 						if (hasLost)
 						{
 							displayTransition();
@@ -137,6 +137,5 @@ namespace Keywords
 		{
 			std::cerr << "Error: " << e.what();
 		}
-#endif
 	}
 }
