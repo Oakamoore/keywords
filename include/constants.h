@@ -33,7 +33,12 @@ namespace Keywords
 			"resources/audio/leaderboard_track.mp3"
 		};
 
-		inline const std::filesystem::path wordBankFilePath {"resources/word_bank/us_english_language_dictionary.txt"};
+		inline const std::array<std::filesystem::path, SessionConfig::max_difficulty> wordBankPaths
+		{
+			"resources/word_bank/easy_words.txt",
+			"resources/word_bank/medium_words.txt",
+			"resources/word_bank/hard_words.txt"
+		};
 
 		// The dimensions of an 'ftxui::Canvas' cell
 		inline constexpr int canvasCellWidth {2};
