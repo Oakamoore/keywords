@@ -1,6 +1,7 @@
 #ifndef KEYWORDS_SESSION_H
 #define KEYWORDS_SESSION_H
 
+#include "game_config.h"
 #include "input_component.h"
 #include "word.h"
 #include "timer.h"
@@ -29,7 +30,7 @@ namespace Keywords
 	class Session
 	{
 	public:
-		Session(const SessionConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> back, std::function<void()> lose);
+		Session(const GameConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> back, std::function<void()> lose);
 
 		ftxui::Element draw() const;
 		void update();
@@ -52,7 +53,7 @@ namespace Keywords
 		void writeToFile();
 
 	private:
-		const SessionConfig m_config {};
+		const GameConfig m_config {};
 		const std::filesystem::path m_saveFilePath {};
 		const std::vector<std::string>* m_wordBank {};
 		std::vector<std::unique_ptr<Word>> m_words {};

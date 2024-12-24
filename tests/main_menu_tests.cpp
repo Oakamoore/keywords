@@ -1,5 +1,5 @@
 #include "game.h"
-#include "session.h"
+#include "game_config.h"
 #include "input_component.h"
 #include "main_menu.h"
 #include "constants.h"
@@ -10,7 +10,7 @@
 
 TEST_CASE("Empty the input component following 'ENTER' keypress")
 {
-	Keywords::SessionConfig config {};
+	Keywords::GameConfig config {};
 	Keywords::InputComponent inputComponent {};
 
 	auto component {Keywords::getMainMenuComponent(config, inputComponent)};
@@ -18,7 +18,7 @@ TEST_CASE("Empty the input component following 'ENTER' keypress")
 	// The component should render without crashing
 	component->Render();
 
-	using enum Keywords::SessionConfig::Difficulty;
+	using enum Keywords::GameConfig::Difficulty;
 
 	// The default difficulty should be easy
 	REQUIRE(config.difficulty == easy);
@@ -44,10 +44,10 @@ TEST_CASE("Empty the input component following 'ENTER' keypress")
 
 TEST_CASE("Change the difficulty of a session")
 {
-	Keywords::SessionConfig config {}; 
+	Keywords::GameConfig config {}; 
 	Keywords::InputComponent inputComponent {};
 
-	using enum Keywords::SessionConfig::Difficulty;
+	using enum Keywords::GameConfig::Difficulty;
 
 	// The default difficulty should be "easy"
 	REQUIRE(config.difficulty == easy);
@@ -118,7 +118,7 @@ TEST_CASE("Change the difficulty of a session")
 
 TEST_CASE("Allow quitting from the main menu")
 {
-	Keywords::SessionConfig config {};
+	Keywords::GameConfig config {};
 	Keywords::InputComponent inputComponent {};
 
 	auto component {Keywords::getMainMenuComponent(config, inputComponent)};
@@ -141,7 +141,7 @@ TEST_CASE("Allow quitting from the main menu")
 
 TEST_CASE("Allow a game session to be started")
 {
-	Keywords::SessionConfig config {};
+	Keywords::GameConfig config {};
 	Keywords::InputComponent inputComponent {};
 
 	auto component {Keywords::getMainMenuComponent(config, inputComponent)};

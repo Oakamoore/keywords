@@ -1,7 +1,7 @@
 #ifndef KEYWORDS_LEADERBOARD_H
 #define KEYWORDS_LEADERBOARD_H
 
-#include "session.h"
+#include "game_config.h"
 #include "input_component.h"
 #include <ftxui/dom/node.hpp>
 #include <ftxui/dom/table.hpp>
@@ -15,7 +15,7 @@ namespace Keywords
 	class Leaderboard
 	{
 	public:
-		Leaderboard(const SessionConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> quit);
+		Leaderboard(const GameConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> quit);
 
 		ftxui::Element draw();
 		void handleInput();
@@ -30,7 +30,7 @@ namespace Keywords
 		void sortEntries();
 
 	private:
-		const SessionConfig m_config {};
+		const GameConfig m_config {};
 		const std::filesystem::path m_saveFilePath {};
 		std::vector<std::vector<std::string>> m_unsortedEntries {};
 		std::vector<std::vector<std::string>> m_sortedEntries {};

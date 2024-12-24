@@ -6,9 +6,9 @@ namespace Keywords
 {
 	namespace Util
 	{
-		std::string_view getStringFromDifficulty(SessionConfig::Difficulty difficulty)
+		std::string_view getStringFromDifficulty(GameConfig::Difficulty difficulty)
 		{
-			using enum Keywords::SessionConfig::Difficulty;
+			using enum Keywords::GameConfig::Difficulty;
 
 			switch (difficulty)
 			{
@@ -18,9 +18,9 @@ namespace Keywords
 			}
 		}
 
-		const std::filesystem::path& getFilePathFromDifficulty(SessionConfig::Difficulty difficulty)
+		const std::filesystem::path& getFilePathFromDifficulty(GameConfig::Difficulty difficulty)
 		{
-			using enum Keywords::SessionConfig::Difficulty;
+			using enum Keywords::GameConfig::Difficulty;
 
 			switch (difficulty)
 			{

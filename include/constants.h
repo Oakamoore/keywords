@@ -1,7 +1,7 @@
 #ifndef KEYWORDS_CONSTANTS_H
 #define KEYWORDS_CONSTANTS_H
 
-#include "session.h"
+#include "game_config.h"
 #include "audio.h"
 #include <array>
 #include <string_view>
@@ -12,14 +12,14 @@ namespace Keywords
 {
 	namespace Constants
 	{
-		inline constexpr std::array<std::string_view, SessionConfig::max_difficulty> difficultyOptions
+		inline constexpr std::array<std::string_view, GameConfig::max_difficulty> difficultyOptions
 		{
 			"easy",
 			"medium",
 			"hard"
 		};
 
-		inline const std::array<std::filesystem::path, SessionConfig::max_difficulty> saveFilePaths
+		inline const std::array<std::filesystem::path, GameConfig::max_difficulty> saveFilePaths
 		{
 			"resources/save_files/easy_session_save_file.txt",
 			"resources/save_files/medium_session_save_file.txt",
@@ -33,7 +33,7 @@ namespace Keywords
 			"resources/audio/leaderboard_track.mp3"
 		};
 
-		inline const std::array<std::filesystem::path, SessionConfig::max_difficulty> wordBankPaths
+		inline const std::array<std::filesystem::path, GameConfig::max_difficulty> wordBankPaths
 		{
 			"resources/word_bank/easy_words.txt",
 			"resources/word_bank/medium_words.txt",

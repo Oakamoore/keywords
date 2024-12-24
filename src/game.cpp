@@ -18,13 +18,13 @@ namespace
 	void runCustomLoop(ftxui::ScreenInteractive& screen,
 					   ftxui::Component component,
 					   const auto& update,
-					   Keywords::Audio::TrackID trackID)
+					   [[maybe_unused]] Keywords::Audio::TrackID trackID)
 	{
 		ftxui::Loop loop {&screen, component};
 
-		Keywords::Audio::Track track {Keywords::Constants::audioFilePaths[trackID]};
+		//Keywords::Audio::Track track {Keywords::Constants::audioFilePaths[trackID]};
 
-		track.play();
+		//track.play();
 
 		while(!loop.HasQuitted())
 		{
@@ -43,10 +43,10 @@ namespace
 			screen.RequestAnimationFrame();
 		}
 
-		track.stop();
+		//track.stop();
 	}
 
-	void displayMainMenu(Keywords::SessionConfig& config, const auto& quit, const auto& play)
+	void displayMainMenu(Keywords::GameConfig& config, const auto& quit, const auto& play)
 	{
 		Keywords::InputComponent inputComponent {};
 
@@ -61,7 +61,7 @@ namespace
 		runCustomLoop(screen, component, updateMainMenu, Keywords::Audio::main_menu);
 	}
 
-	void displaySession(const Keywords::SessionConfig& config, const auto& back, const auto& lose)
+	void displaySession(const Keywords::GameConfig& config, const auto& back, const auto& lose)
 	{
 		auto screen {ftxui::ScreenInteractive::Fullscreen()};
 		
@@ -76,7 +76,7 @@ namespace
 		runCustomLoop(screen, component, updateSession, Keywords::Audio::session);
 	}
 
-	void displayLeaderboard(const Keywords::SessionConfig& config)
+	void displayLeaderboard(const Keywords::GameConfig& config)
 	{
 		auto screen {ftxui::ScreenInteractive::Fullscreen()};
 		auto onQuit {[&] { screen.Exit(); }};
@@ -96,9 +96,8 @@ namespace Keywords
 	{
 		try
 		{
-			WordBank::readFromFile(Constants::wordBankFilePath);
-
-			SessionConfig config {};
+			WordBank wordBank {Constants::wordBankPaths};
+			GameConfig config {};
 
 			bool hasQuit {};
 			auto quit {[&] { hasQuit = true; }};
@@ -118,6 +117,7 @@ namespace Keywords
 
 					try
 					{
+						// TODO: Pass 'wordBank' into this function
 						displaySession(config, back, lose);
 
 						if (hasLost)

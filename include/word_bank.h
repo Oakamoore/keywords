@@ -1,7 +1,7 @@
 #ifndef KEYWORDS_WORD_BANK_H
 #define KEYWORDS_WORD_BANK_H
 
-#include "session.h"
+#include "game_config.h"
 #include <array>
 #include <vector>
 #include <string>
@@ -12,7 +12,7 @@ namespace Keywords
 	class WordBank
 	{
 	public:
-		WordBank(std::array<std::filesystem::path, SessionConfig::max_difficulty> filePaths);
+		WordBank(std::array<std::filesystem::path, GameConfig::max_difficulty> filePaths);
 
 		const std::vector<std::string>& getEasyWords() { return m_easyWords; }
 		const std::vector<std::string>& getMediumWords() { return m_mediumWords; }

@@ -96,13 +96,13 @@ namespace
 
 namespace Keywords
 {
-	Session::Session(const SessionConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> back, std::function<void()> lose)
+	Session::Session(const GameConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> back, std::function<void()> lose)
 		: m_config {config}
 		, m_saveFilePath {saveFilePath}
 		, m_back {back}
 		, m_lose {lose}
 	{
-		using enum SessionConfig::Difficulty;
+		using enum GameConfig::Difficulty;
 
 		// Determine what word bank to pull words from
 		switch (m_config.difficulty)
@@ -282,8 +282,8 @@ namespace Keywords
 
 	double Session::getSpawnDelay() const
 	{
-		constexpr std::array<double, SessionConfig::max_difficulty> spawnDelays {3.5, 5.5, 7.5};
-		constexpr std::array<int, SessionConfig::max_difficulty> wordSteps {20, 15, 10};
+		constexpr std::array<double, GameConfig::max_difficulty> spawnDelays {3.5, 5.5, 7.5};
+		constexpr std::array<int, GameConfig::max_difficulty> wordSteps {20, 15, 10};
 		constexpr std::array delayModifiers {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 
 		// Every 'wordStep' words typed

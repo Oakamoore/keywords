@@ -150,7 +150,7 @@ namespace
 
 namespace Keywords
 {
-	Leaderboard::Leaderboard(const SessionConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> quit)
+	Leaderboard::Leaderboard(const GameConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> quit)
 		: m_config {config}
 		, m_saveFilePath {saveFilePath}
 		, m_sortedEntries {g_leaderboardRows - 1}	

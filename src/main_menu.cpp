@@ -11,14 +11,14 @@
 
 namespace
 {
-	std::optional<Keywords::SessionConfig::Difficulty> getDifficultyFromString(std::string_view str)
+	std::optional<Keywords::GameConfig::Difficulty> getDifficultyFromString(std::string_view str)
 	{
 		using namespace Keywords;
 
-		for (std::size_t i {0}; i < SessionConfig::max_difficulty; ++i)
+		for (std::size_t i {0}; i < GameConfig::max_difficulty; ++i)
 		{
 			if (str == Constants::difficultyOptions[i])
-				return SessionConfig::Difficulty {i};
+				return GameConfig::Difficulty {i};
 		}
 
 		return {};
@@ -82,12 +82,12 @@ namespace
 		return description;
 	}
 
-	ftxui::Element getDifficultySelection(const Keywords::SessionConfig& config)
+	ftxui::Element getDifficultySelection(const Keywords::GameConfig& config)
 	{
 		auto getRegularText {[](const std::string& str) { return ftxui::text(str) | ftxui::center; }};
 		auto getInvertedText {[](const std::string& str) { return ftxui::text(str) | ftxui::inverted | ftxui::center; }};
 
-		using enum Keywords::SessionConfig::Difficulty;
+		using enum Keywords::GameConfig::Difficulty;
 
 		auto easySelection {config.difficulty == easy ? getInvertedText(" easy ") : getRegularText(" easy ")};
 		auto mediumSelection {config.difficulty == medium ? getInvertedText(" medium ") : getRegularText(" medium ")};
@@ -112,7 +112,7 @@ namespace
 
 namespace Keywords
 {
-	void MainMenu::handleInput(SessionConfig& config, InputComponent& inputComponent, 
+	void MainMenu::handleInput(GameConfig& config, InputComponent& inputComponent, 
 							   std::function<void()> quit, 
 							   std::function<void()> play)
 	{
@@ -134,7 +134,7 @@ namespace Keywords
 		}
 	}
 
-	ftxui::Component getMainMenuComponent(SessionConfig& config, InputComponent& inputComponent)
+	ftxui::Component getMainMenuComponent(GameConfig& config, InputComponent& inputComponent)
 	{
 		constexpr int inputBoxWidth {25};
 		constexpr int inputBoxHeight {5};

@@ -28,7 +28,7 @@ namespace
 
 namespace Keywords
 {
-	WordBank::WordBank(std::array<std::filesystem::path, SessionConfig::max_difficulty> filePaths)
+	WordBank::WordBank(std::array<std::filesystem::path, GameConfig::max_difficulty> filePaths)
 	{
 		for (const auto& filePath : filePaths)
 		{
@@ -39,7 +39,7 @@ namespace Keywords
 				throw std::runtime_error("Cannot read from an empty word bank");
 		}
 
-		using enum SessionConfig::Difficulty;
+		using enum GameConfig::Difficulty;
 
 		fillWordBank(m_easyWords, filePaths[easy]);
 		fillWordBank(m_mediumWords, filePaths[medium]);
