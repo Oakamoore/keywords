@@ -15,19 +15,6 @@
 
 namespace Keywords
 {
-	struct SessionConfig
-	{
-		enum Difficulty : std::size_t
-		{
-			easy,
-			medium,
-			hard,
-			max_difficulty
-		};
-
-		Difficulty difficulty {};
-	};
-
 	struct SessionStats
 	{
 		int score {};
