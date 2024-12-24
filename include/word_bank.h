@@ -1,20 +1,28 @@
 #ifndef KEYWORDS_WORD_BANK_H
 #define KEYWORDS_WORD_BANK_H
 
+#include "session.h"
+#include <array>
 #include <vector>
 #include <string>
 #include <filesystem>
 
 namespace Keywords
 {
-	namespace WordBank
+	class WordBank
 	{
-		inline std::vector<std::string> easyWords {};
-		inline std::vector<std::string> mediumWords {};
-		inline std::vector<std::string> hardWords {};
+	public:
+		WordBank(std::array<std::filesystem::path, SessionConfig::max_difficulty> filePaths);
 
-		void readFromFile(const std::filesystem::path& filePath);
-	}
+		const std::vector<std::string>& getEasyWords() { return m_easyWords; }
+		const std::vector<std::string>& getMediumWords() { return m_mediumWords; }
+		const std::vector<std::string>& getHardWords() { return m_hardWords; }
+
+	private:
+		std::vector<std::string> m_easyWords {};
+		std::vector<std::string> m_mediumWords {};
+		std::vector<std::string> m_hardWords {};
+	};
 }
 
 #endif 

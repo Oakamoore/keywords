@@ -7,72 +7,42 @@
 
 namespace
 {
-	bool hasNonAlphaChars(std::string_view str)
+	void fillWordBank(std::vector<std::string>& words, const std::filesystem::path& filePath)
 	{
-		return std::ranges::find_if(str, [] (unsigned char c) { return !std::isalpha(c); }) != str.end();
-	}
+		std::ifstream file {filePath};
 
-	bool hasUppercaseChars(std::string_view str)
-	{
-		return std::ranges::find_if(str, [] (unsigned char c) { return std::isupper(c); }) != str.end();
-	}
+		if (!file.is_open())
+			throw std::runtime_error("Failed to open word bank");
 
-	void clearWordBanks()
-	{
-		Keywords::WordBank::easyWords.clear();
-		Keywords::WordBank::mediumWords.clear();
-		Keywords::WordBank::hardWords.clear();
+		std::string word {};
+
+		while (std::getline(file, word))
+			words.push_back(std::move(word));
+
+		if (words.empty())
+			throw std::runtime_error("Failed to populate word bank");
+
+		file.close();
 	}
 }
 
 namespace Keywords
 {
-	namespace WordBank
+	WordBank::WordBank(std::array<std::filesystem::path, SessionConfig::max_difficulty> filePaths)
 	{
-		void readFromFile(const std::filesystem::path& filePath)
+		for (const auto& filePath : filePaths)
 		{
 			if (!std::filesystem::exists(filePath))
 				throw std::runtime_error("Failed to locate word bank");
 
 			if (std::filesystem::is_empty(filePath))
 				throw std::runtime_error("Cannot read from an empty word bank");
-
-			std::ifstream file {filePath};
-
-			if (!file.is_open())
-				throw std::runtime_error("Failed to open word bank");
-
-			auto isEasyWord {[](std::string_view str) { return str.length() <= 5; }};
-			auto isMediumWord {[](std::string_view str) { return str.length() >= 6 && str.length() <= 8; }};
-
-			// Ensures the word banks are empty
-			// before populating them with words
-			clearWordBanks();
-
-			std::string word {};
-
-			while (std::getline(file, word))
-			{
-				// Skip to the next word
-				if (hasNonAlphaChars(word) || word.empty())
-					continue;
-
-				if (hasUppercaseChars(word))
-					word = Util::convertToCase(word, ::tolower);
-
-				// Populate the appropriate word bank
-				if (isEasyWord(word))
-					easyWords.push_back(std::move(word));
-				else if (isMediumWord(word))
-					mediumWords.push_back(std::move(word));
-				else
-					hardWords.push_back(std::move(word));
-			}
-
-			if (easyWords.empty() || mediumWords.empty() || hardWords.empty())
-				throw std::runtime_error("Failed to populate all word banks");
-
-			file.close();
 		}
+
+		using enum SessionConfig::Difficulty;
+
+		fillWordBank(m_easyWords, filePaths[easy]);
+		fillWordBank(m_mediumWords, filePaths[medium]);
+		fillWordBank(m_hardWords, filePaths[hard]);
 	}
 }
