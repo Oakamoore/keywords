@@ -1,6 +1,5 @@
 #include "session.h"
 #include "random.h"
-#include "word_bank.h"
 #include "constants.h"
 #include "util.h"
 #include <ftxui/dom/canvas.hpp>
@@ -96,7 +95,7 @@ namespace
 
 namespace Keywords
 {
-	Session::Session(const GameConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> back, std::function<void()> lose)
+	Session::Session(const GameConfig& config, const WordBank& wordBank, const std::filesystem::path& saveFilePath, std::function<void()> back, std::function<void()> lose)
 		: m_config {config}
 		, m_saveFilePath {saveFilePath}
 		, m_back {back}
@@ -108,13 +107,13 @@ namespace Keywords
 		switch (m_config.difficulty)
 		{
 			case medium:
-				m_wordBank = &WordBank::mediumWords;
+				m_wordBank = &wordBank.getMediumWords();
 				break;
 			case hard:
-				m_wordBank = &WordBank::hardWords;
+				m_wordBank = &wordBank.getHardWords();
 				break;
 			default:
-				m_wordBank = &WordBank::easyWords;
+				m_wordBank = &wordBank.getEasyWords();
 				break;
 		}
 

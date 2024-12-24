@@ -14,9 +14,9 @@ namespace Keywords
 	public:
 		WordBank(std::array<std::filesystem::path, GameConfig::max_difficulty> filePaths);
 
-		const std::vector<std::string>& getEasyWords() { return m_easyWords; }
-		const std::vector<std::string>& getMediumWords() { return m_mediumWords; }
-		const std::vector<std::string>& getHardWords() { return m_hardWords; }
+		const std::vector<std::string>& getEasyWords() const { return m_easyWords; }
+		const std::vector<std::string>& getMediumWords() const { return m_mediumWords; }
+		const std::vector<std::string>& getHardWords() const { return m_hardWords; }
 
 	private:
 		std::vector<std::string> m_easyWords {};

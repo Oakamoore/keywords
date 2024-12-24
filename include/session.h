@@ -5,6 +5,7 @@
 #include "input_component.h"
 #include "word.h"
 #include "timer.h"
+#include "word_bank.h"
 #include <ftxui/dom/node.hpp>
 #include <ftxui/component/component.hpp>
 #include <vector>
@@ -30,7 +31,7 @@ namespace Keywords
 	class Session
 	{
 	public:
-		Session(const GameConfig& config, const std::filesystem::path& saveFilePath, std::function<void()> back, std::function<void()> lose);
+		Session(const GameConfig& config, const WordBank& wordBank, const std::filesystem::path& saveFilePath, std::function<void()> back, std::function<void()> lose);
 
 		ftxui::Element draw() const;
 		void update();

@@ -61,14 +61,14 @@ namespace
 		runCustomLoop(screen, component, updateMainMenu, Keywords::Audio::main_menu);
 	}
 
-	void displaySession(const Keywords::GameConfig& config, const auto& back, const auto& lose)
+	void displaySession(const Keywords::GameConfig& config, const Keywords::WordBank& wordBank, const auto& back, const auto& lose)
 	{
 		auto screen {ftxui::ScreenInteractive::Fullscreen()};
 		
 		auto onBack {[&] { back(); screen.Exit(); }};
 		auto onLose {[&] { lose(); screen.Exit(); }};
 
-		Keywords::Session session {config, Keywords::Util::getFilePathFromDifficulty(config.difficulty), onBack, onLose};
+		Keywords::Session session {config, wordBank, Keywords::Util::getFilePathFromDifficulty(config.difficulty), onBack, onLose};
 
 		auto component {Keywords::getSessionComponent(session)};
 		auto updateSession {[&] { session.update(); }};
@@ -117,8 +117,7 @@ namespace Keywords
 
 					try
 					{
-						// TODO: Pass 'wordBank' into this function
-						displaySession(config, back, lose);
+						displaySession(config, wordBank, back, lose);
 
 						if (hasLost)
 						{
