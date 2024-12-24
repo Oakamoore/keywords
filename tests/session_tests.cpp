@@ -9,6 +9,18 @@
 #include <fstream>
 #include <exception>
 
+namespace
+{
+	const std::array <std::filesystem::path, Keywords::GameConfig::max_difficulty> filePaths
+	{
+		"tests/resources/easy_words_file.txt",
+		"tests/resources/medium_words_file.txt",
+		"tests/resources/hard_words_file.txt"
+	};
+
+	Keywords::WordBank g_wordBank {filePaths};
+}
+
 namespace Keywords
 {
 	struct SessionTest
@@ -21,19 +33,14 @@ namespace Keywords
 	};
 }
 
-const std::filesystem::path g_wordList {"tests/resources/valid_words_file.txt"};
-
 TEST_CASE("Respond appropriately to a typed word")
 {
-	Keywords::Session session {{}, {}, nullptr, nullptr};
+	Keywords::Session session {{}, g_wordBank, {}, nullptr, nullptr};
 	
 	auto component {Keywords::getSessionComponent(session)};
 
 	// The component should render without crashing
 	component->Render();
-
-	// Populate the word bank
-	Keywords::WordBank::readFromFile(g_wordList);
 
 	// Spawn the first batch of words
 	session.update();
@@ -88,7 +95,7 @@ TEST_CASE("Allow quitting from a session")
 	bool isPlaying {true};
 	auto back {[&] { isPlaying = false; }};
 
-	Keywords::Session session {{}, {}, back, nullptr};
+	Keywords::Session session {{}, g_wordBank, {}, back, nullptr};
 
 	auto component {Keywords::getSessionComponent(session)};
 
@@ -104,7 +111,7 @@ TEST_CASE("Allow quitting from a session")
 
 TEST_CASE("Gradually decrease word spawn delay")
 {
-	Keywords::Session session {{}, {}, nullptr, nullptr};
+	Keywords::Session session {{}, g_wordBank, {}, nullptr, nullptr};
 
 	auto delay {Keywords::SessionTest::getSpawnDelay(session)};
 	auto component {Keywords::getSessionComponent(session)};
@@ -134,12 +141,10 @@ TEST_CASE("Gradually decrease word spawn delay")
 
 TEST_CASE("End a session when a given lose condition is met")
 {
-	Keywords::WordBank::readFromFile(g_wordList);
-
 	bool hasLost {};
 	auto lose {[&] { hasLost = true; }};
 
-	Keywords::Session session {{}, {}, nullptr, lose};
+	Keywords::Session session {{}, g_wordBank, {}, nullptr, lose};
 
 	// Meet the lose condition
 	Keywords::SessionTest::getMisses(session) = Keywords::Constants::maxMisses;
@@ -151,8 +156,6 @@ TEST_CASE("End a session when a given lose condition is met")
 
 TEST_CASE("Insert a new entry in a given save file")
 {
-	Keywords::WordBank::readFromFile(g_wordList);
-
 	const std::filesystem::path saveFilePath {"tests/resources/session_save_file.txt"};
 
 	// Erase the contents of the file 
@@ -163,7 +166,7 @@ TEST_CASE("Insert a new entry in a given save file")
 	// Prevents 'std::bad_function_call' from being thrown
 	auto emptyFunction {[] { ; }};
 
-	Keywords::Session session {{}, saveFilePath, nullptr, emptyFunction};
+	Keywords::Session session {{}, g_wordBank, saveFilePath, nullptr, emptyFunction};
 
 	// Meet the lose condition
 	Keywords::SessionTest::getMisses(session) = Keywords::Constants::maxMisses;
