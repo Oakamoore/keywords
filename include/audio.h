@@ -12,7 +12,9 @@ namespace Keywords
 		enum TrackID : std::size_t
 		{
 			main_menu,
-			session,
+			session_slow,
+			session_medium,
+			session_fast,
 			leaderboard,
 			max_track_id
 		};
