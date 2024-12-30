@@ -28,9 +28,11 @@ namespace Keywords
 
 		inline const std::array<std::filesystem::path, Audio::TrackID::max_track_id> audioFilePaths
 		{
-			"resources/audio/main_menu_track.mp3",
-			"resources/audio/session_track.mp3",
-			"resources/audio/leaderboard_track.mp3"
+			"resources/audio/main_menu_track.wav",
+			"resources/audio/session_slow_track.wav",
+			"resources/audio/session_medium_track.wav",
+			"resources/audio/session_fast_track.wav",
+			"resources/audio/leaderboard_track.wav"
 		};
 
 		inline const std::array<std::filesystem::path, GameConfig::max_difficulty> wordBankPaths
