@@ -46,5 +46,20 @@ namespace Keywords
 
 			return {};
 		}
+
+		bool isArgumentPresent(int argc, char* argv[], std::string_view expectedArgument)
+		{
+			if (argc <= 1)
+				return false;
+
+			// Skip the first argument
+			for (int i {1}; i < argc; ++i)
+			{
+				if (argv[i] == expectedArgument)
+					return true;
+			}
+
+			return false;
+		}
 	}
 }
