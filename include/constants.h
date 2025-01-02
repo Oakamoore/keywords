@@ -48,6 +48,7 @@ namespace Keywords
 
 		inline constexpr int maxMisses {10};
 		inline constexpr std::string_view playInput {"play"};
+		inline constexpr std::string_view disableAudio {"no-audio"};
 		inline const auto wordDeletionEvent {ftxui::Event::Special("\x17")}; // CTRL + W 
 		inline constexpr char statSeparator {'|'};
 	}
