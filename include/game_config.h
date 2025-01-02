@@ -15,7 +15,12 @@ namespace Keywords
 			max_difficulty
 		};
 
+		GameConfig(bool isAudioEnabled = true)
+			: isAudioEnabled {isAudioEnabled}
+		{}
+
 		Difficulty difficulty {};
+		const bool isAudioEnabled {};
 	};
 }
 

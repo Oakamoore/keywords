@@ -12,19 +12,16 @@
 #include <chrono>
 #include <thread>
 #include <exception>
+#include <optional>
+#include <memory>
 
 namespace
 {
 	void runCustomLoop(ftxui::ScreenInteractive& screen,
 					   ftxui::Component component,
-					   const auto& update,
-					   [[maybe_unused]] Keywords::Audio::TrackID trackID)
+					   const auto& update)
 	{
 		ftxui::Loop loop {&screen, component};
-
-		//Keywords::Audio::Track track {Keywords::Constants::audioFilePaths[trackID]};
-
-		//track.play();
 
 		while(!loop.HasQuitted())
 		{
@@ -42,8 +39,6 @@ namespace
 			// without interfering with events
 			screen.RequestAnimationFrame();
 		}
-
-		//track.stop();
 	}
 
 	void displayMainMenu(Keywords::GameConfig& config, const auto& quit, const auto& play)
@@ -58,7 +53,13 @@ namespace
 
 		auto updateMainMenu {[&] { Keywords::MainMenu::handleInput(config, inputComponent, onQuit, onPlay); }};
 
-		runCustomLoop(screen, component, updateMainMenu, Keywords::Audio::main_menu);
+		Keywords::Audio::Track s_mainMenuTrack {Keywords::Constants::audioFilePaths[Keywords::Audio::main_menu]};
+		
+		if (config.isAudioEnabled) s_mainMenuTrack.play();
+
+		runCustomLoop(screen, component, updateMainMenu);
+
+		if (config.isAudioEnabled) s_mainMenuTrack.stop();
 	}
 
 	void displaySession(const Keywords::GameConfig& config, const Keywords::WordBank& wordBank, const auto& back, const auto& lose)
@@ -73,7 +74,7 @@ namespace
 		auto component {Keywords::getSessionComponent(session)};
 		auto updateSession {[&] { session.update(); }};
 
-		runCustomLoop(screen, component, updateSession, Keywords::Audio::session);
+		runCustomLoop(screen, component, updateSession);
 	}
 
 	void displayLeaderboard(const Keywords::GameConfig& config)
@@ -86,7 +87,13 @@ namespace
 		auto component {Keywords::getLeaderboardComponent(leaderboard)};
 		auto updateLeaderboard {[&] { leaderboard.handleInput(); }};
 
-		runCustomLoop(screen, component, updateLeaderboard, Keywords::Audio::leaderboard);
+		Keywords::Audio::Track s_leaderboardTrack {Keywords::Constants::audioFilePaths[Keywords::Audio::leaderboard]};
+		
+		if (config.isAudioEnabled) s_leaderboardTrack.play();
+
+		runCustomLoop(screen, component, updateLeaderboard);
+
+		if (config.isAudioEnabled) s_leaderboardTrack.stop();
 	}
 }
 
