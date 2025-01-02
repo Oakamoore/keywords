@@ -1,8 +1,8 @@
 #include "game.h"
 
-int main()
+int main(int argc, char* argv[])
 {
-	Keywords::startGame();
+	Keywords::startGame(argc, argv);
 
 	return 0;
 }

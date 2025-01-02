@@ -12,8 +12,6 @@
 #include <chrono>
 #include <thread>
 #include <exception>
-#include <optional>
-#include <memory>
 
 namespace
 {
@@ -99,12 +97,12 @@ namespace
 
 namespace Keywords
 {
-	void startGame()
+	void startGame(int argc, char* argv[])
 	{
 		try
 		{
 			WordBank wordBank {Constants::wordBankPaths};
-			GameConfig config {};
+			GameConfig config {!Util::isArgumentPresent(argc, argv, Constants::disableAudio)};
 
 			bool hasQuit {};
 			auto quit {[&] { hasQuit = true; }};

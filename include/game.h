@@ -8,7 +8,7 @@
 
 namespace Keywords
 {
-	void startGame();
+	void startGame(int argc, char* argv[]);
 
 	ftxui::Component getMainMenuComponent(GameConfig& config, InputComponent& inputComponent);
 	ftxui::Component getSessionComponent(Session& session);
