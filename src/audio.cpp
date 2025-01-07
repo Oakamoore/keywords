@@ -59,12 +59,16 @@ namespace Keywords
 				ma_decoder_uninit(&m_decoder);
 				throw std::runtime_error("Failed to start playback device");
 			}
+
+			m_isPlaying = true;
 		}
 
 		void Track::stop()
 		{
 			if (ma_device_is_started(&m_device))
 				ma_device_stop(&m_device);
+
+			m_isPlaying = false;
 		}
 	}
 }

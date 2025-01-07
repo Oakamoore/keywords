@@ -28,11 +28,16 @@ namespace Keywords
 
 			void play();
 			void stop();
+			bool isPlaying() { return m_isPlaying; }
+
+			Track(const Track&) = delete;
+			Track& operator=(const Track&) = delete;
 
 		private:
 			ma_decoder m_decoder {};
 			ma_device_config m_config {};
 			ma_device m_device {};
+			bool m_isPlaying {};
 
 		};
 	}
