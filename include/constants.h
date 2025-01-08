@@ -47,7 +47,6 @@ namespace Keywords
 		inline constexpr int canvasCellHeight {4};
 
 		inline constexpr int maxMisses {10};
-		inline constexpr int numSessionTracks {3};
 
 		inline constexpr std::string_view playInput {"play"};
 		inline constexpr std::string_view disableAudio {"no-audio"};

@@ -68,7 +68,7 @@ namespace
 		auto onBack {[&] { back(); screen.Exit(); }};
 		auto onLose {[&] { lose(); screen.Exit(); }};
 
-		std::array<Keywords::Audio::Track, Keywords::Constants::numSessionTracks> sessionTracks
+		std::array<Keywords::Audio::Track, Keywords::Session::max_session_tracks> sessionTracks
 		{
 			Keywords::Constants::audioFilePaths[Keywords::Audio::session_slow],
 			Keywords::Constants::audioFilePaths[Keywords::Audio::session_medium],

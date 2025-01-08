@@ -97,7 +97,7 @@ namespace Keywords
 {
 	Session::Session(const GameConfig& config, const WordBank& wordBank, 
 					 const std::filesystem::path& saveFilePath, 
-					 std::array<Audio::Track, Constants::numSessionTracks>& tracks, 
+					 std::array<Audio::Track, max_session_tracks>& tracks, 
 					 std::function<void()> back, std::function<void()> lose)
 		: m_config {config}
 		, m_saveFilePath {saveFilePath}

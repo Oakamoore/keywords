@@ -31,12 +31,21 @@ namespace Keywords
 		std::string_view difficulty {};
 	};
 
+
 	class Session
 	{
 	public:
+		enum SessionTracks : std::size_t
+		{
+			slow_track,
+			medium_track,
+			fast_track,
+			max_session_tracks
+		};
+
 		Session(const GameConfig& config, const WordBank& wordBank, 
 				const std::filesystem::path& saveFilePath, 
-				std::array<Audio::Track, Constants::numSessionTracks>& tracks, 
+				std::array<Audio::Track, max_session_tracks>& tracks, 
 				std::function<void()> back, std::function<void()> lose);
 
 		ftxui::Element draw() const;
@@ -47,13 +56,6 @@ namespace Keywords
 		friend struct SessionTest;
 
 	private:
-		enum SessionTracks : std::size_t 
-		{ 
-			slow_track, 
-			medium_track, 
-			fast_track 
-		};
-
 		bool isWordPresent(std::string_view str) const;
 		bool isWordOverlapping(const Word& word) const;
 		
