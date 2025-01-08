@@ -75,7 +75,7 @@ namespace
 			Keywords::Constants::audioFilePaths[Keywords::Audio::session_fast]
 		};
 
-		Keywords::Session session {config, wordBank, Keywords::Util::getFilePathFromDifficulty(config.difficulty), sessionTracks, onBack, onLose};
+		Keywords::Session session {config, wordBank, Keywords::Util::getSaveFilePath(config.difficulty), sessionTracks, onBack, onLose};
 
 		auto component {Keywords::getSessionComponent(session)};
 		auto updateSession {[&] { session.update(); }};
@@ -88,7 +88,7 @@ namespace
 		auto screen {ftxui::ScreenInteractive::Fullscreen()};
 		auto onQuit {[&] { screen.Exit(); }};
 
-		Keywords::Leaderboard leaderboard {config, Keywords::Util::getFilePathFromDifficulty(config.difficulty), onQuit};
+		Keywords::Leaderboard leaderboard {config, Keywords::Util::getSaveFilePath(config.difficulty), onQuit};
 
 		auto component {Keywords::getLeaderboardComponent(leaderboard)};
 		auto updateLeaderboard {[&] { leaderboard.handleInput(); }};

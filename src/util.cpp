@@ -18,7 +18,7 @@ namespace Keywords
 			}
 		}
 
-		const std::filesystem::path& getFilePathFromDifficulty(GameConfig::Difficulty difficulty)
+		const std::filesystem::path& getSaveFilePath(GameConfig::Difficulty difficulty)
 		{
 			using enum Keywords::GameConfig::Difficulty;
 
