@@ -1,6 +1,5 @@
 #include "session.h"
 #include "random.h"
-#include "constants.h"
 #include "util.h"
 #include <ftxui/dom/canvas.hpp>
 #include <ftxui/dom/elements.hpp>
@@ -178,9 +177,11 @@ namespace Keywords
 	void Session::update()
 	{
 		updateStats();
+		playTracks();
 
 		if (m_misses >= Constants::maxMisses)
 		{
+			stopTracks();
 			m_lose();
 			writeToFile();
 			return;
@@ -324,12 +325,58 @@ namespace Keywords
 			return false;
 		});
 	}
+	
+	void Session::playTracks()
+	{
+		if (!m_config.isAudioEnabled)
+			return;
+
+		constexpr int firstThreshold {static_cast<int>(Constants::maxMisses * 0.50)};
+		constexpr int secondThreshold {static_cast<int>(Constants::maxMisses * 0.75)};
+
+		if (m_misses < firstThreshold)
+		{
+			if(!s_slowTrack.isPlaying())
+				s_slowTrack.play();
+		}
+		else if ((m_misses >= firstThreshold && m_misses <= secondThreshold))
+		{
+			if(s_slowTrack.isPlaying())
+				s_slowTrack.stop();
+
+			if (!s_mediumTrack.isPlaying())
+				s_mediumTrack.play();
+		}
+		else
+		{
+			// The second threshold might be skipped
+			if (s_slowTrack.isPlaying() || s_mediumTrack.isPlaying())
+			{
+				s_slowTrack.stop();
+				s_mediumTrack.stop();
+			}
+
+			if (!s_fastTrack.isPlaying())
+				s_fastTrack.play();
+		}
+	}
+
+	void Session::stopTracks()
+	{
+		s_slowTrack.stop();
+		s_mediumTrack.stop();
+		s_fastTrack.stop();
+	}
 
 	void Session::handleInput()
 	{
-		// Quit the current session
-		if (m_input.hasPressedEscape)
+		if (m_input.hasPressedEscape) 
+		{
+			stopTracks();
+
+			// Quit the current session
 			m_back();
+		}
 
 		if (m_input.hasPressedEnter)
 		{

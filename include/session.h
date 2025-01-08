@@ -6,6 +6,8 @@
 #include "word.h"
 #include "timer.h"
 #include "word_bank.h"
+#include "audio.h"
+#include "constants.h"
 #include <ftxui/dom/node.hpp>
 #include <ftxui/component/component.hpp>
 #include <vector>
@@ -52,6 +54,13 @@ namespace Keywords
 		void handleInput();
 		void updateStats();
 		void writeToFile();
+		void playTracks();
+		void stopTracks();
+
+	private:
+		static inline Audio::Track s_slowTrack {Constants::audioFilePaths[Audio::session_slow]};
+		static inline Audio::Track s_mediumTrack {Constants::audioFilePaths[Audio::session_medium]};
+		static inline Audio::Track s_fastTrack {Constants::audioFilePaths[Audio::session_fast]};
 
 	private:
 		const GameConfig m_config {};
