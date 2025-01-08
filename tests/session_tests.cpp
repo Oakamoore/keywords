@@ -2,6 +2,7 @@
 #include "session.h"
 #include "constants.h"
 #include "word_bank.h"
+#include "audio.h"
 #include <ftxui/component/event.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_exception.hpp>
@@ -11,14 +12,17 @@
 
 namespace
 {
-	const std::array <std::filesystem::path, Keywords::GameConfig::max_difficulty> filePaths
-	{
-		"tests/resources/easy_words_file.txt",
-		"tests/resources/medium_words_file.txt",
-		"tests/resources/hard_words_file.txt"
-	};
+	std::array<Keywords::Audio::Track, Keywords::Session::max_session_tracks> g_emptyTracks {};
 
-	Keywords::WordBank g_wordBank {filePaths};
+	Keywords::WordBank g_wordBank
+	{
+		std::to_array <std::filesystem::path>
+		({
+			"tests/resources/easy_words_file.txt",
+			"tests/resources/medium_words_file.txt",
+			"tests/resources/hard_words_file.txt"
+		})
+	};
 }
 
 namespace Keywords
@@ -30,12 +34,29 @@ namespace Keywords
 		static double getSpawnDelay(const Session& session) { return session.getSpawnDelay(); }
 		static void addWords(Session& session) { session.addWords(); }
 		static void handleInput(Session& session) { session.handleInput(); }
+		
+		static bool isTrackPlaying(const Session& session, Session::SessionTrack track) 
+		{ 
+			switch (track)
+			{
+				case Session::slow_track: return session.m_slowTrack->isPlaying();
+				case Session::medium_track: return session.m_mediumTrack->isPlaying();
+				case Session::fast_track: return session.m_fastTrack->isPlaying();
+			}
+
+			return false;
+		}
+
+		static bool areTracksPlaying(const Session& session) 
+		{ 
+			return session.m_slowTrack->isPlaying() && session.m_mediumTrack->isPlaying() && session.m_fastTrack->isPlaying(); 
+		}
 	};
 }
 
 TEST_CASE("Respond appropriately to a typed word")
 {
-	Keywords::Session session {{}, g_wordBank, {}, nullptr, nullptr};
+	Keywords::Session session {{}, g_wordBank, {}, g_emptyTracks, nullptr, nullptr};
 	
 	auto component {Keywords::getSessionComponent(session)};
 
@@ -95,7 +116,7 @@ TEST_CASE("Allow quitting from a session")
 	bool isPlaying {true};
 	auto back {[&] { isPlaying = false; }};
 
-	Keywords::Session session {{}, g_wordBank, {}, back, nullptr};
+	Keywords::Session session {{}, g_wordBank, {}, g_emptyTracks, back, nullptr};
 
 	auto component {Keywords::getSessionComponent(session)};
 
@@ -107,11 +128,14 @@ TEST_CASE("Allow quitting from a session")
 	session.update();
 
 	REQUIRE(isPlaying == false);
+
+	// No tracks should be playing when the session is no longer active
+	REQUIRE(Keywords::SessionTest::areTracksPlaying(session) == false);
 }
 
 TEST_CASE("Gradually decrease word spawn delay")
 {
-	Keywords::Session session {{}, g_wordBank, {}, nullptr, nullptr};
+	Keywords::Session session {{}, g_wordBank, {}, g_emptyTracks, nullptr, nullptr};
 
 	auto delay {Keywords::SessionTest::getSpawnDelay(session)};
 	auto component {Keywords::getSessionComponent(session)};
@@ -144,7 +168,7 @@ TEST_CASE("End a session when a given lose condition is met")
 	bool hasLost {};
 	auto lose {[&] { hasLost = true; }};
 
-	Keywords::Session session {{}, g_wordBank, {}, nullptr, lose};
+	Keywords::Session session {{}, g_wordBank, {}, g_emptyTracks, nullptr, lose};
 
 	// Meet the lose condition
 	Keywords::SessionTest::getMisses(session) = Keywords::Constants::maxMisses;
@@ -152,6 +176,38 @@ TEST_CASE("End a session when a given lose condition is met")
 	REQUIRE_THROWS_MATCHES(session.update(), std::runtime_error, Catch::Matchers::Message("Unable to locate save file"));
 
 	REQUIRE(hasLost == true);
+
+	// No tracks should be playing when the session is no longer active
+	REQUIRE(Keywords::SessionTest::areTracksPlaying(session) == false);
+}
+
+TEST_CASE("Switch between session tracks")
+{
+	Keywords::Session session {{}, g_wordBank, {}, g_emptyTracks, nullptr, nullptr};
+
+	// The points at which the audio track should change
+	constexpr int firstThreshold {static_cast<int>(Keywords::Constants::maxMisses * 0.50)};
+	constexpr int secondThreshold {static_cast<int>(Keywords::Constants::maxMisses * 0.80)};
+
+	using enum Keywords::Session::SessionTrack;
+
+	// Start the first track
+	session.update();
+	REQUIRE(Keywords::SessionTest::isTrackPlaying(session, slow_track));
+
+	// Trigger the second track
+	Keywords::SessionTest::getMisses(session) = firstThreshold;
+
+	// Start the second track
+	session.update();
+	REQUIRE(Keywords::SessionTest::isTrackPlaying(session, medium_track));
+
+	// Trigger the third track
+	Keywords::SessionTest::getMisses(session) = secondThreshold;
+
+	// Start the third track
+	session.update();
+	REQUIRE(Keywords::SessionTest::isTrackPlaying(session, fast_track));
 }
 
 TEST_CASE("Insert a new entry in a given save file")
@@ -166,7 +222,7 @@ TEST_CASE("Insert a new entry in a given save file")
 	// Prevents 'std::bad_function_call' from being thrown
 	auto emptyFunction {[] { ; }};
 
-	Keywords::Session session {{}, g_wordBank, saveFilePath, nullptr, emptyFunction};
+	Keywords::Session session {{}, g_wordBank, saveFilePath, g_emptyTracks, nullptr, emptyFunction};
 
 	// Meet the lose condition
 	Keywords::SessionTest::getMisses(session) = Keywords::Constants::maxMisses;
