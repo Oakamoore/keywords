@@ -47,10 +47,13 @@ namespace Keywords
 		inline constexpr int canvasCellHeight {4};
 
 		inline constexpr int maxMisses {10};
+		inline constexpr int numSessionTracks {3};
+
 		inline constexpr std::string_view playInput {"play"};
 		inline constexpr std::string_view disableAudio {"no-audio"};
-		inline const auto wordDeletionEvent {ftxui::Event::Special("\x17")}; // CTRL + W 
+
 		inline constexpr char statSeparator {'|'};
+		inline const auto wordDeletionEvent {ftxui::Event::Special("\x17")}; // CTRL + W 
 	}
 }
 
