@@ -35,7 +35,7 @@ namespace Keywords
 	class Session
 	{
 	public:
-		enum SessionTracks : std::size_t
+		enum SessionTrack : std::size_t
 		{
 			slow_track,
 			medium_track,

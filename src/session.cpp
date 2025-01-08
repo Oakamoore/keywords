@@ -339,14 +339,14 @@ namespace Keywords
 			return;
 
 		constexpr int firstThreshold {static_cast<int>(Constants::maxMisses * 0.50)};
-		constexpr int secondThreshold {static_cast<int>(Constants::maxMisses * 0.75)};
+		constexpr int secondThreshold {static_cast<int>(Constants::maxMisses * 0.80)};
 
 		if (m_misses < firstThreshold)
 		{
 			if(!m_slowTrack->isPlaying())
 				m_slowTrack->play();
 		}
-		else if ((m_misses >= firstThreshold && m_misses <= secondThreshold))
+		else if ((m_misses >= firstThreshold && m_misses < secondThreshold))
 		{
 			if(m_slowTrack->isPlaying())
 				m_slowTrack->stop();
