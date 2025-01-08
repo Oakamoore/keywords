@@ -28,7 +28,7 @@ namespace Keywords
 
 			void play();
 			void stop();
-			bool isPlaying() { return m_isPlaying; }
+			bool isPlaying() const { return m_isPlaying; }
 
 			Track(const Track&) = delete;
 			Track& operator=(const Track&) = delete;
