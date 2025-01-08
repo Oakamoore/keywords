@@ -12,6 +12,7 @@
 #include <chrono>
 #include <thread>
 #include <exception>
+#include <array>
 
 namespace
 {
@@ -51,13 +52,13 @@ namespace
 
 		auto updateMainMenu {[&] { Keywords::MainMenu::handleInput(config, inputComponent, onQuit, onPlay); }};
 
-		Keywords::Audio::Track s_mainMenuTrack {Keywords::Constants::audioFilePaths[Keywords::Audio::main_menu]};
+		Keywords::Audio::Track mainMenuTrack {Keywords::Constants::audioFilePaths[Keywords::Audio::main_menu]};
 		
-		if (config.isAudioEnabled) s_mainMenuTrack.play();
+		if (config.isAudioEnabled) mainMenuTrack.play();
 
 		runCustomLoop(screen, component, updateMainMenu);
 
-		if (config.isAudioEnabled) s_mainMenuTrack.stop();
+		if (config.isAudioEnabled) mainMenuTrack.stop();
 	}
 
 	void displaySession(const Keywords::GameConfig& config, const Keywords::WordBank& wordBank, const auto& back, const auto& lose)
@@ -67,7 +68,14 @@ namespace
 		auto onBack {[&] { back(); screen.Exit(); }};
 		auto onLose {[&] { lose(); screen.Exit(); }};
 
-		Keywords::Session session {config, wordBank, Keywords::Util::getFilePathFromDifficulty(config.difficulty), onBack, onLose};
+		std::array<Keywords::Audio::Track, Keywords::Constants::numSessionTracks> sessionTracks
+		{
+			Keywords::Constants::audioFilePaths[Keywords::Audio::session_slow],
+			Keywords::Constants::audioFilePaths[Keywords::Audio::session_medium],
+			Keywords::Constants::audioFilePaths[Keywords::Audio::session_fast]
+		};
+
+		Keywords::Session session {config, wordBank, Keywords::Util::getFilePathFromDifficulty(config.difficulty), sessionTracks, onBack, onLose};
 
 		auto component {Keywords::getSessionComponent(session)};
 		auto updateSession {[&] { session.update(); }};
@@ -85,13 +93,13 @@ namespace
 		auto component {Keywords::getLeaderboardComponent(leaderboard)};
 		auto updateLeaderboard {[&] { leaderboard.handleInput(); }};
 
-		Keywords::Audio::Track s_leaderboardTrack {Keywords::Constants::audioFilePaths[Keywords::Audio::leaderboard]};
+		Keywords::Audio::Track leaderboardTrack {Keywords::Constants::audioFilePaths[Keywords::Audio::leaderboard]};
 		
-		if (config.isAudioEnabled) s_leaderboardTrack.play();
+		if (config.isAudioEnabled) leaderboardTrack.play();
 
 		runCustomLoop(screen, component, updateLeaderboard);
 
-		if (config.isAudioEnabled) s_leaderboardTrack.stop();
+		if (config.isAudioEnabled) leaderboardTrack.stop();
 	}
 }
 

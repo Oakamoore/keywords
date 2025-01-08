@@ -16,6 +16,7 @@
 #include <chrono>
 #include <format>
 
+
 namespace
 {
 	constexpr int g_canvasWidth {240};
@@ -94,9 +95,15 @@ namespace
 
 namespace Keywords
 {
-	Session::Session(const GameConfig& config, const WordBank& wordBank, const std::filesystem::path& saveFilePath, std::function<void()> back, std::function<void()> lose)
+	Session::Session(const GameConfig& config, const WordBank& wordBank, 
+					 const std::filesystem::path& saveFilePath, 
+					 std::array<Audio::Track, Constants::numSessionTracks>& tracks, 
+					 std::function<void()> back, std::function<void()> lose)
 		: m_config {config}
 		, m_saveFilePath {saveFilePath}
+		, m_slowTrack {&tracks[slow_track]}
+		, m_mediumTrack {&tracks[medium_track]}
+		, m_fastTrack {&tracks[fast_track]}
 		, m_back {back}
 		, m_lose {lose}
 	{
@@ -336,36 +343,36 @@ namespace Keywords
 
 		if (m_misses < firstThreshold)
 		{
-			if(!s_slowTrack.isPlaying())
-				s_slowTrack.play();
+			if(!m_slowTrack->isPlaying())
+				m_slowTrack->play();
 		}
 		else if ((m_misses >= firstThreshold && m_misses <= secondThreshold))
 		{
-			if(s_slowTrack.isPlaying())
-				s_slowTrack.stop();
+			if(m_slowTrack->isPlaying())
+				m_slowTrack->stop();
 
-			if (!s_mediumTrack.isPlaying())
-				s_mediumTrack.play();
+			if (!m_mediumTrack->isPlaying())
+				m_mediumTrack->play();
 		}
 		else
 		{
 			// The second threshold might be skipped
-			if (s_slowTrack.isPlaying() || s_mediumTrack.isPlaying())
+			if (m_slowTrack->isPlaying() || m_mediumTrack->isPlaying())
 			{
-				s_slowTrack.stop();
-				s_mediumTrack.stop();
+				m_slowTrack->stop();
+				m_mediumTrack->stop();
 			}
 
-			if (!s_fastTrack.isPlaying())
-				s_fastTrack.play();
+			if (!m_fastTrack->isPlaying())
+				m_fastTrack->play();
 		}
 	}
 
 	void Session::stopTracks()
 	{
-		s_slowTrack.stop();
-		s_mediumTrack.stop();
-		s_fastTrack.stop();
+		m_slowTrack->stop();
+		m_mediumTrack->stop();
+		m_fastTrack->stop();
 	}
 
 	void Session::handleInput()

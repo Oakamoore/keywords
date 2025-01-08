@@ -16,6 +16,7 @@
 #include <optional>
 #include <functional>
 #include <filesystem>
+#include <array>
 
 namespace Keywords
 {
@@ -33,7 +34,10 @@ namespace Keywords
 	class Session
 	{
 	public:
-		Session(const GameConfig& config, const WordBank& wordBank, const std::filesystem::path& saveFilePath, std::function<void()> back, std::function<void()> lose);
+		Session(const GameConfig& config, const WordBank& wordBank, 
+				const std::filesystem::path& saveFilePath, 
+				std::array<Audio::Track, Constants::numSessionTracks>& tracks, 
+				std::function<void()> back, std::function<void()> lose);
 
 		ftxui::Element draw() const;
 		void update();
@@ -43,6 +47,13 @@ namespace Keywords
 		friend struct SessionTest;
 
 	private:
+		enum SessionTracks : std::size_t 
+		{ 
+			slow_track, 
+			medium_track, 
+			fast_track 
+		};
+
 		bool isWordPresent(std::string_view str) const;
 		bool isWordOverlapping(const Word& word) const;
 		
@@ -58,15 +69,13 @@ namespace Keywords
 		void stopTracks();
 
 	private:
-		static inline Audio::Track s_slowTrack {Constants::audioFilePaths[Audio::session_slow]};
-		static inline Audio::Track s_mediumTrack {Constants::audioFilePaths[Audio::session_medium]};
-		static inline Audio::Track s_fastTrack {Constants::audioFilePaths[Audio::session_fast]};
-
-	private:
 		const GameConfig m_config {};
 		const std::filesystem::path m_saveFilePath {};
 		const std::vector<std::string>* m_wordBank {};
 		std::vector<std::unique_ptr<Word>> m_words {};
+		Audio::Track* m_slowTrack {};
+		Audio::Track* m_mediumTrack {};
+		Audio::Track* m_fastTrack {};
 		std::function<void()> m_back {};
 		std::function<void()> m_lose {};
 		InputComponent m_input {};
