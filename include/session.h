@@ -7,7 +7,6 @@
 #include "timer.h"
 #include "word_bank.h"
 #include "audio.h"
-#include "constants.h"
 #include <ftxui/dom/node.hpp>
 #include <ftxui/component/component.hpp>
 #include <vector>

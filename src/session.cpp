@@ -1,6 +1,7 @@
 #include "session.h"
 #include "random.h"
 #include "util.h"
+#include "constants.h"
 #include <ftxui/dom/canvas.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/color.hpp>
@@ -77,8 +78,8 @@ namespace
 	{
 		auto c {Keywords::Constants::statSeparator};
 
-		out << stats.score << c << stats.wordsTyped << c 
-			<< stats.charsTyped << c << stats.wordsPerMinute << c 
+		out << stats.score << c << stats.wordsTyped << c
+			<< stats.charsTyped << c << stats.wordsPerMinute << c
 			<< toStringWithPrecision(stats.charsPerSecond, 2) << c
 			<< toStringWithPrecision(stats.totalTime, 2) << c;
 
@@ -95,9 +96,9 @@ namespace
 
 namespace Keywords
 {
-	Session::Session(const GameConfig& config, const WordBank& wordBank, 
-					 const std::filesystem::path& saveFilePath, 
-					 std::array<Audio::Track, max_session_tracks>& tracks, 
+	Session::Session(const GameConfig& config, const WordBank& wordBank,
+					 const std::filesystem::path& saveFilePath,
+					 std::array<Audio::Track, max_session_tracks>& tracks,
 					 std::function<void()> back, std::function<void()> lose)
 		: m_config {config}
 		, m_saveFilePath {saveFilePath}
@@ -150,8 +151,8 @@ namespace Keywords
 				canvas(std::move(c)) | border,
 				hbox
 				({
-					m_input.draw() | border 
-					| size(WIDTH, EQUAL, inputBoxWidth) 
+					m_input.draw() | border
+					| size(WIDTH, EQUAL, inputBoxWidth)
 					| size(HEIGHT, EQUAL, inputBoxHeight),
 					separatorEmpty(),
 					window
@@ -273,8 +274,14 @@ namespace Keywords
 
 		do
 		{
-			int xPos {getWordStartPosition(str) - Random::get(minOffset, maxOffset)};
+			int xPos {};
 			int yPos {Random::getElement(s_canvasRows)};
+
+			// Make the initial words appear straight away
+			if (m_timeStamp < getSpawnDelay())
+				xPos = getWordStartPosition(str);
+			else
+				xPos = getWordStartPosition(str) - Random::get(minOffset, maxOffset);
 
 			// Reposition the word
 			word.x = xPos;
@@ -332,7 +339,7 @@ namespace Keywords
 			return false;
 		});
 	}
-	
+
 	void Session::playTracks()
 	{
 		if (!m_config.isAudioEnabled)
@@ -343,12 +350,12 @@ namespace Keywords
 
 		if (m_misses < firstThreshold)
 		{
-			if(!m_slowTrack->isPlaying())
+			if (!m_slowTrack->isPlaying())
 				m_slowTrack->play();
 		}
 		else if ((m_misses >= firstThreshold && m_misses < secondThreshold))
 		{
-			if(m_slowTrack->isPlaying())
+			if (m_slowTrack->isPlaying())
 				m_slowTrack->stop();
 
 			if (!m_mediumTrack->isPlaying())
@@ -377,7 +384,7 @@ namespace Keywords
 
 	void Session::handleInput()
 	{
-		if (m_input.hasPressedEscape) 
+		if (m_input.hasPressedEscape)
 		{
 			stopTracks();
 
@@ -432,13 +439,13 @@ namespace Keywords
 			throw std::runtime_error("Failed to open save file");
 
 		m_stats.totalTime = m_uptime.elapsed();
-		
+
 		// Average WPM and CPS
 		m_stats.wordsPerMinute = static_cast<int>(m_stats.wordsTyped / (m_stats.totalTime / 60));
 		m_stats.charsPerSecond = m_stats.charsTyped / m_stats.totalTime;
 
 		// The hypen string represents a blank username
-		file << m_stats << getFormattedDateTime()  << Constants::statSeparator << std::string {"-----"} << '\n';
+		file << m_stats << getFormattedDateTime() << Constants::statSeparator << std::string {"-----"} << '\n';
 
 		file.close();
 	}
