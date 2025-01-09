@@ -3,6 +3,7 @@
 #include <ftxui/screen/screen.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/dom/canvas.hpp>
+#include <ftxui/screen/terminal.hpp>
 #include <iostream>
 
 namespace
@@ -16,12 +17,36 @@ namespace
 		resetPosition = screen.ResetPosition();
 	}
 
-	void drawCanvasToScreen(ftxui::Screen& screen, ftxui::Canvas& canvas)
+	void fillScreen(ftxui::Screen& screen)
 	{
-		ftxui::Render(screen, ftxui::canvas(canvas));
+		// Increment through and fill each screen pixel
+		for (int x {0}; x <= screen.dimx() / 2; ++x)
+		{
+			for (int y {0}; y <= screen.dimy(); ++y)
+			{
+				screen.PixelAt(x, y).background_color = ftxui::Color::Red;
+				screen.PixelAt(screen.dimx() - x, y).background_color = ftxui::Color::Red;
+			}
 
-		printScreen(screen);
+			printScreen(screen);
+		}
 	}
+
+	void clearScreen(ftxui::Screen& screen)
+	{
+		// Increment through and clear each screen pixel
+		for (int x {screen.dimx() / 2}; x >= 0; --x)
+		{
+			for (int y {0}; y <= screen.dimy(); ++y)
+			{
+				screen.PixelAt(x, y).background_color = ftxui::Color::Default;
+				screen.PixelAt(-x + screen.dimx(), y).background_color = ftxui::Color::Default;
+			}
+
+			printScreen(screen);
+		}
+	}
+
 }
 
 namespace Keywords
@@ -34,31 +59,7 @@ namespace Keywords
 		auto screen {ftxui::Screen::Create(ftxui::Dimension::Full())};
 		auto canvas {ftxui::Canvas {canvasWidth, canvasHeight}};
 
-		int maxY {screen.dimy() * Constants::canvasCellHeight};
-		int maxX {screen.dimx() * Constants::canvasCellWidth};
-
-		// Increment through and fill each canvas cell
-		for (int x {0}; x <= screen.dimx(); ++x)
-		{
-			for (int y {0}; y <= maxY; ++y)
-			{
-				canvas.DrawBlock(x, y, true, ftxui::Color::Red);
-				canvas.DrawBlock(maxX - x, y, true, ftxui::Color::Red);
-			}
-
-			drawCanvasToScreen(screen, canvas);
-		}
-
-		// Increment through and clear each canvas cell
-		for (int x {screen.dimx()}; x >= 0; --x)
-		{
-			for (int y {0}; y <= maxY; ++y)
-			{
-				canvas.DrawBlock(x, y, true, ftxui::Color::Black);
-				canvas.DrawBlock(maxX - x, y, true, ftxui::Color::Black);
-			}
-
-			drawCanvasToScreen(screen, canvas);
-		}
+		fillScreen(screen);
+		clearScreen(screen);
 	}
 }
