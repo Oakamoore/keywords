@@ -5,6 +5,7 @@
 #include <ftxui/dom/canvas.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/color.hpp>
+#include <ftxui/component/component.hpp>
 #include <sstream>
 #include <type_traits>
 #include <cmath>
@@ -298,18 +299,21 @@ namespace Keywords
 	{
 		constexpr std::array<double, GameConfig::max_difficulty> spawnDelays {3.5, 5.5, 7.5};
 		constexpr std::array<int, GameConfig::max_difficulty> wordSteps {20, 15, 10};
-		constexpr std::array delayModifiers {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+		
+		constexpr double delayModifier {0.1};
+		constexpr double minDelay {1.0};
 
-		// Every 'wordStep' words typed
-		// the spawn delay is decreased
-		int index {m_stats.wordsTyped / wordSteps[m_config.difficulty]};
+		// Every time a certain number of words is typed
+		// the spawn delay between word batches is decreased
+		int multiplier {m_stats.wordsTyped / wordSteps[m_config.difficulty]};
 
-		if (index == 0)
-			return spawnDelays[m_config.difficulty];							 // Base delay
-		else if (index - 1 >= delayModifiers.size())
-			return spawnDelays[m_config.difficulty] - delayModifiers.back();	 // Smallest delay
-		else
-			return spawnDelays[m_config.difficulty] - delayModifiers[index - 1]; // Decreased delay
+		double delay {multiplier == 0 ? spawnDelays[m_config.difficulty] : spawnDelays[m_config.difficulty] - (delayModifier * multiplier)};
+
+		// Set a minimum delay limit
+		if (delay < minDelay)
+			delay = minDelay;
+
+		return delay;
 	}
 
 	void Session::addWords()

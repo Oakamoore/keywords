@@ -8,7 +8,6 @@
 #include "word_bank.h"
 #include "audio.h"
 #include <ftxui/dom/node.hpp>
-#include <ftxui/component/component.hpp>
 #include <vector>
 #include <string>
 #include <string_view>
