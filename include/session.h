@@ -29,7 +29,6 @@ namespace Keywords
 		std::string_view difficulty {};
 	};
 
-
 	class Session
 	{
 	public:
@@ -38,12 +37,12 @@ namespace Keywords
 			slow_track,
 			medium_track,
 			fast_track,
-			max_session_tracks
+			max_session_track
 		};
 
 		Session(const GameConfig& config, const WordBank& wordBank, 
 				const std::filesystem::path& saveFilePath, 
-				std::array<Audio::Track, max_session_tracks>& tracks, 
+				std::array<Audio::Track, max_session_track>& tracks, 
 				std::function<void()> back, std::function<void()> lose);
 
 		ftxui::Element draw() const;

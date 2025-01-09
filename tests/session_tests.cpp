@@ -12,7 +12,7 @@
 
 namespace
 {
-	std::array<Keywords::Audio::Track, Keywords::Session::max_session_tracks> g_emptyTracks {};
+	std::array<Keywords::Audio::Track, Keywords::Session::max_session_track> g_emptyTracks {};
 
 	Keywords::WordBank g_wordBank
 	{
