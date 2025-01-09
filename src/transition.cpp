@@ -1,5 +1,4 @@
 #include "transition.h"
-#include "constants.h"
 #include <ftxui/screen/screen.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/dom/canvas.hpp>
@@ -53,11 +52,7 @@ namespace Keywords
 {
 	void displayTransition()
 	{
-		constexpr int canvasWidth {1000};
-		constexpr int canvasHeight {1000};
-
 		auto screen {ftxui::Screen::Create(ftxui::Dimension::Full())};
-		auto canvas {ftxui::Canvas {canvasWidth, canvasHeight}};
 
 		fillScreen(screen);
 		clearScreen(screen);

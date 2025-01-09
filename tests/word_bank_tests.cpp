@@ -4,7 +4,6 @@
 #include <catch2/matchers/catch_matchers_exception.hpp>
 #include <filesystem>
 #include <exception>
-#include <algorithm>
 #include <array>
 
 using Catch::Matchers::Message;

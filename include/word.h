@@ -4,8 +4,6 @@
 #include <ftxui/screen/color.hpp>
 #include <string>
 #include <string_view>
-#include <vector>
-#include <memory>
 
 namespace Keywords
 {

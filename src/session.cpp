@@ -6,6 +6,7 @@
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/color.hpp>
 #include <ftxui/component/component.hpp>
+#include <string>
 #include <sstream>
 #include <type_traits>
 #include <cmath>

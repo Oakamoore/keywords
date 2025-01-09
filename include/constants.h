@@ -3,10 +3,10 @@
 
 #include "game_config.h"
 #include "audio.h"
+#include <ftxui/component/event.hpp>
 #include <array>
 #include <string_view>
 #include <filesystem>
-#include <ftxui/component/event.hpp>
 
 namespace Keywords
 {

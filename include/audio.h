@@ -3,7 +3,6 @@
 
 #include "miniaudio.h"
 #include <filesystem>
-#include <array>
 
 namespace Keywords
 {

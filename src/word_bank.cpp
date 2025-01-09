@@ -1,9 +1,7 @@
 #include "word_bank.h"
 #include "util.h"
-#include <cctype>
 #include <fstream>
 #include <exception>
-#include <algorithm>
 
 namespace
 {

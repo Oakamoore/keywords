@@ -3,7 +3,6 @@
 #include <ftxui/component/component.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/color.hpp>
-#include <array>
 #include <string>
 #include <string_view>
 #include <optional>

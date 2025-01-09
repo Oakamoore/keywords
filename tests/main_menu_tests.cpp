@@ -5,8 +5,6 @@
 #include "constants.h"
 #include <ftxui/component/event.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <array>
-#include <string_view>
 
 TEST_CASE("Empty the input component following 'ENTER' keypress")
 {
