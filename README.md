@@ -83,3 +83,9 @@ Once the project is built (with testing enabled in the build configuration), nav
 ```shell
 ./keywords-tests
 ```
+
+## Planned Features and Contributions
+
+There are plans to add support for different languages, and game modes. 
+
+This project is currently **not** open to contributions, though you are of course free to fork it and extend it in any way you deem fit. If you encounter any bugs, feel free to create an [issue](https://github.com/Oakamoore/keywords/issues).
