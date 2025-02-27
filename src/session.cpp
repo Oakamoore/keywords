@@ -257,7 +257,7 @@ namespace Keywords
 
 	std::optional<Word> Session::getRandomWord() const
 	{
-		std::string str {};
+		std::string str {Random::getElement(*m_wordBank)};
 
 		// Ensure that on screen words are different
 		while (str.empty() || isWordPresent(str))
@@ -398,7 +398,7 @@ namespace Keywords
 
 		if (m_input.hasPressedEnter)
 		{
-			if (isWordPresent(m_input.content))
+			if (!m_input.content.empty())
 			{
 				constexpr int scoreModifier {5};
 
@@ -409,20 +409,21 @@ namespace Keywords
 
 					return false;
 				})};
-
+				
+				// Input matches an on-screen word
 				if (word != m_words.end())
 				{
 					// Less points are gained by typing a word further along the canvas
 					m_stats.score += (static_cast<int>(m_input.content.length()) + g_canvasWidth - word->get()->x) / scoreModifier;
 					m_words.erase(word);
+					
+					++m_stats.wordsTyped;
+					m_stats.charsTyped += static_cast<int>(m_input.content.length());
 				}
 
-				++m_stats.wordsTyped;
-				m_stats.charsTyped += static_cast<int>(m_input.content.length());
+				// Clear the input component
+				m_input.reset();
 			}
-
-			// Clear the input component
-			m_input.reset();
 		}
 	}
 
