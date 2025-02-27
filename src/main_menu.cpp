@@ -67,14 +67,20 @@ namespace
 				separatorEmpty(),
 				hbox
 				({
-				 text("During a game session, type the onscreen words, and stay below "),
-				 text(std::to_string(Keywords::Constants::maxMisses) + " misses.") | color(Color::Red)
+					text("During a game session, type the onscreen words, and stay below "),
+					text(std::to_string(Keywords::Constants::maxMisses) + " misses.") | color(Color::Red)
 				}) | center,
 				separatorEmpty(),
 				hbox({text("Press "), text("ENTER") | color(Color::Yellow), text(" to confirm a typed word.")}) | center,
 				hbox({text("Press "), text("BACKSPACE") | color(Color::Yellow), text(" to erase individual characters.")}) | center,
 				hbox({text("Press "), text("CTRL + W") | color(Color::Yellow), text(" to erase an entire word all at once.")}) | center,
-				hbox({text("Press "), text("ESCAPE") | color(Color::Yellow), text(" to quit the game at any time.")}) | center
+				hbox({text("Press "), text("ESCAPE") | color(Color::Yellow), text(" to quit the game at any time.")}) | center,
+				separatorEmpty(),
+				hbox
+				({
+					text("Non-alphabetic") | color(Color::Yellow),  
+					text(" and "), text("uppercase") |	color(Color::Yellow), text(" characters are "), 
+					text("NOT") | color(Color::Red), text(" registered in this menu, or game sessions.")}) | center
 			})
 		};
 
