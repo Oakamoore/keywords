@@ -9,7 +9,7 @@ namespace
 {
 	constexpr int g_leaderboardRows {16};
 	constexpr int g_leaderboardCols {9};
-	constexpr int g_inputLength {10};
+	constexpr int g_maxInputLength {10};
 
 	std::vector<std::string> readLinesFromFile(std::ifstream& file)
 	{
@@ -47,7 +47,7 @@ namespace
 		std::vector<std::vector<std::string>> table(g_leaderboardRows, std::vector<std::string>(g_leaderboardCols));
 
 		// Column headings
-		table[0] = {{}, "Score", "Words Typed", "Chars Typed", "WPM", "CPS", "Time", "Date-Time", "Username"};
+		table[0] = {{}, "Score", "Words Typed", "Chars Typed", "WPM", "CPS", "Time", "Date-Time (UTC)", "Username"};
 
 		for (std::size_t row {1}; row < g_leaderboardRows; ++row)
 		{
@@ -78,7 +78,7 @@ namespace
 			({
 				hbox({text("Press "), text("ESCAPE") | color(Color::Yellow), text(" to exit from the leaderboard.")}) | center,
 				(hasEnterPrompt ? hbox({text("Press "), text("ENTER") | color(Color::Yellow), text(" to confirm a typed username (<= " 
-								+ std::to_string(g_inputLength) + " characters).")}) : emptyElement()) | center
+								+ std::to_string(g_maxInputLength) + " characters).")}) : emptyElement()) | center
 			}),
 		};
 
@@ -212,7 +212,7 @@ namespace Keywords
 
 		if (m_input.hasPressedEnter)
 		{
-			if (m_isInputNeeded && (!m_input.content.empty() && m_input.content.size() <= g_inputLength))
+			if (m_isInputNeeded && (!m_input.content.empty() && m_input.content.size() <= g_maxInputLength))
 			{
 				appendStringToFile(m_saveFilePath, m_input.content);
 
