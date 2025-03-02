@@ -299,7 +299,7 @@ namespace Keywords
 	{
 		constexpr std::array<double, GameConfig::max_difficulty> spawnDelays {3.5, 5.5, 7.5};
 		constexpr std::array<int, GameConfig::max_difficulty> wordSteps {20, 15, 10};
-		
+
 		constexpr double delayModifier {0.1};
 		constexpr double minDelay {1.0};
 
@@ -400,23 +400,24 @@ namespace Keywords
 		{
 			if (!m_input.content.empty())
 			{
-				constexpr int scoreModifier {5};
-
-				auto word {std::ranges::find_if(m_words,[&] (const auto& word)
+				auto found {std::ranges::find_if(m_words, [&] (const auto& word)
 				{
-					if (word->text == m_input.content)
-						return true;
-
-					return false;
+					// Windows systems represent newline characters as "\r\n"
+					// whereas UNIX systems represent them as "\n"
+					// Since the word banks are Windows text files, when read from on UNIX systems 
+					// the "\r" is left behind, which could result in an incorrect string comparision
+					return m_input.content == word->text || m_input.content + '\r' == word->text;
 				})};
-				
+
 				// Input matches an on-screen word
-				if (word != m_words.end())
+				if (found != m_words.end())
 				{
+					constexpr int scoreModifier {5};
+
 					// Less points are gained by typing a word further along the canvas
-					m_stats.score += (static_cast<int>(m_input.content.length()) + g_canvasWidth - word->get()->x) / scoreModifier;
-					m_words.erase(word);
-					
+					m_stats.score += (static_cast<int>(m_input.content.length()) + g_canvasWidth - (*found)->x) / scoreModifier;
+					m_words.erase(found);
+
 					++m_stats.wordsTyped;
 					m_stats.charsTyped += static_cast<int>(m_input.content.length());
 				}
