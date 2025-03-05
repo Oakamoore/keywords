@@ -10,7 +10,7 @@
 		<img src="https://img.shields.io/badge/FTXUI-5.0.0-orange">
 	</a>
 	<a href="https://github.com/mackron/miniaudio">
-		<img src="https://img.shields.io/badge/miniaudio-0.11.21-orange">
+		<img src="https://img.shields.io/badge/miniaudio-0.11.22-orange">
 	</a>
 </p>
 
