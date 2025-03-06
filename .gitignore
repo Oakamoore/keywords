@@ -4,6 +4,7 @@
 # Ignore all directories with a given name
 bin/
 build/
+build.em/
 out/
 testing/
 
