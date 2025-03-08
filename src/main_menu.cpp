@@ -73,7 +73,7 @@ namespace
 				separatorEmpty(),
 				hbox({text("Press "), text("ENTER") | color(Color::Yellow), text(" to confirm a typed word.")}) | center,
 				hbox({text("Press "), text("BACKSPACE") | color(Color::Yellow), text(" to erase individual characters.")}) | center,
-				hbox({text("Press "), text("CTRL + W") | color(Color::Yellow), text(" to erase an entire word all at once.")}) | center,
+				hbox({text("Press "), text("DELETE") | color(Color::Yellow), text(" to erase an entire word all at once.")}) | center,
 				hbox({text("Press "), text("ESCAPE") | color(Color::Yellow), text(" to quit the game at any time.")}) | center,
 				separatorEmpty(),
 				hbox

@@ -52,7 +52,7 @@ namespace Keywords
 		inline constexpr std::string_view disableAudio {"no-audio"};
 
 		inline constexpr char statSeparator {'|'};
-		inline const auto wordDeletionEvent {ftxui::Event::Special("\x17")}; // CTRL + W 
+		inline const auto wordDeletionEvent {ftxui::Event::Special("\x1B[3~")}; // DELETE KEY
 	}
 }
 
