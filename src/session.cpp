@@ -352,33 +352,26 @@ namespace Keywords
 
 		if (m_misses < firstThreshold)
 		{
-			if (!m_slowTrack->isPlaying())
-				m_slowTrack->play();
+			m_slowTrack->play();
 		}
 		else if ((m_misses >= firstThreshold && m_misses < secondThreshold))
 		{
-			if (m_slowTrack->isPlaying())
-				m_slowTrack->stop();
-
-			if (!m_mediumTrack->isPlaying())
-				m_mediumTrack->play();
+			m_slowTrack->stop();
+			m_mediumTrack->play();
 		}
 		else
 		{
-			// The second threshold might be skipped
-			if (m_slowTrack->isPlaying() || m_mediumTrack->isPlaying())
-			{
-				m_slowTrack->stop();
-				m_mediumTrack->stop();
-			}
-
-			if (!m_fastTrack->isPlaying())
-				m_fastTrack->play();
+			m_slowTrack->stop();
+			m_mediumTrack->stop();
+			m_fastTrack->play();
 		}
 	}
 
 	void Session::stopTracks()
 	{
+		if (!m_config.isAudioEnabled)
+			return;
+
 		m_slowTrack->stop();
 		m_mediumTrack->stop();
 		m_fastTrack->stop();

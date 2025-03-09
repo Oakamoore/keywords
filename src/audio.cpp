@@ -4,6 +4,7 @@
 #include "miniaudio.h"
 
 #include <exception>
+#include <iostream>
 
 namespace
 {
@@ -50,25 +51,36 @@ namespace Keywords
 
 		void Track::play()
 		{
-			if (ma_device_init(nullptr, &m_config, &m_device) != MA_SUCCESS)
-				throw std::runtime_error("Failed to initialise playback device");
-
-			if (ma_device_start(&m_device) != MA_SUCCESS)
+			if (!m_isPlaying)
 			{
-				ma_device_uninit(&m_device);
-				ma_decoder_uninit(&m_decoder);
-				throw std::runtime_error("Failed to start playback device");
-			}
+				if (ma_device_init(nullptr, &m_config, &m_device) != MA_SUCCESS)
+				{
+					std::cerr << "Failed to initialise playback device\n";
+					return;
+				}
 
-			m_isPlaying = true;
+				if (ma_device_start(&m_device) != MA_SUCCESS)
+				{
+					ma_device_uninit(&m_device);
+					ma_decoder_uninit(&m_decoder);
+
+					std::cerr << "Failed to start playback device\n";
+					return;
+				}
+
+				m_isPlaying = true;
+			}
 		}
 
 		void Track::stop()
 		{
-			if (ma_device_is_started(&m_device))
-				ma_device_stop(&m_device);
+			if (m_isPlaying)
+			{
+				if (ma_device_is_started(&m_device))
+					ma_device_stop(&m_device);
 
-			m_isPlaying = false;
+				m_isPlaying = false;
+			}
 		}
 	}
 }
