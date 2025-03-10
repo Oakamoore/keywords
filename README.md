@@ -68,10 +68,10 @@ cmake --build build
 emcmake cmake -S . -B bulid.em
 
 # Build project binaries
-cmake --build build.em -j
+cmake --build build.em
 ```
 
-Emscripten does **not** support the [Visual Studio CMake Generator](https://cmake.org/cmake/help/latest/generator/Visual%20Studio%2017%202022.html), it is recommended to use either the [MinGW Makefiles](https://cmake.org/cmake/help/latest/generator/MinGW%20Makefiles.html) or [Ninja](https://cmake.org/cmake/help/latest/generator/Ninja.html) generators.
+Emscripten does **not** support [Visual Studio's CMake Generator](https://cmake.org/cmake/help/latest/generator/Visual%20Studio%2017%202022.html), it is recommended to use either the [MinGW Makefiles](https://cmake.org/cmake/help/latest/generator/MinGW%20Makefiles.html) or [Ninja](https://cmake.org/cmake/help/latest/generator/Ninja.html) generators.
 
 To explicitly specify a generator use CMake's `-G` option followed by said generator's name, during the build configuration stage, i.e. `-G "MinGW Makefiles"`.
 
@@ -105,9 +105,9 @@ In-game audio is **enabled** by default, though can **only** be disabled in nati
 
 [![Catch2](https://img.shields.io/badge/Catch2-3.6.0-orange)](https://github.com/catchorg/Catch2/tree/devel)
 
-By default, tests are disabled in native builds (*and unavailable in WebAssembly builds*). To build them alongside the program append `-D ENABLE_TESTING=0` to the above build configuration command.
+By default, tests are disabled in native builds (*and unavailable in WebAssembly builds*). To build them alongside the program append `-D ENABLE_TESTING=1` to the above build configuration command.
 
-Once the project is built (with testing enabled in the build configuration), navigate to `keywords/build/tests/`, locate the testing executable, then run the tests using:
+Once the project is built navigate to `keywords/build/tests/`, locate the testing executable, then run the tests using:
 
 ```shell
 ./keywords-tests
