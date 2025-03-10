@@ -46,7 +46,9 @@ git clone https://github.com/Oakamoore/keywords.git
 cd keywords
 ```
 
-3. Build the project using [CMake](https://cmake.org/)
+#### Standard Build (Native)
+
+- Build the project using [CMake](https://cmake.org/)
 
 ```shell
 # Configure the build
@@ -56,27 +58,54 @@ cmake -S . -B build
 cmake --build build
 ```
 
-A build configuration (`Debug`, `Release` etc.) can also be [specified](https://gist.github.com/Oakamoore/685838c1b4a4c64a008f5461ac9323b5).
 
-#### Disabling Testing
+#### WebAssembly Build
 
-To prevent tests from being built alongside the program, append `-D ENABLE_TESTING=0` to the above build configuration command.
+- Build the project using [Emscripten](https://emscripten.org/docs/getting_started/downloads.html)
+
+```shell
+# Configure the build (in a separate directory)
+emcmake cmake -S . -B bulid.em
+
+# Build project binaries
+cmake --build build.em -j
+```
+
+Emscripten does **not** support the [Visual Studio CMake Generator](https://cmake.org/cmake/help/latest/generator/Visual%20Studio%2017%202022.html), it is recommended to use either the [MinGW Makefiles](https://cmake.org/cmake/help/latest/generator/MinGW%20Makefiles.html) or [Ninja](https://cmake.org/cmake/help/latest/generator/Ninja.html) generators.
+
+To explicitly specify a generator use CMake's `-G` option followed by said generator's name, during the build configuration stage, i.e. `-G "MinGW Makefiles"`.
+
+A build configuration type (`Debug`, `Release` etc.) can also be [specified](https://gist.github.com/Oakamoore/685838c1b4a4c64a008f5461ac9323b5), in **both** the native and WebAssembly builds.
 
 ## Usage
 
-Once the project is built, navigate to the newly created `keywords/build/` directory, locate the executable, then run the game using:
+#### Standard Build (Native)
+
+Once the project is built, navigate to the `keywords/build/` directory, locate the executable, then run the game using:
 
 ```shell
+# Run the executable
 ./keywords
+```
+
+#### WebAssembly Build
+
+Once the project is build, navigate to the `keywords/build.em/` directory, then run the following:
+
+```shell
+# Start a local server
+emrun keywords.html
 ```
 
 #### Disabling Audio
 
-In-game audio is **enabled** by default. To disable it across an instance of the game, append `no-audio` to the above command. 
+In-game audio is **enabled** by default, though can **only** be disabled in native builds. To do so, append `no-audio` to the above native build command. 
 
 ## Testing
 
 [![Catch2](https://img.shields.io/badge/Catch2-3.6.0-orange)](https://github.com/catchorg/Catch2/tree/devel)
+
+By default, tests are disabled in native builds (*and unavailable in WebAssembly builds*). To build them alongside the program append `-D ENABLE_TESTING=0` to the above build configuration command.
 
 Once the project is built (with testing enabled in the build configuration), navigate to `keywords/build/tests/`, locate the testing executable, then run the tests using:
 
