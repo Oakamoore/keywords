@@ -7,15 +7,6 @@
 
 namespace
 {
-	void printScreen(ftxui::Screen& screen)
-	{
-		static std::string resetPosition {};
-
-		// Prevents the terminal from scrolling
-		std::cout << "\033[?25l" << resetPosition << screen.ToString() << std::flush;
-		resetPosition = screen.ResetPosition();
-	}
-
 	void fillScreen(ftxui::Screen& screen)
 	{
 		// Increment through and fill each screen pixel
@@ -27,7 +18,7 @@ namespace
 				screen.PixelAt(screen.dimx() - x, y).background_color = ftxui::Color::Red;
 			}
 
-			printScreen(screen);
+			screen.Print();
 		}
 	}
 
@@ -42,7 +33,7 @@ namespace
 				screen.PixelAt(-x + screen.dimx(), y).background_color = ftxui::Color::Default;
 			}
 
-			printScreen(screen);
+			screen.Print();
 		}
 	}
 
