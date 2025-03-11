@@ -30,6 +30,12 @@ A terminal based typing game, inspired by [wspeed](https://bisqwit.iki.fi/wspeed
 
 Choose between **three** different difficulties, that scale with each word that is typed, and aim for highscores to enter your name in the local leaderboard.
 
+<p align="center">
+	<a href="https://oakamoore.itch.io/keywords">
+		<img src="https://github.com/user-attachments/assets/ddd31af4-2e28-4d5f-b8ef-8064df624d69" width=200>
+	</a>
+</p>
+
 ## Installation
 
 > A C++20 compatible compiler is required for this program to function as expected
